@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'SRE.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.mysql',
-        'NAME':'forsretest',
+        'NAME':'sre',
         'HOST':'122.51.228.166',
         'PORT':'3306',
         'USER':'root',
