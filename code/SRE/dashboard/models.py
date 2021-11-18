@@ -34,10 +34,10 @@ class AllCommit(models.Model):
 #     OPENED = 'OP'
 #     LOCKED = 'LO'
 #     Merge_type_choices = {
-#         (MERGED, 'merged')
-#         (CLOSED, 'closed')
-#         (OPENED, 'opened')
-#         (LOCKED, 'locked')
+#         (MERGED, 'merged'),
+#         (CLOSED, 'closed'),
+#         (OPENED, 'opened'),
+#         (LOCKED, 'locked'),
 #     }
 #     Merge_type = models.CharField(max_length=10, choices=Merge_type_choices)
 #     Project = models.ManyToManyField(Project)
