@@ -27,7 +27,7 @@ import "assets/css/material-dashboard-react.css?v=1.10.0";
 ReactDOM.render(
   <BrowserRouter>
     <Switch>
-      <Route path="/admin" component={Admin} />
+      <Route path="/admin" component={Admin} /> {/*Admin位于文件夹layouts中*/}
       <Redirect from="/" to="/admin/dashboard" />
     </Switch>
   </BrowserRouter>,

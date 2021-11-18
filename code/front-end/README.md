@@ -166,16 +166,16 @@ material-dashboard-react
     └── views
         ├── Dashboard
         │   └── Dashboard.js
-        ├── Icons
-        │   └── Icons.js
+        ├── Favorites
+        │   └── Favorites.js
         ├── Maps
         │   └── Maps.js
         ├── Notifications
         │   └── Notifications.js
         ├── RTLPage
         │   └── RTLPage.js
-        ├── TableList
-        │   └── TableList.js
+        ├── CustomizationList
+        │   └── CustomizationList.js
         ├── Typography
         │   └── Typography.js
         ├── UpgradeToPro
