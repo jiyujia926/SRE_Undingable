@@ -8,17 +8,25 @@ class Project(models.Model):
     #参与者？
 
 class Contributor(models.Model):
-    Project = models.ManyToManyField(Project)
+    Project = models.ManyToManyField(Project, primary_key=True) #先实验一下看下该主键最终是什么样子的
     Name = models.CharField(max_length=20)
-    Github = models.CharField(max_length=30)
+    Github = models.CharField(max_length=30, primary_key=True)
     #贡献量是计算还是存储？
 
-class Commit(models.Model):
+class CommitRecord(models.Model):
+    Contributor = models.ManyToManyField(Contributor)
+    CommitCount = models.IntegerField(null=True, blank=True)
+
+class MergeRecord(models.Model):
+    Contributor = models.ManyToManyField(Contributor)
+    MergeCount = models.IntegerField(null=True, blank=True)
+
+class AllCommit(models.Model):
     Project = models.ManyToManyField(Project)
     Time = models.DateField()
     Count = models.IntegerField(null=True, blank=True)
 
-class Merge(models.Model):
+class AllMerge(models.Model):
     MERGED = 'ME'
     CLOSED = 'CL'
     OPENED = 'OP'
