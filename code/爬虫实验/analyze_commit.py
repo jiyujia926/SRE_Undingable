@@ -28,7 +28,27 @@ def commit_data(url:str):
     local_date = utc_date + timedelta(hours=8)
     local_date_str = datetime.strftime(local_date,'%Y-%m-%d %H:%M:%S')
     print(local_date_str)
-
+    data = soup.select('#toc > div.toc-diff-stats > button')
+    if data[0]:
+        rawchanged = str(data[0])
+        startindex = rawchanged.find('>')
+        endindex = rawchanged.find('changed')
+        changed = rawchanged[startindex+10:endindex-1]
+        print(changed+" changed file")
+    data = soup.select('#toc > div.toc-diff-stats > strong:nth-child(3)')
+    if data[0]:
+        rawaddition = str(data[0])
+        startindex = rawaddition.find('>')
+        endindex = rawaddition.find('addition')
+        additions = rawaddition[startindex+1:endindex-1]
+        print(additions.replace(',',"")+" additions")
+    data = soup.select('#toc > div.toc-diff-stats > strong:nth-child(4)')
+    if data[0]:
+        rawdeletion = str(data[0])
+        startindex = rawdeletion.find('>')
+        endindex = rawdeletion.find('deletion')
+        deletions = rawdeletion[startindex+1:endindex-1]
+        print(deletions+" deletion")
     # print(newtime)
     # print(commitor)
 
