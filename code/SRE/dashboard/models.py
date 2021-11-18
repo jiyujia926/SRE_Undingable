@@ -16,10 +16,12 @@ class Contributor(models.Model):
 class CommitRecord(models.Model):
     Contributor = models.ManyToManyField(Contributor)
     CommitCount = models.IntegerField(null=True, blank=True)
+    Time = models.DateField()
 
 class MergeRecord(models.Model):
     Contributor = models.ManyToManyField(Contributor)
     MergeCount = models.IntegerField(null=True, blank=True)
+    Time = models.DateField()
 
 class AllCommit(models.Model):
     Project = models.ManyToManyField(Project)
