@@ -172,8 +172,6 @@ material-dashboard-react
         │   └── Maps.js
         ├── Notifications
         │   └── Notifications.js
-        ├── RTLPage
-        │   └── RTLPage.js
         ├── TableList
         │   └── TableList.js
         ├── Typography
