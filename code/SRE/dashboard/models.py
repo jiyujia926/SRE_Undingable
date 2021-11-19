@@ -1,11 +1,15 @@
 from django.db import models
+from register.models import User
 
 class Project(models.Model):
     PID = models.UUIDField(max_length=15, primary_key=True, blank=False)
     Name = models.CharField(max_length=10, blank=False)
-    ProjectCreatedTime = models.DateTimeField(auto_now=False, auto_created=True)
     RepositoryURL = models.URLField()
     #参与者？
+
+class Favorite(models.Model):
+    User = models.ManyToManyField(User)
+    RepositoryURL = models.URLField()
 
 class Contributor(models.Model):
     Project = models.ManyToManyField(Project) #先实验一下看下该主键最终是什么样子的
@@ -14,36 +18,43 @@ class Contributor(models.Model):
     #贡献量是计算还是存储？
 
 class CommitRecord(models.Model):
+    Project = models.ManyToManyField(Project)
     Contributor = models.ManyToManyField(Contributor)
     CommitCount = models.IntegerField(null=True, blank=True)
-    Time = models.DateField()
+    Time = models.DateField(primary_key=True)
 
-class MergeRecord(models.Model):
+class IssueRecord(models.Model):
     Contributor = models.ManyToManyField(Contributor)
-    MergeCount = models.IntegerField(null=True, blank=True)
-    Time = models.DateField()
+    Project = models.ManyToManyField(Project)
+
+    CLOSED = 'CL'
+    OPENED = 'OP'
+    Issue_type_choices = {
+        (CLOSED, 'closed'),
+        (OPENED, 'opened')
+    }
+    Issue_type = models.CharField(max_length=10, choices=Issue_type_choices)
+    
+    IssueOpenCount = models.IntegerField(null=True, blank=True)
+    IssueCloseCount = models.IntegerField(null=True, blank=True)
+    OpenTime = models.DateField()
+    CloseTime = models.DateField()
 
 class AllCommit(models.Model):
     Project = models.ManyToManyField(Project)
     Time = models.DateField()
     Count = models.IntegerField(null=True, blank=True)
 
-# class AllMerge(models.Model):
-#     MERGED = 'ME'
-#     CLOSED = 'CL'
-#     OPENED = 'OP'
-#     LOCKED = 'LO'
-#     Merge_type_choices = {
-#         (MERGED, 'merged'),
-#         (CLOSED, 'closed'),
-#         (OPENED, 'opened'),
-#         (LOCKED, 'locked'),
-#     }
-#     Merge_type = models.CharField(max_length=10, choices=Merge_type_choices)
-#     Project = models.ManyToManyField(Project)
-#     Time = models.DateField()
-#     Count = models.IntegerField(null=True, blank=True)  #Submitter总数从commit和merge两个表里拿来计算
-#     mergedCount = models.IntegerField(null=True, blank=True)
-#     closedCount = models.IntegerField(null=True, blank=True)
-#     openedCount = models.IntegerField(null=True, blank=True)
-#     lockedCount = models.IntegerField(null=True, blank=True)
+class AllIssue(models.Model):
+    CLOSED = 'CL'
+    OPENED = 'OP'
+    Issue_type_choices = {
+        (CLOSED, 'closed'),
+        (OPENED, 'opened')
+    }
+    Issue_type = models.CharField(max_length=10, choices=Issue_type_choices)
+    Project = models.ManyToManyField(Project)
+    Time = models.DateField()
+    Count = models.IntegerField(null=True, blank=True)  #Submitter总数从commit和merge两个表里拿来计算
+    closedCount = models.IntegerField(null=True, blank=True)
+    openedCount = models.IntegerField(null=True, blank=True)
