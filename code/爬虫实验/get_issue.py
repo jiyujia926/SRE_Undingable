@@ -1,6 +1,7 @@
 from typing import NewType
 import requests
 from bs4 import BeautifulSoup
+from analyze_issue import open_issue_time,closed_issue_time
 
 def get_open_issue(rawurl:str):
     # url = "https://github.com/Bitergia/prosoul/issues"
@@ -53,6 +54,7 @@ def get_open_issue(rawurl:str):
                 continue
             else:
                 issuelist.append(link)
+                open_issue_time(link)
                 
     while (has_next_page):
         strhtml = requests.get(next_page_url)
@@ -91,7 +93,8 @@ def get_open_issue(rawurl:str):
                     continue
                 else:
                     issuelist.append(link)
-    print(issuelist)      
+                    open_issue_time(link)
+    # print(issuelist)      
     print(len(issuelist)) 
 
 
@@ -144,6 +147,10 @@ def get_closed_issue(rawurl:str):
                 continue
             else:
                 issuelist.append(link)
+                print("open:")
+                open_issue_time(link)
+                print("closed:")
+                closed_issue_time(link)
                 
     while (has_next_page):
         strhtml = requests.get(next_page_url)
@@ -182,7 +189,11 @@ def get_closed_issue(rawurl:str):
                     continue
                 else:
                     issuelist.append(link)
-    print(issuelist)    
+                    print("open:")
+                    open_issue_time(link)
+                    print("closed:")
+                    closed_issue_time(link)
+    # print(issuelist)    
     print(len(issuelist))
 
 
