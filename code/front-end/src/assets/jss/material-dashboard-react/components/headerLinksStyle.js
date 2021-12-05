@@ -8,22 +8,12 @@ import dropdownStyle from "assets/jss/material-dashboard-react/dropdownStyle.js"
 
 const headerLinksStyle = (theme) => ({
   ...dropdownStyle(theme),
-  search: {
-    "& > div": {
-      marginTop: "0",
-    },
-    [theme.breakpoints.down("sm")]: {
-      margin: "10px 15px !important",
-      float: "none !important",
-      paddingTop: "1px",
-      paddingBottom: "1px",
-      padding: "0!important",
-      width: "60%",
-      marginTop: "40px",
-      "& input": {
-        color: whiteColor,
-      },
-    },
+  navbar: {
+    margin: "0 20px 0 0",
+  },
+  icons: {
+    width: "30px !important",
+    height: "30px !important",
   },
   linkText: {
     zIndex: "4",
@@ -107,6 +97,16 @@ const headerLinksStyle = (theme) => ({
       margin: "10px 15px 0",
     },
     display: "inline-block",
+  },
+  form_head: {
+    textAlign: "center",
+    padding: "20px 24px 0",
+  },
+  form_content: {
+    padding: "8px 24px 20px",
+  },
+  form_option_register: {
+    justifyContent: "center",
   },
 });
 
