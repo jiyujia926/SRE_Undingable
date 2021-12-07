@@ -33,11 +33,15 @@ export default function AdminNavbarLinks() {
   const [account, setAccount] = React.useState(null);
   const [openProfile, setOpenProfile] = React.useState(null);
   const [openDialog, setOpenDialog] = React.useState(false);
-  const [formData, setFormData] = React.useState({
+  const initialFormState = {
     email: "",
     password: "",
     username: "",
-  });
+    email_check: "",
+    password_check: "",
+    username_check: "",
+  };
+  const [formData, setFormData] = React.useState(initialFormState);
   const handleClickProfile = (event) => {
     if (openProfile && openProfile.contains(event.target)) {
       setOpenProfile(null);
@@ -61,25 +65,75 @@ export default function AdminNavbarLinks() {
   };
   const handleCloseDialog = () => {
     setOpenDialog(false);
+    setOp("login");
+    setFormData(initialFormState);
   };
   const handleInputChange = (event) => {
     let { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
   const handleSubmitLogin = () => {
-    alert(formData.email);
-    alert(formData.password);
+    let ec = "";
+    let pc = "";
+    if (formData.email === "") {
+      ec = "Email cannot be Empty!";
+    } else if (
+      !/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/.test(
+        formData.email
+      )
+    ) {
+      ec = "Email cannot be Wrong!";
+    }
+    if (formData.password === "") {
+      pc = "Password cannot be Empty!";
+    }
+    setFormData({ ...formData, email_check: ec, password_check: pc });
+    //初步验证完成，连接后端，尝试登录
+    if (ec === "Correct." && pc === "Correct.") {
+      //alert("try login");
+    }
+  };
+  const handleSubmitRegister = () => {
+    let ec = "Correct.";
+    let uc = "Correct.";
+    let pc = "Correct.";
+    if (formData.email === "") {
+      ec = "Email cannot be Empty!";
+    } else if (
+      !/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/.test(
+        formData.email
+      )
+    ) {
+      ec = "Email cannot be Wrong!";
+    }
+    if (formData.username === "") {
+      uc = "Username cannot be Empty!";
+    }
+    if (formData.password === "") {
+      pc = "Password cannot be Empty! ";
+    } else if (
+      !/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/.test(formData.password)
+    ) {
+      pc = "The format is incorrect. ";
+    }
+    setFormData({
+      ...formData,
+      email_check: ec,
+      password_check: pc,
+      username_check: uc,
+    });
+    //初步验证完成，连接后端，尝试注册
+    if (ec === "Correct." && pc === "Correct." && uc === "Correct.") {
+      alert("try register");
+    }
   };
   const handleChangeOp = () => {
-    if (op == "register") {
+    setFormData(initialFormState);
+    if (op === "register") {
       setOp("login");
     } else {
       setOp("register");
     }
-  };
-  const handleSubmitRegister = () => {
-    alert(formData.email);
-    alert(formData.password);
   };
   return (
     <div className={classes.navbar}>
@@ -150,8 +204,12 @@ export default function AdminNavbarLinks() {
         onClose={handleCloseDialog}
         aria-labelledby="form-dialog-title"
       >
-        {op == "login" ? (
-          <form className={classes.form} onSubmit={handleSubmitLogin}>
+        {op === "login" ? (
+          <form
+            className={classes.form}
+            noValidate
+            onSubmit={handleSubmitLogin}
+          >
             <DialogTitle id="form-dialog-title" className={classes.form_head}>
               <Typography component="h1" variant="h5">
                 Sign in
@@ -159,6 +217,7 @@ export default function AdminNavbarLinks() {
             </DialogTitle>
             <DialogContent className={classes.form_content}>
               <TextField
+                error={formData.email_check !== ""}
                 variant="outlined"
                 margin="normal"
                 required
@@ -169,9 +228,11 @@ export default function AdminNavbarLinks() {
                 autoComplete="email"
                 autoFocus
                 value={formData.email}
+                helperText={formData.email_check}
                 onChange={handleInputChange}
               />
               <TextField
+                error={formData.password_check !== ""}
                 variant="outlined"
                 margin="normal"
                 required
@@ -182,6 +243,7 @@ export default function AdminNavbarLinks() {
                 id="password"
                 autoComplete="current-password"
                 value={formData.password}
+                helperText={formData.password_check}
                 onChange={handleInputChange}
               />
               <FormControlLabel
@@ -189,11 +251,11 @@ export default function AdminNavbarLinks() {
                 label="Remember me"
               />
               <Button
-                type="submit"
                 fullWidth
                 variant="contained"
                 color="primary"
                 className={classes.submit}
+                onClick={handleSubmitLogin}
               >
                 Sign in
               </Button>
@@ -212,7 +274,11 @@ export default function AdminNavbarLinks() {
             </DialogContent>
           </form>
         ) : (
-          <form className={classes.form} onSubmit={handleSubmitRegister}>
+          <form
+            className={classes.form}
+            noValidate
+            onSubmit={handleSubmitRegister}
+          >
             <DialogTitle id="form-dialog-title" className={classes.form_head}>
               <Typography component="h1" variant="h5">
                 Sign Up
@@ -220,6 +286,10 @@ export default function AdminNavbarLinks() {
             </DialogTitle>
             <DialogContent className={classes.form_content}>
               <TextField
+                error={
+                  formData.email_check !== "" &&
+                  formData.email_check !== "Correct."
+                }
                 variant="outlined"
                 margin="normal"
                 required
@@ -230,9 +300,14 @@ export default function AdminNavbarLinks() {
                 autoComplete="email"
                 autoFocus
                 value={formData.email}
+                helperText={formData.email_check}
                 onChange={handleInputChange}
               />
               <TextField
+                error={
+                  formData.username_check !== "" &&
+                  formData.username_check !== "Correct."
+                }
                 variant="outlined"
                 margin="normal"
                 required
@@ -243,9 +318,14 @@ export default function AdminNavbarLinks() {
                 autoComplete="username"
                 autoFocus
                 value={formData.username}
+                helperText={formData.username_check}
                 onChange={handleInputChange}
               />
               <TextField
+                error={
+                  formData.password_check !== "" &&
+                  formData.password_check !== "Correct."
+                }
                 variant="outlined"
                 margin="normal"
                 required
@@ -256,14 +336,20 @@ export default function AdminNavbarLinks() {
                 id="password"
                 autoComplete="current-password"
                 value={formData.password}
+                helperText={
+                  formData.password_check === "Correct."
+                    ? "Correct."
+                    : formData.password_check +
+                      "Password should consist of 6-20 characters, must contain both numbers and letters, and cannot contain other characters."
+                }
                 onChange={handleInputChange}
               />
               <Button
-                type="submit"
                 fullWidth
                 variant="contained"
                 color="primary"
                 className={classes.submit}
+                onClick={handleSubmitRegister}
               >
                 Sign Up
               </Button>
