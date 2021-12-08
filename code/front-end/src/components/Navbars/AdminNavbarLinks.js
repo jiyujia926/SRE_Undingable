@@ -28,8 +28,8 @@ import Typography from "@material-ui/core/Typography";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
-// const server = 'http://122.51.228.166:8000';
-const server = "http://127.0.0.1:8000";
+const server = "http://122.51.228.166:8000";
+//const server = "http://127.0.0.1:8000";
 
 const useStyles = makeStyles(styles);
 
@@ -80,8 +80,8 @@ export default function AdminNavbarLinks() {
   };
   const handleSubmitLogin = () => {
     // console.log({ ...formData });
-    let ec = "Correct.";
-    let pc = "Correct.";
+    let ec = "";
+    let pc = "";
     if (formData.email === "") {
       ec = "Email cannot be Empty!";
     } else if (
@@ -98,7 +98,7 @@ export default function AdminNavbarLinks() {
     //初步验证完成，连接后端，尝试登录
     // console.log(ec);
     // console.log(pc);
-    if (ec === "Correct." && pc === "Correct.") {
+    if (ec === "" && pc === "") {
       // alert("try login");
       login();
     }
