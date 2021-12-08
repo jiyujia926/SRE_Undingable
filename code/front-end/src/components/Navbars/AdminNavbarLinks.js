@@ -7,7 +7,6 @@ import MenuList from "@material-ui/core/MenuList";
 import Grow from "@material-ui/core/Grow";
 import Paper from "@material-ui/core/Paper";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import Hidden from "@material-ui/core/Hidden";
 import Poppers from "@material-ui/core/Popper";
 // @material-ui/icons
 import Person from "@material-ui/icons/Person";
@@ -28,15 +27,18 @@ import Typography from "@material-ui/core/Typography";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
-// const server = "http://122.51.228.166:8000";
-const server = "http://127.0.0.1:8000";
+const server = "http://122.51.228.166:8000";
+//const server = "http://127.0.0.1:8000";
 
 const useStyles = makeStyles(styles);
 
 export default function AdminNavbarLinks() {
   const classes = useStyles();
   const [op, setOp] = React.useState("login");
-  const [account, setAccount] = React.useState(null);
+  const [account, setAccount] = React.useState({
+    email: "",
+    username: "",
+  });
   const [openProfile, setOpenProfile] = React.useState(null);
   const [openDialog, setOpenDialog] = React.useState(false);
   const initialFormState = {
@@ -64,7 +66,7 @@ export default function AdminNavbarLinks() {
   };
   const handleLogout = () => {
     handleCloseProfile();
-    setAccount(null);
+    setAccount({ email: "", username: "" });
   };
   const handleClickDialog = () => {
     setOpenDialog(true);
@@ -96,22 +98,33 @@ export default function AdminNavbarLinks() {
     }
     setFormData({ ...formData, email_check: ec, password_check: pc });
     //初步验证完成，连接后端，尝试登录
-    // console.log(ec);
-    // console.log(pc);
     if (ec === "" && pc === "") {
-      // alert("try login");
       login();
     }
   };
   async function login() {
-    // alert("!");
+    let ec = "";
+    let pc = "";
     let data = {
       Password: formData.password,
       Email: formData.email,
     };
-    // console.log(data);
     let res = await axios.post(`${server}/login/`, data);
-    alert(res.data);
+    if (res.data === "密码正确") {
+      setAccount({ email: formData.email, username: formData.username });
+      handleCloseDialog();
+    } else {
+      if (res.data === "密码错误") {
+        pc = "Password is incorrect.";
+      } else {
+        ec = "This email has not been registered.";
+      }
+      setFormData({
+        ...formData,
+        email_check: ec,
+        password_check: pc,
+      });
+    }
   }
   const handleSubmitRegister = () => {
     let ec = "Correct.";
@@ -149,6 +162,7 @@ export default function AdminNavbarLinks() {
     }
   };
   async function register() {
+    let ec = "";
     let data = {
       Name: formData.username,
       Password: formData.password,
@@ -157,7 +171,16 @@ export default function AdminNavbarLinks() {
     };
     console.log(data);
     let res = await axios.post(`${server}/register/`, data);
-    alert(res.data);
+    if (res.data === "注册成功！") {
+      alert("注册成功，请进行登录");
+      handleChangeOp();
+    } else {
+      ec = "This email has been registered.";
+      setFormData({
+        ...formData,
+        email_check: ec,
+      });
+    }
   }
   const handleChangeOp = () => {
     setFormData(initialFormState);
@@ -171,18 +194,14 @@ export default function AdminNavbarLinks() {
     <div className={classes.navbar}>
       <div className={classes.manager}>
         <Button
-          color={window.innerWidth > 959 ? "transparent" : "white"}
-          justIcon={window.innerWidth > 959}
-          simple={!(window.innerWidth > 959)}
+          color="transparent"
+          justIcon="true"
+          simple="false"
           aria-owns={openProfile ? "profile-menu-list-grow" : null}
           aria-haspopup="true"
           onClick={handleClickProfile}
-          className={classes.buttonLink}
         >
           <Person className={classes.icons} />
-          <Hidden mdUp implementation="css">
-            <p className={classes.linkText}>Profile</p>
-          </Hidden>
         </Button>
         <Poppers
           open={Boolean(openProfile)}
@@ -206,7 +225,7 @@ export default function AdminNavbarLinks() {
             >
               <Paper>
                 <ClickAwayListener onClickAway={handleCloseProfile}>
-                  {account == null ? (
+                  {account.email === "" ? (
                     <MenuList role="menu">
                       <MenuItem
                         onClick={handleLogin}

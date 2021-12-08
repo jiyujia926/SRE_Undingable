@@ -1,6 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
+import { NavLink } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -17,16 +18,33 @@ import Button from "components/CustomButtons/Button.js";
 import { useRouteName } from "hooks";
 
 import styles from "assets/jss/material-dashboard-react/components/headerStyle.js";
+import Grow from "@material-ui/core/Grow";
+import Paper from "@material-ui/core/Paper";
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
+import MenuList from "@material-ui/core/MenuList";
+import MenuItem from "@material-ui/core/MenuItem";
+import Poppers from "@material-ui/core/Popper";
 
 const useStyles = makeStyles(styles);
 
 export default function Header(props) {
   const classes = useStyles();
   const routeName = useRouteName();
-  const { color } = props;
+  const { color, routes } = props;
   const appBarClasses = classNames({
     [" " + classes[color]]: color,
   });
+  const [openMenu, setOpenMenu] = React.useState(null);
+  const handleClickMenu = (event) => {
+    if (openMenu && openMenu.contains(event.target)) {
+      setOpenMenu(null);
+    } else {
+      setOpenMenu(event.currentTarget);
+    }
+  };
+  const handleCloseMenu = () => {
+    setOpenMenu(null);
+  };
   return (
     <AppBar className={classes.appBar + appBarClasses}>
       <Toolbar className={classes.container}>
@@ -36,17 +54,57 @@ export default function Header(props) {
             {routeName}
           </Button>
         </div>
-        <Hidden smDown implementation="css">
-          <AdminNavbarLinks />
-        </Hidden>
+        <AdminNavbarLinks />
         <Hidden mdUp implementation="css">
           <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={props.handleDrawerToggle}
+            color="transparent"
+            justIcon="true"
+            simple="false"
+            aria-owns={openMenu ? "profile-menu-list-grow" : null}
+            aria-haspopup="true"
+            onClick={handleClickMenu}
           >
             <Menu />
           </IconButton>
+          <Poppers
+            open={Boolean(openMenu)}
+            anchorEl={openMenu}
+            transition
+            disablePortal
+            placement="bottom-end"
+            className={
+              classNames({ [classes.popperClose]: !openMenu }) +
+              " " +
+              classes.popperNav
+            }
+          >
+            {({ TransitionProps, placement }) => (
+              <Grow
+                {...TransitionProps}
+                id="profile-menu-list-grow"
+                style={{
+                  transformOrigin:
+                    placement === "bottom" ? "center top" : "center bottom",
+                }}
+              >
+                <Paper>
+                  <ClickAwayListener onClickAway={handleCloseMenu}>
+                    <MenuList role="menu">
+                      {routes.map((prop, key) => {
+                        return (
+                          <NavLink to={prop.layout + prop.path} key={key}>
+                            <MenuItem className={classes.dropdownItem}>
+                              {prop.name}
+                            </MenuItem>
+                          </NavLink>
+                        );
+                      })}
+                    </MenuList>
+                  </ClickAwayListener>
+                </Paper>
+              </Grow>
+            )}
+          </Poppers>
         </Hidden>
       </Toolbar>
     </AppBar>

@@ -11,7 +11,10 @@ import {
   grayColor,
 } from "assets/jss/material-dashboard-react.js";
 
-const headerStyle = () => ({
+import dropdownStyle from "assets/jss/material-dashboard-react/dropdownStyle.js";
+
+const headerStyle = (theme) => ({
+  ...dropdownStyle(theme),
   appBar: {
     backgroundColor: "transparent",
     boxShadow: "none",

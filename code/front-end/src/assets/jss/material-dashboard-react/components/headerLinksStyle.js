@@ -29,8 +29,6 @@ const headerLinksStyle = (theme) => ({
       "& svg": {
         width: "24px",
         height: "30px",
-        marginRight: "15px",
-        marginLeft: "-15px",
       },
       "& .fab,& .fas,& .far,& .fal,& .material-icons": {
         fontSize: "24px",
