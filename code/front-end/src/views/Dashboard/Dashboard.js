@@ -17,29 +17,56 @@ import CardFooter from "components/Card/CardFooter.js";
 import { dailySalesChart } from "variables/charts.js";
 
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
-import CustomInput from "../../components/CustomInput/CustomInput";
+//import CustomInput from "../../components/CustomInput/CustomInput";
 import Button from "../../components/CustomButtons/Button";
 import Search from "@material-ui/icons/Search";
+import { Input } from "@material-ui/core";
 
 const useStyles = makeStyles(styles);
 
 export default function Dashboard() {
   const classes = useStyles();
+  const [input, setInput] = React.useState();
+  const [address, setAddress] = React.useState();
+  const handleInputChange = (event) => {
+    setInput(event.target.value);
+  };
+  const handleSearch = () => {
+    let reg = /^(?=^.{3,255}$)(http(s)?:\/\/)?(www\.)?(github.com\/)*([[a-zA-Z0-9]\/+=%&_\.~?-]*)*/; //正则表达式判断是否为github地址
+    if (reg.test(input)) {
+      let res;
+      // 此处调用后端函数, 参数就是{Address: input}
+      // （根据之前的设想，先判断仓库能不能在数据库找到，可以就返回true；
+      // 不能找到就现场爬取，但要先判断是不是仓库(?)，能就返回true，同时更新数据库，没法爬返回false）
+      //alert("good");
+      //res = { data: true };
+      if (res.data) {
+        setAddress(input);
+        alert(address);
+      } else {
+        alert("请输入正确的github仓库地址");
+      }
+    } else {
+      alert("请输入github地址");
+    }
+    setInput("");
+  };
   return (
     <div>
       <div className={classes.searchWrapper}>
-        <CustomInput
-          formControlProps={{
-            className: classes.margin + " " + classes.search,
-          }}
-          inputProps={{
-            placeholder: "Address of the repository",
-            inputProps: {
-              "aria-label": "Address of the repository",
-            },
-          }}
+        <Input
+          value={input}
+          onChange={handleInputChange}
+          placeholder="Address of the repository"
+          className={classes.searchInput}
         />
-        <Button color="white" aria-label="edit" justIcon round>
+        <Button
+          color="white"
+          aria-label="edit"
+          justIcon
+          round
+          onClick={handleSearch}
+        >
           <Search />
         </Button>
       </div>

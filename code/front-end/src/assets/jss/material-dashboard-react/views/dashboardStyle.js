@@ -40,6 +40,9 @@ const dashboardStyle = (theme) => ({
     display: "flex",
     width: "400px",
   },
+  searchInput: {
+    flex: "1",
+  },
   successText: {
     color: successColor[0],
   },
