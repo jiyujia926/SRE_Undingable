@@ -54,8 +54,7 @@ export default function Dashboard() {
       // 不能找到就现场爬取，但要先判断是不是仓库(?)，能就返回true，同时更新数据库，没法爬返回false）
       //alert("good");
       //res = { data: true };
-      let res;
-      spider();
+      let res = spider();
       if (res.data) {
         setAddress(input);
         alert(address);

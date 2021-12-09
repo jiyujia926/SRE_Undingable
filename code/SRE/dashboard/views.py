@@ -10,6 +10,7 @@ def spider(request):
     data = json.loads(request.body)
     address = data['RepositoryURL']
     analyze_commit(address)
+    return HttpResponse("true")
 
 def analyze_commit(url:str):
     commitbag = get_commit(url)
