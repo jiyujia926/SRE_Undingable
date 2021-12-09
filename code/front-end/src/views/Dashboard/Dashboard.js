@@ -38,9 +38,11 @@ export default function Dashboard() {
     setInput(event.target.value);
   };
   async function spider() {
+    console.log(1);
     let data = {
       RepositoryURL: input,
     };
+    console.log(data);
     let res = await axios.post(`${server}/spider/`, data);
     // return res;
     console.log(res);
