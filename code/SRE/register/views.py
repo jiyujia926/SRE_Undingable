@@ -6,9 +6,13 @@ from . import models
 # Create your views here.
 def register(request):
     data = json.loads(request.body)
-    data['UID'] = uuid.uuid4()
-    models.User.objects.create(**data)
-    return HttpResponse("注册成功！")
+    checkemail = list(models.User.objects.values('Email').filter(Email = data['Email']))
+    if checkemail:
+        return HttpResponse("邮箱已被注册")
+    else:
+        data['UID'] = uuid.uuid4()
+        models.User.objects.create(**data)
+        return HttpResponse("注册成功！")
 
 def login(request):
     data = json.loads(request.body)
