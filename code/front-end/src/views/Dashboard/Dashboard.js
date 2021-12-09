@@ -37,11 +37,11 @@ export default function Dashboard() {
   const handleInputChange = (event) => {
     setInput(event.target.value);
   };
-  async function spider(){
+  async function spider() {
     let data = {
-      RepositoryURL:input
+      RepositoryURL: input,
     };
-    let res = await axios.post(`${server}/spider/`,data);
+    let res = await axios.post(`${server}/spider/`, data);
     return res;
   }
   const handleSearch = () => {
