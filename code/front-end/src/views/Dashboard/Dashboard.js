@@ -42,17 +42,19 @@ export default function Dashboard() {
       RepositoryURL: input,
     };
     let res = await axios.post(`${server}/spider/`, data);
-    return res;
+    // return res;
+    console.log(res)
   }
   const handleSearch = () => {
     let reg = /^(?=^.{3,255}$)(http(s)?:\/\/)?(www\.)?(github.com\/)*([[a-zA-Z0-9]\/+=%&_\.~?-]*)*/; //正则表达式判断是否为github地址
     if (reg.test(input)) {
-      let res = spider();
+      // let res = spider();
       // 此处调用后端函数, 参数就是{Address: input}
       // （根据之前的设想，先判断仓库能不能在数据库找到，可以就返回true；
       // 不能找到就现场爬取，但要先判断是不是仓库(?)，能就返回true，同时更新数据库，没法爬返回false）
       //alert("good");
       //res = { data: true };
+      spider()
       if (res.data) {
         setAddress(input);
         alert(address);
