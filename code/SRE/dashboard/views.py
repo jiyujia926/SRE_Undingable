@@ -21,6 +21,7 @@ def checkurl(request):
     if list1:
         # 这个链接仓库里有
         # print(list1[0]['RepositoryURL']==address)
+        spider(address)
         return HttpResponse("true")
     else:
         # 这个链接仓库里没有
@@ -32,11 +33,8 @@ def checkurl(request):
             project = models.Project(PID=uuid.uuid4(),Name=name,RepositoryURL=address)
             project.save()
             return HttpResponse("添加进数据库")
-def spider(request):
-    data = json.loads(request.body)
-    address = data['RepositoryURL']
-    analyze_commit(address)
-    return HttpResponse("true")
+def spider(url:str):
+    analyze_commit(url)
 
 def analyze_commit(url:str):
     commitbag = getcommit(url)
