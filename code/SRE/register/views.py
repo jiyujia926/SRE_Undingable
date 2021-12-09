@@ -24,3 +24,10 @@ def login(request):
             return HttpResponse("密码错误")
     else:
         return HttpResponse("未注册")
+def getusername(request):
+    data = json.loads(request.body)
+    loginuser = list(models.User.objects.values('Name')).filter(Email = data['Email'])
+    if loginuser:
+        return HttpResponse(loginuser[0]['Name'])
+    else:
+        return HttpResponse("没这个人")

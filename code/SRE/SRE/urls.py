@@ -20,5 +20,6 @@ from register import views as user_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/',user_view.register),
-    path('login/',user_view.login)
+    path('login/',user_view.login),
+    path('getusername/',user_view.getusername)
 ]
