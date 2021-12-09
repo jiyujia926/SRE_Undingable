@@ -43,7 +43,7 @@ export default function Dashboard() {
     };
     let res = await axios.post(`${server}/spider/`, data);
     // return res;
-    console.log(res)
+    console.log(res);
   }
   const handleSearch = () => {
     let reg = /^(?=^.{3,255}$)(http(s)?:\/\/)?(www\.)?(github.com\/)*([[a-zA-Z0-9]\/+=%&_\.~?-]*)*/; //正则表达式判断是否为github地址
@@ -54,7 +54,8 @@ export default function Dashboard() {
       // 不能找到就现场爬取，但要先判断是不是仓库(?)，能就返回true，同时更新数据库，没法爬返回false）
       //alert("good");
       //res = { data: true };
-      spider()
+      let res;
+      spider();
       if (res.data) {
         setAddress(input);
         alert(address);
