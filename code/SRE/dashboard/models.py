@@ -3,7 +3,7 @@ from register.models import User
 
 class Project(models.Model):
     PID = models.UUIDField(max_length=15, primary_key=True, blank=False)
-    Name = models.CharField(max_length=10, blank=False)
+    Name = models.CharField(max_length=256, blank=False)
     RepositoryURL = models.URLField()
     #参与者？
 

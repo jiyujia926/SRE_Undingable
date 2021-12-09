@@ -26,7 +26,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 const server = "http://122.51.228.166:8000";
-//const server = "http://127.0.0.1:8000";
+// const server = "http://127.0.0.1:8000";
 
 const useStyles = makeStyles(styles);
 
@@ -37,15 +37,25 @@ export default function Dashboard() {
   const handleInputChange = (event) => {
     setInput(event.target.value);
   };
-  async function spider() {
-    console.log(1);
+  async function checkurl() {
+    // console.log(1);
     let data = {
       RepositoryURL: input,
     };
-    console.log(data);
-    let res = await axios.post(`${server}/spider/`, data);
+    // console.log(data);
+    let res = await axios.post(`${server}/checkurl/`, data);
     // return res;
-    console.log(res);
+    // console.log(res);
+    //这里的返回有三种情况，在数据库的仓库，不在数据库的仓库，不是仓库/未开源
+    if (res.data === true) {
+      setAddress(input);
+      // alert(address);
+      alert("数据库里有");
+    } else if (res.data === "仓库不存在或未开源") {
+      alert("请输入正确的github仓库地址");
+    } else {
+      alert("添加进数据库");
+    }
   }
   const handleSearch = () => {
     let reg = /^(?=^.{3,255}$)(http(s)?:\/\/)?(www\.)?(github.com\/)*([[a-zA-Z0-9]\/+=%&_\.~?-]*)*/; //正则表达式判断是否为github地址
@@ -56,13 +66,8 @@ export default function Dashboard() {
       // 不能找到就现场爬取，但要先判断是不是仓库(?)，能就返回true，同时更新数据库，没法爬返回false）
       //alert("good");
       //res = { data: true };
-      let res = spider();
-      if (res.data) {
-        setAddress(input);
-        alert(address);
-      } else {
-        alert("请输入正确的github仓库地址");
-      }
+      checkurl();
+      console.log(address); //暂时无用应付编译器
     } else {
       alert("请输入github地址");
     }
