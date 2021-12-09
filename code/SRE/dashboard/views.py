@@ -22,7 +22,7 @@ def checkurl(request):
     if list1:
         # 这个链接仓库里有
         # print(list1[0]['RepositoryURL']==address)
-        spider(address)
+        # spider(address)
         return HttpResponse("true")
     else:
         # 这个链接仓库里没有
