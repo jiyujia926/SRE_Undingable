@@ -22,6 +22,12 @@ import Button from "../../components/CustomButtons/Button";
 import Search from "@material-ui/icons/Search";
 import { Input } from "@material-ui/core";
 
+import axios from "axios";
+axios.defaults.withCredentials = true;
+axios.defaults.headers.post["Content-Type"] = "application/json";
+const server = "http://122.51.228.166:8000";
+//const server = "http://127.0.0.1:8000";
+
 const useStyles = makeStyles(styles);
 
 export default function Dashboard() {
@@ -31,10 +37,17 @@ export default function Dashboard() {
   const handleInputChange = (event) => {
     setInput(event.target.value);
   };
+  async function spider(){
+    let data = {
+      RepositoryURL:input
+    };
+    let res = await axios.post(`${server}/spider/`,data);
+    return res;
+  }
   const handleSearch = () => {
     let reg = /^(?=^.{3,255}$)(http(s)?:\/\/)?(www\.)?(github.com\/)*([[a-zA-Z0-9]\/+=%&_\.~?-]*)*/; //正则表达式判断是否为github地址
     if (reg.test(input)) {
-      let res;
+      let res = spider();
       // 此处调用后端函数, 参数就是{Address: input}
       // （根据之前的设想，先判断仓库能不能在数据库找到，可以就返回true；
       // 不能找到就现场爬取，但要先判断是不是仓库(?)，能就返回true，同时更新数据库，没法爬返回false）

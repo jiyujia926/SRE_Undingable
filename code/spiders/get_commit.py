@@ -9,7 +9,7 @@ def getcommit(rawurl:str):
     commitlist = []
     checkstr = ""
     newurl = ""
-
+    commitbag = []
     if rawurl[-1] == '/':
         url = rawurl + "commits/"
     else:
@@ -40,8 +40,8 @@ def getcommit(rawurl:str):
         else:
             # print(newurl)
             if newurl:
-                commitlist.append(newurl)
-                commit_data(newurl)
+                # commitlist.append(newurl)
+                commitbag.append(commit_data(newurl))
     
     while (has_next_page):
         strhtml = requests.get(next_page_url)
@@ -65,11 +65,13 @@ def getcommit(rawurl:str):
                 continue
             else:
                 # print(newurl)
-                commitlist.append(newurl)
-                commit_data(newurl)
+                # commitlist.append(newurl)
+                commitbag.append(commit_data(newurl))
     # print(commitlist[0])
     # print(commitlist)
-    print(len(commitlist))
+    # print(len(commitlist))
+    return commitbag
+    # return commitlist
     # 这里最终会打印commit的总数，链接在commitlist这个列表里。
 
 if __name__ == "__main__":
