@@ -20,8 +20,11 @@ class Contributor(models.Model):
 class CommitRecord(models.Model):
     Project = models.ManyToManyField(Project)
     Contributor = models.ManyToManyField(Contributor)
-    CommitCount = models.IntegerField(null=True, blank=True)
     Time = models.DateField(primary_key=True)
+    CommitCount = models.IntegerField(null=True, blank=True)
+    ChangedFileCount = models.IntegerField(null=True, blank=True)
+    AdditionCount = models.IntegerField(null=True, blank=True)
+    DeletionCount = models.IntegerField(null=True, blank=True)
 
 class IssueRecord(models.Model):
     Contributor = models.ManyToManyField(Contributor)
@@ -40,6 +43,7 @@ class IssueRecord(models.Model):
     OpenTime = models.DateField()
     CloseTime = models.DateField()
 
+#以天为时间单位，一个项目的总贡献量
 class AllCommit(models.Model):
     Project = models.ManyToManyField(Project)
     Time = models.DateField()
