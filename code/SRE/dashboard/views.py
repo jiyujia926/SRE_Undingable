@@ -24,7 +24,7 @@ def checkurl(request):
     if list1:
         # 这个链接仓库里有
         # print(list1[0]['RepositoryURL']==address)
-        # spider(address)
+        indexes(address)
         return HttpResponse("true")
     else:
         # 这个链接仓库里没有
@@ -44,12 +44,5 @@ def analyze_commit(url:str):
     print(commitbag)
 
 #celery tasks
-def indexes(request):
-    tasks.spider.delay("https://github.com/formulahendry/944.Life/")
-    tasks.spider.delay("https://github.com/KhronosGroup/OpenXR-SDK-Source/")
-    return HttpResponse("success")
-
-# def indexess(request,*args,**kwargs):
-#     res=tasks.add.delay(1,3)
-#     #任务逻辑
-#     return JsonResponse({'status':'successful','task_id':res.task_id})
+def indexes(url:str):
+    tasks.spider.delay(url)
