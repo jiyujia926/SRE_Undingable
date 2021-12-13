@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.http import JsonResponse
 # Create your views here.
 import json
 import uuid
@@ -8,6 +9,7 @@ from .tryvisit import tryvisit
 from .get_commit import getcommit
 from .get_issue import get_open_issue,get_closed_issue
 from .get_pullrequest import get_open_pullrequest,get_closed_pullrequest
+from dashboard import tasks
 
 # def Read_url(request):
 def checkurl(request):
@@ -22,7 +24,7 @@ def checkurl(request):
     if list1:
         # 这个链接仓库里有
         # print(list1[0]['RepositoryURL']==address)
-        # spider(address)
+        indexes(address)
         return HttpResponse("true")
     else:
         # 这个链接仓库里没有
@@ -40,3 +42,7 @@ def spider(url:str):
 def analyze_commit(url:str):
     commitbag = getcommit(url)
     print(commitbag)
+
+#celery tasks
+def indexes(url:str):
+    tasks.spider.delay(url)
