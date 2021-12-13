@@ -1,4 +1,5 @@
 import React from "react";
+import cookie from "react-cookies";
 import classNames from "classnames";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -11,7 +12,7 @@ import Poppers from "@material-ui/core/Popper";
 // @material-ui/icons
 import Person from "@material-ui/icons/Person";
 // core components
-import Button from "components/CustomButtons/Button.js";
+import Button from "@material-ui/core/Button";
 
 import styles from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -27,8 +28,8 @@ import Typography from "@material-ui/core/Typography";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
-const server = "http://122.51.228.166:8000";
-//const server = "http://127.0.0.1:8000";
+//const server = "http://122.51.228.166:8000";
+const server = "http://127.0.0.1:8000";
 
 const useStyles = makeStyles(styles);
 
@@ -41,6 +42,7 @@ export default function AdminNavbarLinks() {
   });
   const [openProfile, setOpenProfile] = React.useState(null);
   const [openDialog, setOpenDialog] = React.useState(false);
+  const [remember, setRemember] = React.useState(cookie.load("remember"));
   const initialFormState = {
     email: "",
     password: "",
@@ -69,6 +71,12 @@ export default function AdminNavbarLinks() {
     setAccount({ email: "", username: "" });
   };
   const handleClickDialog = () => {
+    setFormData({
+      ...formData,
+      email: cookie.load("account") ? cookie.load("account") : "",
+      password:
+        remember && cookie.load("password") ? cookie.load("password") : "",
+    });
     setOpenDialog(true);
   };
   const handleCloseDialog = () => {
@@ -109,11 +117,19 @@ export default function AdminNavbarLinks() {
       Password: formData.password,
       Email: formData.email,
     };
+    //alert(data.Password);
     let res = await axios.post(`${server}/login/`, data);
     if (res.data === "密码正确") {
       setAccount({ email: formData.email, username: formData.username });
       handleCloseDialog();
+      cookie.save("account", formData.email);
+      if (remember) {
+        cookie.save("password", formData.password);
+      } else {
+        cookie.remove("password");
+      }
     } else {
+      alert("wrong");
       if (res.data === "密码错误") {
         pc = "Password is incorrect.";
       } else {
@@ -185,9 +201,23 @@ export default function AdminNavbarLinks() {
   const handleChangeOp = () => {
     setFormData(initialFormState);
     if (op === "register") {
+      setFormData({
+        ...formData,
+        email: cookie.load("account") ? cookie.load("account") : "",
+        password:
+          remember && cookie.load("password") ? cookie.load("password") : "",
+      });
       setOp("login");
     } else {
       setOp("register");
+    }
+  };
+  const handleRemember = (e) => {
+    let tmp = e.target.checked;
+    setRemember(tmp);
+    cookie.save("remember", tmp);
+    if (!tmp && cookie.load("password")) {
+      cookie.remove("password");
     }
   };
   return (
@@ -298,19 +328,26 @@ export default function AdminNavbarLinks() {
                 onChange={handleInputChange}
               />
               <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
+                control={
+                  <Checkbox
+                    name="remember"
+                    color="primary"
+                    checked={remember}
+                    onChange={handleRemember}
+                  />
+                }
                 label="Remember me"
               />
               <Button
                 fullWidth
                 variant="contained"
-                color="primary"
+                color="secondary"
                 className={classes.submit}
                 onClick={handleSubmitLogin}
               >
                 Sign in
               </Button>
-              <Grid container>
+              <Grid container className={classes.form_option}>
                 <Grid item xs>
                   <Link href="#" variant="body2">
                     Forgot password?
@@ -398,13 +435,13 @@ export default function AdminNavbarLinks() {
               <Button
                 fullWidth
                 variant="contained"
-                color="primary"
+                color="secondary"
                 className={classes.submit}
                 onClick={handleSubmitRegister}
               >
                 Sign Up
               </Button>
-              <Grid container className={classes.form_option_register}>
+              <Grid container className={classes.form_option}>
                 <Grid item>
                   <Link onClick={handleChangeOp} variant="body2">
                     {"Already have an account? Sign In"}
