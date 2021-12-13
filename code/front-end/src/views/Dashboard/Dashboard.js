@@ -15,13 +15,12 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 import { dailySalesChart } from "variables/charts.js";
-
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 //import CustomInput from "../../components/CustomInput/CustomInput";
 import Button from "../../components/CustomButtons/Button";
 import Search from "@material-ui/icons/Search";
 import { Input } from "@material-ui/core";
-
+import PieChart from "../../components/Charts/PieChart.js";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
@@ -29,7 +28,7 @@ const server = "http://122.51.228.166:8000";
 // const server = "http://127.0.0.1:8000";
 
 const useStyles = makeStyles(styles);
-
+//let newChartsData = [];
 export default function Dashboard() {
   const classes = useStyles();
   const [input, setInput] = React.useState();
@@ -92,6 +91,7 @@ export default function Dashboard() {
           <Search />
         </Button>
       </div>
+
       <GridContainer>
         <GridItem xs={12} sm={12} md={4}>
           <Card chart>
@@ -121,6 +121,17 @@ export default function Dashboard() {
           </Card>
         </GridItem>
       </GridContainer>
+      <div style={{ width: "350px", height: "300px" }}>
+        <PieChart
+          data={[
+            { value: 300, name: "Fine" },
+            { value: 1300, name: "Goodgood" },
+            { value: 800, name: "Kathleen" },
+            { value: 300, name: "Rainy" },
+            { value: 500, name: "Kathbaby" },
+          ]}
+        />
+      </div>
     </div>
   );
 }
