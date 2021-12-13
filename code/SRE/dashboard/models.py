@@ -31,8 +31,10 @@ class Diagram(models.Model):
     horizontal_axis = models.CharField(max_length=10)
     vertical_axis = models.CharField(max_length=10)
     #横纵轴范围，以字符串行驶存储，后端需要解析
-    horizontal_axis_range = models.CharField(max_length=30)
-    vertical_axis_range = models.CharField(max_length=30)
+    horizontal_range_start = models.CharField(max_length=30)
+    horizontal_range_end = models.CharField(max_length=30)
+    vertical_range_start = models.CharField(max_length=30)
+    vertical_range_end = models.CharField(max_length=30)
 
 class Contributor(models.Model):
     Project = models.ManyToManyField(Project.PID) #先实验一下看下该主键最终是什么样子的
@@ -44,7 +46,6 @@ class CommitRecord(models.Model):
     Project = models.ManyToManyField(Project.PID)
     Contributor = models.ManyToManyField(Contributor)
     Time = models.DateField(primary_key=True)
-    CommitCount = models.IntegerField(null=True, blank=True)
     ChangedFileCount = models.IntegerField(null=True, blank=True)
     AdditionCount = models.IntegerField(null=True, blank=True)
     DeletionCount = models.IntegerField(null=True, blank=True)
