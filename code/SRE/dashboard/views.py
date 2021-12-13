@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.http import JsonResponse
 # Create your views here.
 import json
 import uuid
@@ -8,6 +9,7 @@ from .tryvisit import tryvisit
 from .get_commit import getcommit
 from .get_issue import get_open_issue,get_closed_issue
 from .get_pullrequest import get_open_pullrequest,get_closed_pullrequest
+from dashboard import tasks
 
 # def Read_url(request):
 def checkurl(request):
@@ -40,3 +42,14 @@ def spider(url:str):
 def analyze_commit(url:str):
     commitbag = getcommit(url)
     print(commitbag)
+
+#celery tasks
+def indexes(request):
+    tasks.spider.delay("https://github.com/formulahendry/944.Life/")
+    tasks.spider.delay("https://github.com/KhronosGroup/OpenXR-SDK-Source/")
+    return HttpResponse("success")
+
+# def indexess(request,*args,**kwargs):
+#     res=tasks.add.delay(1,3)
+#     #任务逻辑
+#     return JsonResponse({'status':'successful','task_id':res.task_id})

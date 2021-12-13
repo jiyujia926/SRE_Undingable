@@ -9,12 +9,12 @@ class Project(models.Model):
 
 #从收藏夹里得到用户收藏的PID，然后去Diagram里找
 class Favorite(models.Model):
-    User = models.ManyToManyField(User.UID)
-    PID = models.ManyToManyField(Project.PID)
+    User = models.ManyToManyField(User)
+    PID = models.ManyToManyField(Project)
 
 class Diagram(models.Model):
     User = models.ManyToManyField(User)
-    PID = models.ManyToManyField(Project.PID)
+    PID = models.ManyToManyField(Project)
 
     #图表类型
     LINE = 'LINE'
@@ -37,13 +37,13 @@ class Diagram(models.Model):
     vertical_range_end = models.CharField(max_length=30)
 
 class Contributor(models.Model):
-    Project = models.ManyToManyField(Project.PID) #先实验一下看下该主键最终是什么样子的
+    Project = models.ManyToManyField(Project) #先实验一下看下该主键最终是什么样子的
     Name = models.CharField(max_length=20)
     Github = models.CharField(max_length=30, primary_key=True)
     #贡献量是计算还是存储？
 
 class CommitRecord(models.Model):
-    Project = models.ManyToManyField(Project.PID)
+    Project = models.ManyToManyField(Project)
     Contributor = models.ManyToManyField(Contributor)
     Time = models.DateField(primary_key=True)
     ChangedFileCount = models.IntegerField(null=True, blank=True)
@@ -52,7 +52,7 @@ class CommitRecord(models.Model):
 
 class IssueRecord(models.Model):
     Contributor = models.ManyToManyField(Contributor)
-    Project = models.ManyToManyField(Project.PID)
+    Project = models.ManyToManyField(Project)
 
     CLOSED = 'CL'
     OPENED = 'OP'
@@ -69,7 +69,7 @@ class IssueRecord(models.Model):
 
 #以天为时间单位，一个项目的总贡献量
 class AllCommit(models.Model):
-    Project = models.ManyToManyField(Project.PID)
+    Project = models.ManyToManyField(Project)
     Time = models.DateField()
     Count = models.IntegerField(null=True, blank=True)
 
@@ -81,7 +81,7 @@ class AllIssue(models.Model):
         (OPENED, 'opened')
     }
     Issue_type = models.CharField(max_length=10, choices=Issue_type_choices)
-    Project = models.ManyToManyField(Project.PID)
+    Project = models.ManyToManyField(Project)
     Time = models.DateField()
     Count = models.IntegerField(null=True, blank=True)  #Submitter总数从commit和merge两个表里拿来计算
     closedCount = models.IntegerField(null=True, blank=True)
