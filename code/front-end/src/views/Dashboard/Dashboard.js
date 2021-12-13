@@ -20,7 +20,8 @@ import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js"
 import Button from "../../components/CustomButtons/Button";
 import Search from "@material-ui/icons/Search";
 import { Input } from "@material-ui/core";
-import PieChart from "../../components/Charts/PieChart.js";
+import PieChart from "../../components/Charts/PieChart";
+import BarChart from "../../components/Charts/BarChart";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
@@ -130,6 +131,33 @@ export default function Dashboard() {
             { value: 300, name: "Rainy" },
             { value: 500, name: "Kathbaby" },
           ]}
+        />
+      </div>
+      <div style={{ width: "350px", height: "300px" }}>
+        <BarChart
+          data={{
+            category: [
+              "2021-09-08",
+              "2021-10-09",
+              "2021-11-10",
+              "2021-12-11",
+              "2021-12-12",
+              "2021-12-31",
+              "2022-01-01",
+              "2021-02-02",
+              "2022-03-03",
+              "2022-04-04",
+              "2022-05-05",
+              "2022-06-06",
+              "2022-07-07",
+              "2022-08-08",
+              "2022-09-09",
+              "2022-10-10",
+              "2022-11-11",
+              "2022-12-12",
+            ],
+            valueData: [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+          }}
         />
       </div>
     </div>
