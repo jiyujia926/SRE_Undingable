@@ -22,6 +22,7 @@ import Search from "@material-ui/icons/Search";
 import { Input } from "@material-ui/core";
 import PieChart from "../../components/Charts/PieChart";
 import BarChart from "../../components/Charts/BarChart";
+import StackedBarChart from "../../components/Charts/StackedBarChart";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
@@ -157,6 +158,18 @@ export default function Dashboard() {
               "2022-12-12",
             ],
             valueData: [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+          }}
+        />
+      </div>
+      <div style={{ width: "350px", height: "300px" }}>
+        <StackedBarChart
+          data={{
+            categoryData: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            valueData: [
+              { name: "commit", detailData: [30, 20, 17, 29, 30, 18, 35] },
+              { name: "issue", detailData: [20, 10, 7, 9, 3, 8, 5] },
+              { name: "pull request", detailData: [10, 20, 7, 9, 13, 18, 25] },
+            ],
           }}
         />
       </div>
