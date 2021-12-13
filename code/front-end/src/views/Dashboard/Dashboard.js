@@ -136,7 +136,7 @@ export default function Dashboard() {
       <div style={{ width: "350px", height: "300px" }}>
         <BarChart
           data={{
-            category: [
+            categoryData: [
               "2021-09-08",
               "2021-10-09",
               "2021-11-10",
