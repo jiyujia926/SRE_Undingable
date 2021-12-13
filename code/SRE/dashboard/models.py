@@ -25,7 +25,7 @@ class Diagram(models.Model):
         (HISTOGRAM, 'histogram'),
         (PIE, 'pie')
     }
-    Diagram_typr = models.CharField(max_length=10, choices=Diagram_type_choices)
+    Diagram_type = models.CharField(max_length=10, choices=Diagram_type_choices)
 
     #横纵轴信息
     horizontal_axis = models.CharField(max_length=10)
