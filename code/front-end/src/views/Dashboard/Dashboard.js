@@ -15,15 +15,20 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 import { dailySalesChart } from "variables/charts.js";
-
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 //import CustomInput from "../../components/CustomInput/CustomInput";
 import Button from "../../components/CustomButtons/Button";
 import Search from "@material-ui/icons/Search";
 import { Input } from "@material-ui/core";
+import PieChart from "../../components/Charts/PieChart.js";
+import axios from "axios";
+axios.defaults.withCredentials = true;
+axios.defaults.headers.post["Content-Type"] = "application/json";
+// const server = "http://122.51.228.166:8000";
+const server = "http://127.0.0.1:8000";
 
 const useStyles = makeStyles(styles);
-
+//let newChartsData = [];
 export default function Dashboard() {
   const classes = useStyles();
   const [input, setInput] = React.useState();
@@ -31,21 +36,37 @@ export default function Dashboard() {
   const handleInputChange = (event) => {
     setInput(event.target.value);
   };
+  async function checkurl() {
+    // console.log(1);
+    let data = {
+      RepositoryURL: input,
+    };
+    // console.log(data);
+    let res = await axios.post(`${server}/checkurl/`, data);
+    // return res;
+    // console.log(res);
+    //这里的返回有三种情况，在数据库的仓库，不在数据库的仓库，不是仓库/未开源
+    if (res.data === true) {
+      setAddress(input);
+      // alert(address);
+      alert("数据库里有");
+    } else if (res.data === "仓库不存在或未开源") {
+      alert("请输入正确的github仓库地址");
+    } else {
+      alert("添加进数据库");
+    }
+  }
   const handleSearch = () => {
     let reg = /^(?=^.{3,255}$)(http(s)?:\/\/)?(www\.)?(github.com\/)*([[a-zA-Z0-9]\/+=%&_\.~?-]*)*/; //正则表达式判断是否为github地址
     if (reg.test(input)) {
-      let res;
+      // let res = spider();
       // 此处调用后端函数, 参数就是{Address: input}
       // （根据之前的设想，先判断仓库能不能在数据库找到，可以就返回true；
       // 不能找到就现场爬取，但要先判断是不是仓库(?)，能就返回true，同时更新数据库，没法爬返回false）
       //alert("good");
       //res = { data: true };
-      if (res.data) {
-        setAddress(input);
-        alert(address);
-      } else {
-        alert("请输入正确的github仓库地址");
-      }
+      checkurl();
+      console.log(address); //暂时无用应付编译器
     } else {
       alert("请输入github地址");
     }
@@ -70,6 +91,7 @@ export default function Dashboard() {
           <Search />
         </Button>
       </div>
+
       <GridContainer>
         <GridItem xs={12} sm={12} md={4}>
           <Card chart>
@@ -99,6 +121,17 @@ export default function Dashboard() {
           </Card>
         </GridItem>
       </GridContainer>
+      <div style={{ width: "350px", height: "300px" }}>
+        <PieChart
+          data={[
+            { value: 300, name: "Fine" },
+            { value: 1300, name: "Goodgood" },
+            { value: 800, name: "Kathleen" },
+            { value: 300, name: "Rainy" },
+            { value: 500, name: "Kathbaby" },
+          ]}
+        />
+      </div>
     </div>
   );
 }

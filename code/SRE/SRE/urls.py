@@ -16,10 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from register import views as user_view
-
+from dashboard import views as dash_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/',user_view.register),
     path('login/',user_view.login),
-    path('getusername/',user_view.getusername)
+    path('getusername/',user_view.getusername),
+    # path('spider/',dash_view.spider),
+    path('checkurl/',dash_view.checkurl),
+    path('index/',dash_view.indexes)
 ]
