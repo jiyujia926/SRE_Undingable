@@ -24,7 +24,7 @@ def checkurl(request):
     if list1:
         # 这个链接仓库里有
         # print(list1[0]['RepositoryURL']==address)
-        indexes(address)
+        
         return HttpResponse("true")
     else:
         # 这个链接仓库里没有
@@ -35,14 +35,17 @@ def checkurl(request):
             name = address[18:-1]
             project = models.Project(PID=uuid.uuid4(),Name=name,RepositoryURL=address)
             project.save()
+            list1 = list(models.Project.objects.values('PID').filter(Name=name))
+            PID = list1[0]['PID']
+            importDB(address, PID)
             return HttpResponse("添加进数据库")
-def spider(url:str):
-    analyze_commit(url)
+# def spider(url:str):
+#     analyze_commit(url)
 
-def analyze_commit(url:str):
-    commitbag = getcommit(url)
-    print(commitbag)
+# def analyze_commit(url:str):
+#     commitbag = getcommit(url)
+#     print(commitbag)
 
 #celery tasks
-def indexes(url:str):
-    tasks.spider.delay(url)
+def importDB(url:str, PID:str):
+    tasks.spider.delay(url, PID)

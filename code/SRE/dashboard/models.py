@@ -40,7 +40,7 @@ class DiagramValue(models.Model):
     #饼状图键值对的键
     Key = models.CharField(max_length=20)
     #y轴的值或者键值对的值
-    value = models.Decimal( max_digits=20, decimal_places=4)
+    value = models.DecimalField( max_digits=20, decimal_places=4)
 
 class Contributor(models.Model):
     Project = models.ManyToManyField(Project) #先实验一下看下该主键最终是什么样子的
