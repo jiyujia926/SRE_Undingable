@@ -51,7 +51,7 @@ class Contributor(models.Model):
 class CommitRecord(models.Model):
     Project = models.ManyToManyField(Project)
     Contributor = models.ManyToManyField(Contributor)
-    Time = models.DateTimeField(primary_key=True)
+    Time = models.DateTimeField()
     ChangedFileCount = models.IntegerField(null=True, blank=True)
     AdditionCount = models.IntegerField(null=True, blank=True)
     DeletionCount = models.IntegerField(null=True, blank=True)
