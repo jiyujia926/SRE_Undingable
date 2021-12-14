@@ -35,9 +35,7 @@ def checkurl(request):
             name = address[18:-1]
             project = models.Project(PID=uuid.uuid4(),Name=name,RepositoryURL=address)
             project.save()
-            list1 = list(models.Project.objects.values('PID').filter(Name=name))
-            PID = list1[0]['PID']
-            importDB(address, PID)
+            importDB(address)
             return HttpResponse("添加进数据库")
 # def spider(url:str):
 #     analyze_commit(url)
@@ -47,5 +45,5 @@ def checkurl(request):
 #     print(commitbag)
 
 #celery tasks
-def importDB(url:str, PID:str):
-    tasks.spider.delay(url, PID)
+def importDB(url:str):
+    tasks.spider.delay(url)
