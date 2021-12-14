@@ -15,6 +15,7 @@ const StackedBarChart = (props) => {
     item.stack = "git";
     item.emphasis = { focus: "series" };
     item.data = data.valueData[i].detailData;
+    item.large = true;
     series_data.push(item);
     console.log(item);
   }
@@ -22,6 +23,16 @@ const StackedBarChart = (props) => {
     let element = document.getElementById(id);
     let myChart = eCharts.init(element);
     const option = {
+      toolbox: {
+        feature: {
+          dataZoom: {
+            yAxisIndex: false,
+          },
+          saveAsImage: {
+            pixelRatio: 2,
+          },
+        },
+      },
       tooltip: {
         trigger: "axis",
         axisPointer: {
@@ -35,15 +46,33 @@ const StackedBarChart = (props) => {
         bottom: "3%",
         containLabel: true,
       },
+      dataZoom: [
+        {
+          type: "inside",
+        },
+        {
+          type: "slider",
+        },
+      ],
       xAxis: [
         {
           type: "category",
           data: data.categoryData,
+          silent: false,
+          splitLine: {
+            show: false,
+          },
+          splitArea: {
+            show: false,
+          },
         },
       ],
       yAxis: [
         {
           type: "value",
+          splitArea: {
+            show: false,
+          },
         },
       ],
       series: series_data,
