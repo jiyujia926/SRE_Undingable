@@ -15,26 +15,32 @@ class Favorite(models.Model):
 class Diagram(models.Model):
     User = models.ManyToManyField(User)
     PID = models.ManyToManyField(Project)
-
+    Name = models.CharField(max_length=15)
     #图表类型
-    LINE = 'LINE'
-    HISTOGRAM = 'HG'
-    PIE = 'PIE'
+    BarChart = 'BarC'
+    StackedBarChart = 'SBarC'
+    PieChart = 'PIEC'
     Diagram_type_choices = {
-        (LINE, 'line'),
-        (HISTOGRAM, 'histogram'),
-        (PIE, 'pie')
+        (BarChart, 'BarChart'),
+        (StackedBarChart, 'StackedBarChart'),
+        (PieChart, 'PieChart')
     }
     Diagram_type = models.CharField(max_length=10, choices=Diagram_type_choices)
 
-    #横纵轴信息
-    horizontal_axis = models.CharField(max_length=10)
-    vertical_axis = models.CharField(max_length=10)
-    #横纵轴范围，以字符串行驶存储，后端需要解析
-    horizontal_range_start = models.CharField(max_length=30)
-    horizontal_range_end = models.CharField(max_length=30)
-    vertical_range_start = models.CharField(max_length=30)
-    vertical_range_end = models.CharField(max_length=30)
+    #横纵轴名字
+    horizontal_axis_name = models.CharField(max_length=20)
+    vertical_axis_name = models.CharField(max_length=20)
+
+    
+#每个图对应一个字典
+class DiagramValue(models.Model):
+    Diagram = models.ManyToManyField(Diagram)
+    #柱状图横轴的时间
+    Date = models.DateField()   
+    #饼状图键值对的键
+    Key = models.CharField(max_length=20)
+    #y轴的值或者键值对的值
+    value = models.Decimal( max_digits=20, decimal_places=4)
 
 class Contributor(models.Model):
     Project = models.ManyToManyField(Project) #先实验一下看下该主键最终是什么样子的
