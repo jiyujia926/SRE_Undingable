@@ -24,4 +24,5 @@ urlpatterns = [
     path('getusername/',user_view.getusername),
     # path('spider/',dash_view.spider),
     path('checkurl/',dash_view.checkurl),
+    path('modifypassword',user_view.modifyPassword),
 ]

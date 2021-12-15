@@ -243,8 +243,8 @@ export default function AdminNavbarLinks() {
       Newpassword: formData.newpassword,
     };
     console.log(data);
-    let res = { data: "修改成功" };
-    //let res = await axios.post(`${server}/register/`, data);
+    // let res = { data: "修改成功" };
+    let res = await axios.post(`${server}/modifypassword/`, data);
     if (res.data === "修改成功") {
       handleToLogin();
       setFormData({ ...formData, email: "", password: "" });
