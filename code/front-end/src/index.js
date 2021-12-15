@@ -23,13 +23,16 @@ import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Admin from "layouts/Admin.js";
 
 import "assets/css/material-dashboard-react.css?v=1.10.0";
-
+import { MuiThemeProvider } from "@material-ui/core";
+import { theme } from "./theme";
 ReactDOM.render(
-  <BrowserRouter>
-    <Switch>
-      <Route path="/admin" component={Admin} /> {/*Admin位于文件夹layouts中*/}
-      <Redirect from="/" to="/admin/dashboard" />
-    </Switch>
-  </BrowserRouter>,
+  <MuiThemeProvider theme={theme}>
+    <BrowserRouter>
+      <Switch>
+        <Route path="/admin" component={Admin} /> {/*Admin位于文件夹layouts中*/}
+        <Redirect from="/" to="/admin/dashboard" />
+      </Switch>
+    </BrowserRouter>
+  </MuiThemeProvider>,
   document.getElementById("root")
 );

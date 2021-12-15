@@ -15,13 +15,14 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 import { dailySalesChart } from "variables/charts.js";
-
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 //import CustomInput from "../../components/CustomInput/CustomInput";
 import Button from "../../components/CustomButtons/Button";
 import Search from "@material-ui/icons/Search";
 import { Input } from "@material-ui/core";
-
+import PieChart from "../../components/Charts/PieChart";
+import BarChart from "../../components/Charts/BarChart";
+import StackedBarChart from "../../components/Charts/StackedBarChart";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
@@ -29,7 +30,7 @@ const server = "http://122.51.228.166:8000";
 // const server = "http://127.0.0.1:8000";
 
 const useStyles = makeStyles(styles);
-
+//let newChartsData = [];
 export default function Dashboard() {
   const classes = useStyles();
   const [input, setInput] = React.useState();
@@ -92,6 +93,7 @@ export default function Dashboard() {
           <Search />
         </Button>
       </div>
+
       <GridContainer>
         <GridItem xs={12} sm={12} md={4}>
           <Card chart>
@@ -121,6 +123,56 @@ export default function Dashboard() {
           </Card>
         </GridItem>
       </GridContainer>
+      <div style={{ width: "350px", height: "300px" }}>
+        <PieChart
+          data={[
+            { value: 300, name: "Fine" },
+            { value: 1300, name: "Goodgood" },
+            { value: 800, name: "Kathleen" },
+            { value: 300, name: "Rainy" },
+            { value: 500, name: "Kathbaby" },
+          ]}
+        />
+      </div>
+      <div style={{ width: "350px", height: "300px" }}>
+        <BarChart
+          data={{
+            categoryData: [
+              "2021-09-08",
+              "2021-10-09",
+              "2021-11-10",
+              "2021-12-11",
+              "2021-12-12",
+              "2021-12-31",
+              "2022-01-01",
+              "2021-02-02",
+              "2022-03-03",
+              "2022-04-04",
+              "2022-05-05",
+              "2022-06-06",
+              "2022-07-07",
+              "2022-08-08",
+              "2022-09-09",
+              "2022-10-10",
+              "2022-11-11",
+              "2022-12-12",
+            ],
+            valueData: [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+          }}
+        />
+      </div>
+      <div style={{ width: "350px", height: "300px" }}>
+        <StackedBarChart
+          data={{
+            categoryData: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            valueData: [
+              { name: "commit", detailData: [30, 20, 17, 29, 30, 18, 35] },
+              { name: "issue", detailData: [20, 10, 7, 9, 3, 8, 5] },
+              { name: "pull request", detailData: [10, 20, 7, 9, 13, 18, 25] },
+            ],
+          }}
+        />
+      </div>
     </div>
   );
 }

@@ -103,8 +103,9 @@ const headerLinksStyle = (theme) => ({
   form_content: {
     padding: "8px 24px 20px",
   },
-  form_option_register: {
-    justifyContent: "center",
+  form_option: {
+    marginTop: "5px",
+    justifyContent: "right",
   },
 });
 
