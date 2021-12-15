@@ -3,7 +3,6 @@ import React from "react";
 //import classNames from "classnames";
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
-import { Card, CardHeader } from "@material-ui/core";
 //import Header from "components/Navbars/Navbar";
 import PieChart from "../../components/Charts/PieChart";
 import BarChart from "../../components/Charts/BarChart";
