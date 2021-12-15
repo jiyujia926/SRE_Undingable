@@ -79,11 +79,11 @@ export default function AdminNavbarLinks() {
     cookie.remove("username");
   };
   const handleClickDialog = () => {
+    setOp("login");
     setOpenDialog(true);
   };
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    setOp("login");
     setFormData(initialFormState);
   };
   const handleInputChange = (event) => {
@@ -247,7 +247,12 @@ export default function AdminNavbarLinks() {
     //let res = await axios.post(`${server}/register/`, data);
     if (res.data === "修改成功") {
       handleToLogin();
-      setFormData({ ...formData, email: "", password: "" });
+      setFormData({ ...formData, password: "" });
+      setAccount({ ...account, email: "", username: "" });
+      cookie.remove("username");
+      if (cookie.load("password")) {
+        cookie.remove("password");
+      }
       alert("Password modified successfully! Please sign in.");
     } else {
       if (res.data === "密码错误") {
@@ -377,11 +382,11 @@ export default function AdminNavbarLinks() {
     setFormData(initialFormState);
     setOp("forgetpassword");
   };
-  /*const handleToChangePassword = () => {
+  const handleToChangePassword = () => {
     setFormData(initialFormState);
     setOp("changepassword");
     setOpenDialog(true);
-  };*/
+  };
   const handleRemember = (e) => {
     let tmp = e.target.checked;
     setRemember(tmp);
@@ -436,6 +441,12 @@ export default function AdminNavbarLinks() {
                     </MenuList>
                   ) : (
                     <MenuList role="menu">
+                      <MenuItem
+                        onClick={handleToChangePassword}
+                        className={classes.dropdownItem}
+                      >
+                        修改密码
+                      </MenuItem>
                       <MenuItem
                         onClick={handleLogout}
                         className={classes.dropdownItem}
@@ -497,7 +508,7 @@ export default function AdminNavbarLinks() {
                 control={
                   <Checkbox
                     name="remember"
-                    color="primary"
+                    color="default"
                     checked={remember}
                     onChange={handleRemember}
                   />
@@ -567,7 +578,6 @@ export default function AdminNavbarLinks() {
                 label="Username"
                 name="username"
                 autoComplete="username"
-                autoFocus
                 value={formData.username}
                 helperText={formData.username_check}
                 onChange={handleInputChange}
@@ -648,7 +658,6 @@ export default function AdminNavbarLinks() {
                 type="password"
                 name="oldpassword"
                 autoComplete="oldpassword"
-                autoFocus
                 value={formData.oldpassword}
                 helperText={formData.password_check}
                 onChange={handleInputChange}
@@ -671,7 +680,7 @@ export default function AdminNavbarLinks() {
               <Button
                 fullWidth
                 variant="contained"
-                color="primary"
+                color="secondary"
                 className={classes.form_button}
                 onClick={handleSubmitChangePassword}
               >
@@ -709,7 +718,7 @@ export default function AdminNavbarLinks() {
                 <Button
                   fullWidth
                   variant="contained"
-                  color="primary"
+                  color="secondary"
                   className={classes.form_email_button}
                   onClick={handleSubmitSendEmail}
                 >
@@ -748,7 +757,7 @@ export default function AdminNavbarLinks() {
               <Button
                 fullWidth
                 variant="contained"
-                color="primary"
+                color="secondary"
                 className={classes.form_button}
                 onClick={handleSubmitSetPassword}
               >
