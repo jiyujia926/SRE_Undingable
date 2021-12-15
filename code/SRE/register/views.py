@@ -31,3 +31,15 @@ def getusername(request):
         return HttpResponse(loginuser[0]['Name'])
     else:
         return HttpResponse("没这个人")
+
+def modifyPassword(request):
+    data = json.loads(request.body)
+    user = list(models.User.objects.values('Password').filter(Email=data['Email']))
+    if user:
+        if user[0]['Password'] == data['Password']:
+            models.User.objects.filter(Email=data['Email']).update(Password=data['Newpassword'])
+            return HttpResponse("修改成功")
+        else:
+            return HttpResponse("密码错误")
+    else:
+        return HttpResponse("该邮箱未注册")
