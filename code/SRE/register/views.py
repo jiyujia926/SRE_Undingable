@@ -130,7 +130,7 @@ def AddtoFavor(request):
                 return HttpResponse("项目不存在")
                 
             valueData_name = data['valueData_name']
-            user_diagram = dashboard_models.Diagram.objects.create(Name=chart_name,Diagram_type=chart_type,horizontal_axis_name=categoryData_name,vertical_axis_name=valueData_name)
+            user_diagram = dashboard_models.Diagram.objects.create(Name=chart_name,Type=chart_type,horizontal_axis_name=categoryData_name,vertical_axis_name=valueData_name)
             user_diagram.User.add(user)
             user_diagram.PID.add(project)
 
@@ -145,7 +145,7 @@ def AddtoFavor(request):
             if project == []:
                 return HttpResponse("项目不存在")
             valueData_name = data['valueData_name']
-            user_diagram = dashboard_models.Diagram.objects.create(Name=chart_name,Diagram_type=chart_type)
+            user_diagram = dashboard_models.Diagram.objects.create(Name=chart_name,Type=chart_type)
             user_diagram.User.add(user)
             user_diagram.PID.add(project)
 
@@ -156,7 +156,7 @@ def AddtoFavor(request):
 
         
         elif chart_type == dashboard_models.Diagram.StackedBarChart or chart_type == dashboard_models.Diagram.LineChart:
-            user_diagram = dashboard_models.Diagram.objects.create(Name=chart_name,Diagram_type=chart_type,horizontal_axis_name=categoryData_name)
+            user_diagram = dashboard_models.Diagram.objects.create(Name=chart_name,Type=chart_type,horizontal_axis_name=categoryData_name)
             user_diagram.User.add(user)
             
             for item in valueData:
@@ -183,6 +183,11 @@ def returnFavor(request):
     user = models.User.objects.filter(Email=data['Email']).first()
 
     if user:
-        Email = data['Email']
+        user_diagram_list = list(dashboard_models.objects.filter(User=user))
+        for chart in user_diagram_list:
+            chart_name = chart.Name
+            chart_type = chart.Type
+
+            # if chart_type == 
     else:
         return HttpResponse("邮箱未注册")
