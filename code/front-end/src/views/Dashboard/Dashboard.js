@@ -29,8 +29,8 @@ import Cardshow from "components/Card/Cardshow";
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
-const server = "http://122.51.228.166:8000";
-// const server = "http://127.0.0.1:8000";
+// const server = "http://122.51.228.166:8000";
+const server = "http://127.0.0.1:8000";
 
 const useStyles = makeStyles(styles);
 //let newChartsData = [];
@@ -98,9 +98,9 @@ export default function Dashboard() {
       </div>
 
       <Cardshow
-        datatype="pull request"
+        datatype="commit"
         charttype="barchart"
-        address="address_test"
+        address="https://github.com/jiyujia926/NFTauction"
       />
       {/* <GridContainer>
         <GridItem xs={12} sm={12} md={4}>

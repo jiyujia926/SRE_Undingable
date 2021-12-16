@@ -27,7 +27,10 @@ import LineChart from "components/Charts/LineChart";
 
 //传输
 import axios from "axios";
-const server = "http://122.51.228.166:8000";
+axios.defaults.withCredentials = true;
+axios.defaults.headers.post["Content-Type"] = "application/json";
+// const server = "http://122.51.228.166:8000";
+const server = "http://127.0.0.1:8000";
 
 //const useStyles = makeStyles(styles);
 
@@ -47,16 +50,16 @@ export default function Cardshow(props) {
 
   async function upload() {
     let data = {
-      datatype: datatype,
-      charttype: charttype,
-      address: address,
+      Datatype: datatype,
+      Charttype: charttype,
+      Address: address,
     };
     res = await axios.post(`${server}/get_data/`, data);
     console.log(res);
   }
   upload();
 
-  function changechart(event: any) {
+  function changechart(event) {
     setChart(event.target.value);
   }
 
@@ -95,7 +98,7 @@ export default function Cardshow(props) {
                   {/* 固定数据 */}
 
                   {/* 饼图还不能正常连后端数据进行处理，因为不知道多个仓库的数据包内容 */}
-                  {/* <PieChart
+                  <PieChart
                     data={[
                       { value: 300, name: "Fine" },
                       { value: 1300, name: "Goodgood" },
@@ -103,16 +106,16 @@ export default function Cardshow(props) {
                       { value: 300, name: "Rainy" },
                       { value: 500, name: "Kathbaby" },
                     ]}
-                  /> */}
+                  />
                   {/* 固定数据 */}
-                  <PieChart data={res} />
+                  {/* <PieChart data={res} /> */}
                 </div>
                 <div style={{ width: "35px" }}></div>
                 <Divider orientation="vertical" flexItem />
                 <div style={{ width: "35px" }}></div>
                 <div style={{ width: "350px", height: "300px" }}>
                   {/* 固定数据 */}
-                  {/* <PieChart
+                  <PieChart
                     data={[
                       { value: 300, name: "Fine" },
                       { value: 1300, name: "Goodgood" },
@@ -120,9 +123,9 @@ export default function Cardshow(props) {
                       { value: 300, name: "Rainy" },
                       { value: 500, name: "Kathbaby" },
                     ]}
-                  /> */}
+                  />
                   {/* 固定数据 */}
-                  <PieChart data={res} />
+                  {/* <PieChart data={res} /> */}
                 </div>
               </div>
             </CardBody>
@@ -253,7 +256,7 @@ export default function Cardshow(props) {
                 <div style={{ width: "40px" }} />
                 <div style={{ width: "350px", height: "300px" }}>
                   {/* 固定数据 */}
-                  {/* <StackedBarChart
+                  <StackedBarChart
                     data={{
                       categoryData: [
                         "Mon",
@@ -297,9 +300,9 @@ export default function Cardshow(props) {
                         },
                       ],
                     }}
-                  /> */}
+                  />
                   {/* 固定数据 */}
-                  <StackedBarChart data={res} />
+                  {/* <StackedBarChart data={res} /> */}
                 </div>
               </div>
             </CardBody>
@@ -342,7 +345,7 @@ export default function Cardshow(props) {
                 <div style={{ width: "40px" }} />
                 <div style={{ width: "350px", height: "300px" }}>
                   {/* 固定数据 */}
-                  {/* <LineChart
+                  <LineChart
                     data={{
                       categoryData: [
                         "Mon",
@@ -367,9 +370,9 @@ export default function Cardshow(props) {
                       ],
                       smoothOrNot: true,
                     }}
-                  /> */}
+                  />
                   {/* 固定数据 */}
-                  <LineChart data={res} />
+                  {/* <LineChart data={res} /> */}
                 </div>
               </div>
             </CardBody>

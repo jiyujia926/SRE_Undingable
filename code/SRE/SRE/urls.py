@@ -26,5 +26,6 @@ urlpatterns = [
     path('checkurl/',dash_view.checkurl),
     path('modifypassword',user_view.modifyPassword),
     path('find_pwd/', user_view.findPassword),
-    path('verify_code/', user_view.Verifycode)
+    path('verify_code/', user_view.Verifycode),
+    path('get_data/',dash_view.get_data)
 ]

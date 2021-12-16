@@ -12,7 +12,7 @@ class Chart(models.Model):
     User = models.ManyToManyField(User)
     project = models.ManyToManyField(Project, related_name='Project')
     HasProject = models.ManyToManyField(Project, related_name='HasProject')
-    Name = models.CharField(max_length=15)
+    Name = models.CharField(max_length=255)
     #图表类型
     BarChart = '1'
     StackedBarChart = '2'
@@ -58,7 +58,7 @@ class CommitRecord(models.Model):
     ChangedFileCount = models.IntegerField(null=True, blank=True)
     AdditionCount = models.IntegerField(null=True, blank=True)
     DeletionCount = models.IntegerField(null=True, blank=True)
-    Time = models.DateTimeField()
+    Time = models.DateField()
 
 # class IssueRecord(models.Model):
 #     Contributor = models.ManyToManyField(Contributor)
@@ -79,13 +79,13 @@ class CommitRecord(models.Model):
 class OpenIssueRecord(models.Model):
     Contributor = models.ManyToManyField(Contributor)
     Project = models.ManyToManyField(Project)
-    Opentime = models.DateTimeField()
+    Opentime = models.DateField()
 
 class ClosedIssueRecord(models.Model):
     Contributor = models.ManyToManyField(Contributor)
     Project = models.ManyToManyField(Project)
-    Opentime = models.DateTimeField()
-    CloseTime = models.DateTimeField()
+    Opentime = models.DateField()
+    CloseTime = models.DateField()
 
 #以天为时间单位，一个项目的总贡献量
 class AllCommit(models.Model):
