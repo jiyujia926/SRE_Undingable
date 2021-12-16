@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.deletion import PROTECT
 from register.models import User
 
 class Project(models.Model):
@@ -46,8 +47,8 @@ class DiagramValue(models.Model):
 
 class Contributor(models.Model):
     Project = models.ManyToManyField(Project) #先实验一下看下该主键最终是什么样子的
-    Name = models.CharField(max_length=20)
-    Github = models.CharField(max_length=30, primary_key=True)
+    Name = models.CharField(max_length=256)
+    Github = models.CharField(max_length=256, primary_key=True)
     #贡献量是计算还是存储？
 
 class CommitRecord(models.Model):
@@ -58,22 +59,32 @@ class CommitRecord(models.Model):
     DeletionCount = models.IntegerField(null=True, blank=True)
     Time = models.DateTimeField()
 
-class IssueRecord(models.Model):
+# class IssueRecord(models.Model):
+#     Contributor = models.ManyToManyField(Contributor)
+#     Project = models.ManyToManyField(Project)
+
+#     CLOSED = 'CL'
+#     OPENED = 'OP'
+#     Issue_type_choices = {
+#         (CLOSED, 'closed'),
+#         (OPENED, 'opened')
+#     }
+#     Issue_type = models.CharField(max_length=10, choices=Issue_type_choices)
+    
+#     IssueOpenCount = models.IntegerField(null=True, blank=True)
+#     IssueCloseCount = models.IntegerField(null=True, blank=True)
+#     OpenTime = models.DateField()
+#     CloseTime = models.DateField()
+class OpenIssueRecord(models.Model):
     Contributor = models.ManyToManyField(Contributor)
     Project = models.ManyToManyField(Project)
+    Opentime = models.DateTimeField()
 
-    CLOSED = 'CL'
-    OPENED = 'OP'
-    Issue_type_choices = {
-        (CLOSED, 'closed'),
-        (OPENED, 'opened')
-    }
-    Issue_type = models.CharField(max_length=10, choices=Issue_type_choices)
-    
-    IssueOpenCount = models.IntegerField(null=True, blank=True)
-    IssueCloseCount = models.IntegerField(null=True, blank=True)
-    OpenTime = models.DateField()
-    CloseTime = models.DateField()
+class ClosedIssueRecord(models.Model):
+    Contributor = models.ManyToManyField(Contributor)
+    Project = models.ManyToManyField(Project)
+    Opentime = models.DateTimeField()
+    CloseTime = models.DateTimeField()
 
 #以天为时间单位，一个项目的总贡献量
 class AllCommit(models.Model):

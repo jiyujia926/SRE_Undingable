@@ -57,7 +57,7 @@ def commit_data(url:str):
         bag['deletions']=deletions.replace(',',"")
     # print(newtime)
     # print(commitor)
-    print(bag)
+    # print(bag)
     return bag
     # commit_user = ""
     # for item in soup.find_all('a'):
