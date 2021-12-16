@@ -1,30 +1,31 @@
 import React from "react";
 // react plugin for creating charts
-import ChartistGraph from "react-chartist";
+// import ChartistGraph from "react-chartist";
 // @material-ui/core
 import { makeStyles } from "@material-ui/core/styles";
 // @material-ui/icons
-import ArrowUpward from "@material-ui/icons/ArrowUpward";
-import AccessTime from "@material-ui/icons/AccessTime";
+// import ArrowUpward from "@material-ui/icons/ArrowUpward";
+// import AccessTime from "@material-ui/icons/AccessTime";
 // core components
-import GridItem from "components/Grid/GridItem.js";
-import GridContainer from "components/Grid/GridContainer.js";
-import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardBody from "components/Card/CardBody.js";
-import CardFooter from "components/Card/CardFooter.js";
+// import GridItem from "components/Grid/GridItem.js";
+// import GridContainer from "components/Grid/GridContainer.js";
+// import Card from "components/Card/Card.js";
+// import CardHeader from "components/Card/CardHeader.js";
+// import CardBody from "components/Card/CardBody.js";
+// import CardFooter from "components/Card/CardFooter.js";
 
-import { dailySalesChart } from "variables/charts.js";
+// import { dailySalesChart } from "variables/charts.js";
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 //import CustomInput from "../../components/CustomInput/CustomInput";
 import Button from "../../components/CustomButtons/Button";
 import Search from "@material-ui/icons/Search";
 import { Input } from "@material-ui/core";
-import PieChart from "../../components/Charts/PieChart";
-import BarChart from "../../components/Charts/BarChart";
-import StackedBarChart from "../../components/Charts/StackedBarChart";
-import LineChart from "components/Charts/LineChart";
+// import PieChart from "../../components/Charts/PieChart";
+// import BarChart from "../../components/Charts/BarChart";
+// import StackedBarChart from "../../components/Charts/StackedBarChart";
+// import LineChart from "components/Charts/LineChart";
 import axios from "axios";
+import Cardshow from "components/Card/Cardshow";
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
@@ -96,7 +97,12 @@ export default function Dashboard() {
         </Button>
       </div>
 
-      <GridContainer>
+      <Cardshow
+        datatype="pull request"
+        charttype="barchart"
+        address="address_test"
+      />
+      {/* <GridContainer>
         <GridItem xs={12} sm={12} md={4}>
           <Card chart>
             <CardHeader color="success">
@@ -221,7 +227,7 @@ export default function Dashboard() {
             ],
           }}
         />
-      </div>
+      </div> */}
     </div>
   );
 }
