@@ -24,6 +24,7 @@ const BarChart = (props) => {
             pixelRatio: 2,
           },
         },
+        bottom: "-2%",
       },
       tooltip: {
         trigger: "axis",

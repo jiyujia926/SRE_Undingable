@@ -21,6 +21,7 @@ const PieChart = (props) => {
           restore: { show: true },
           saveAsImage: { show: true },
         },
+        bottom: "-2%",
       },
       series: [
         {
