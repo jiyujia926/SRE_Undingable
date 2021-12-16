@@ -45,8 +45,8 @@ class DiagramValue(models.Model):
 
 class Contributor(models.Model):
     Project = models.ManyToManyField(Project) #先实验一下看下该主键最终是什么样子的
-    Name = models.CharField(max_length=20)
-    Github = models.CharField(max_length=30, primary_key=True)
+    Name = models.CharField(max_length=256)
+    Github = models.CharField(max_length=256, primary_key=True)
     #贡献量是计算还是存储？
     
 class CommitRecord(models.Model):
