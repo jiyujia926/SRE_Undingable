@@ -27,7 +27,7 @@ const headerStyle = (theme) => ({
     color: grayColor[7],
     border: "0",
     borderRadius: "3px",
-    padding: "10px 0",
+    padding: "10px 30px",
     transition: "all 150ms ease 0s",
     minHeight: "50px",
     display: "block",
@@ -35,6 +35,7 @@ const headerStyle = (theme) => ({
   container: {
     ...container,
     minHeight: "50px",
+    padding: "0",
   },
   flex: {
     flex: 1,

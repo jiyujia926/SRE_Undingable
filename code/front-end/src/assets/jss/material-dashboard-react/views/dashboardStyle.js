@@ -114,6 +114,11 @@ const dashboardStyle = (theme) => ({
       lineHeight: "1",
     },
   },
+  infoCard: {
+    height: "130.5px",
+    alignItems: "center",
+    padding: "15px 0",
+  },
 });
 
 export default dashboardStyle;

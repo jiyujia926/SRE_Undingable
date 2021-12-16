@@ -28,8 +28,8 @@ import Typography from "@material-ui/core/Typography";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
-const server = "http://122.51.228.166:8000";
-// const server = "http://127.0.0.1:8000";
+// const server = "http://122.51.228.166:8000";
+const server = "http://127.0.0.1:8000";
 
 const useStyles = makeStyles(styles);
 
@@ -184,7 +184,6 @@ export default function AdminNavbarLinks() {
       Name: formData.username,
       Password: formData.password,
       Email: formData.email,
-      Github: "ababa",
     };
     console.log(data);
     let res = await axios.post(`${server}/register/`, data);

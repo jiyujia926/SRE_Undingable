@@ -9,7 +9,7 @@ import dropdownStyle from "assets/jss/material-dashboard-react/dropdownStyle.js"
 const headerLinksStyle = (theme) => ({
   ...dropdownStyle(theme),
   navbar: {
-    margin: "0 20px 0 0",
+    margin: "0",
   },
   icons: {
     width: "30px !important",
