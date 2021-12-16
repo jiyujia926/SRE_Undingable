@@ -9,9 +9,9 @@ class Project(models.Model):
     #参与者？
 
 #从收藏夹里得到用户收藏的PID，然后去Diagram里找
-class Favorite(models.Model):
-    User = models.ManyToManyField(User)
-    PID = models.ManyToManyField(Project)
+# class Favorite(models.Model):
+#     User = models.ManyToManyField(User)
+#     PID = models.ManyToManyField(Project)
 
 class Diagram(models.Model):
     User = models.ManyToManyField(User)
