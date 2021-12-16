@@ -1,24 +1,23 @@
-/* eslint-disable react/prop-types */
 import React from "react";
 // react plugin for creating charts
 // @material-ui/core
 import { makeStyles } from "@material-ui/core/styles";
 // @material-ui/icons
-import ArrowUpward from "@material-ui/icons/ArrowUpward";
-import AccessTime from "@material-ui/icons/AccessTime";
+//import ArrowUpward from "@material-ui/icons/ArrowUpward";
+//import AccessTime from "@material-ui/icons/AccessTime";
 import Typography from "@material-ui/core/Typography";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
-import CardBody from "components/Card/CardBody.js";
-import CardFooter from "components/Card/CardFooter.js";
+//import CardBody from "components/Card/CardBody.js";
+//import CardFooter from "components/Card/CardFooter.js";
 import CheckBoxSet from "../../components/CheckBoxSet/CheckBoxSet";
 import ListBox from "../../components/ListBox/ListBox";
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
-import PieChart from "../../components/Charts/PieChart";
-import BarChart from "../../components/Charts/BarChart";
-import StackedBarChart from "../../components/Charts/StackedBarChart";
+//import PieChart from "../../components/Charts/PieChart";
+//import BarChart from "../../components/Charts/BarChart";
+//import StackedBarChart from "../../components/Charts/StackedBarChart";
 // import axios from "axios";
 // axios.defaults.withCredentials = true;
 // axios.defaults.headers.post["Content-Type"] = "application/json";
@@ -70,7 +69,14 @@ export default function Dashboard() {
                 </div>
               )
           )}
-        <GridItem xs={12} sm={12} md={12}>
+      </GridContainer>
+      <Cardshow
+        datatype="commit"
+        charttype="barchart"
+        address="https://github.com/jiyujia926/NFTauction"
+      />
+      {/*<GridContainer>
+        <GridItem xs={12} sm={12} md={4}>
           <Card chart>
             <CardBody>
               <h4 className={classes.cardTitle}>Daily Sales</h4>
@@ -128,17 +134,64 @@ export default function Dashboard() {
         />
       </div>
       <div style={{ width: "350px", height: "300px" }}>
-        <StackedBarChart
+        <LineChart
           data={{
             categoryData: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
             valueData: [
-              { name: "commit", detailData: [30, 20, 17, 29, 30, 18, 35] },
-              { name: "issue", detailData: [20, 10, 7, 9, 3, 8, 5] },
-              { name: "pull request", detailData: [10, 20, 7, 9, 13, 18, 25] },
+              {
+                repo: "BCJ",
+                name: "commit",
+                detailData: [10, 20, 7, 9, 13, 18, 25],
+              },
+              {
+                repo: "Clouding",
+                name: "commit",
+                detailData: [9, 12, 24, 12, 8, 9, 10],
+              },
             ],
+            smoothOrNot: true,
           }}
         />
       </div>
+      <div style={{ width: "350px", height: "300px" }}>
+        <StackedBarChart
+          data={{
+            categoryData: ["Mon", "Tue", "Wed", "Thu", "Fri", 6, "Sun"],
+            valueData: [
+              {
+                repo: "BaiCaoJian",
+                name: "commit",
+                detailData: [20, 30, 4, 19, 20, 40, 25],
+              },
+              {
+                repo: "BaiCaoJian",
+                name: "issue",
+                detailData: [2, 1, 8, 5, 5, 8, 9],
+              },
+              {
+                repo: "BaiCaoJian",
+                name: "pull request",
+                detailData: [16, 10, 3, 6, 7, 9, 15],
+              },
+              {
+                repo: "Clouding",
+                name: "commit",
+                detailData: [30, 20, 17, 29, 30, 18, 35],
+              },
+              {
+                repo: "Clouding",
+                name: "issue",
+                detailData: [20, 10, 7, 9, 3, 8, 5],
+              },
+              {
+                repo: "Clouding",
+                name: "pull request",
+                detailData: [10, 20, 7, 9, 13, 18, 25],
+              },
+            ],
+          }}
+        />
+      </div> */}
     </div>
   );
 }

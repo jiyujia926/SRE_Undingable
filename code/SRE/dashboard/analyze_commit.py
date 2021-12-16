@@ -30,7 +30,7 @@ def commit_data(url:str):
     local_date = utc_date + timedelta(hours=8)
     local_date_str = datetime.strftime(local_date,'%Y-%m-%d %H:%M:%S')
     # print(local_date_str)
-    bag['commit_time']=local_date_str
+    bag['commit_time']=local_date_str[:10]
     data = soup.select('#toc > div.toc-diff-stats > button')
     if data[0]:
         rawchanged = str(data[0])
@@ -57,7 +57,7 @@ def commit_data(url:str):
         bag['deletions']=deletions.replace(',',"")
     # print(newtime)
     # print(commitor)
-    print(bag)
+    # print(bag)
     return bag
     # commit_user = ""
     # for item in soup.find_all('a'):

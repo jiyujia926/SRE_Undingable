@@ -7,6 +7,7 @@ def get_open_issue(rawurl:str):
     # url = "https://github.com/Bitergia/prosoul/issues"
     # url = "https://github.com/donnemartin/system-design-primer/issues"
     issuelist=[]
+    issueinfolist=[]
     url = ""
     if rawurl[-1] == '/':
         url = rawurl + "issues"
@@ -54,8 +55,10 @@ def get_open_issue(rawurl:str):
                 continue
             else:
                 issuelist.append(link)
-                open_issue_time(link)
-                get_participators(link)
+                opentime = open_issue_time(link)
+                participator = get_participators(link)
+                print({'opentime':opentime,'participator':participator})
+                issueinfolist.append({'opentime':opentime,'participator':participator})
                 
     while (has_next_page):
         strhtml = requests.get(next_page_url)
@@ -96,12 +99,18 @@ def get_open_issue(rawurl:str):
                     issuelist.append(link)
                     open_issue_time(link)
                     get_participators(link)
+                    issueinfolist.append({'opentime':opentime,'participator':participator})
+                    print({'opentime':opentime,'participator':participator})
     # print(issuelist)      
-    print(len(issuelist)) 
+    # print(len(issuelist)) 
+    # print(issueinfolist)
+    print(len(issueinfolist))
+    return issueinfolist
 
 
 def get_closed_issue(rawurl:str):
     issuelist=[]
+    issueinfolist=[]
     url = ""
     if rawurl[-1] == '/':
         url = rawurl + "issues?q=is%3Aissue+is%3Aclosed"
@@ -149,11 +158,13 @@ def get_closed_issue(rawurl:str):
                 continue
             else:
                 issuelist.append(link)
-                print("open:")
-                open_issue_time(link)
-                print("closed:")
-                closed_issue_time(link)
-                get_participators(link)
+                # print("open:")
+                opentime=open_issue_time(link)
+                # print("closed:")
+                closetime=closed_issue_time(link)
+                participator=get_participators(link)
+                print({'opentime':opentime,'closetime':closetime,'participator':participator})
+                issueinfolist.append({'opentime':opentime,'closetime':closetime,'participator':participator})
                 
     while (has_next_page):
         strhtml = requests.get(next_page_url)
@@ -192,13 +203,17 @@ def get_closed_issue(rawurl:str):
                     continue
                 else:
                     issuelist.append(link)
-                    print("open:")
-                    open_issue_time(link)
-                    print("closed:")
-                    closed_issue_time(link)
-                    get_participators(link)
+                # print("open:")
+                opentime=open_issue_time(link)
+                # print("closed:")
+                closetime=closed_issue_time(link)
+                participator=get_participators(link)
+                print({'opentime':opentime,'closetime':closetime,'participator':participator})
+                issueinfolist.append({'opentime':opentime,'closetime':closetime,'participator':participator})
     # print(issuelist)    
-    print(len(issuelist))
+    # print(len(issuelist))
+    print(len(issueinfolist))
+    return issueinfolist
 
 
 if __name__ == "__main__":

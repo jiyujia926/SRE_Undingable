@@ -3,26 +3,35 @@ import { nanoid } from "nanoid";
 import * as eCharts from "echarts";
 import PropTypes from "prop-types";
 
-const StackedBarChart = (props) => {
+const LineChart = (props) => {
   const { data } = props;
-  console.log(data);
   let id = nanoid();
+
+  // filter data
   let series_data = [];
+  let legend_data = [];
   for (let i = 0; i < data.valueData.length; i++) {
     let item = new Object();
-    item.name = data.valueData[i].repo + "-" + data.valueData[i].name;
-    item.type = "bar";
     item.stack = data.valueData[i].repo;
-    item.emphasis = { focus: "series" };
+    item.name = data.valueData[i].repo + "-" + data.valueData[i].name;
     item.data = data.valueData[i].detailData;
-    item.large = true;
+    item.type = "line";
     series_data.push(item);
+    legend_data.push(item.name);
     console.log(item);
   }
+
   const initChart = () => {
     let element = document.getElementById(id);
     let myChart = eCharts.init(element);
     const option = {
+      legend: {
+        orient: "vertical",
+        x: "left", // right center left
+        y: "top", // top center down
+        padding: [10, 0, 0, 0],
+        data: data.name,
+      },
       toolbox: {
         feature: {
           dataZoom: {
@@ -34,48 +43,13 @@ const StackedBarChart = (props) => {
         },
         bottom: "-2%",
       },
-      tooltip: {
-        trigger: "axis",
-        axisPointer: {
-          type: "shadow",
-        },
+      xAxis: {
+        type: "category",
+        data: data.categoryData,
       },
-      legend: {},
-      grid: {
-        left: "3%",
-        right: "4%",
-        bottom: "15%",
-        containLabel: true,
+      yAxis: {
+        type: "value",
       },
-      dataZoom: [
-        {
-          type: "inside",
-        },
-        {
-          type: "slider",
-        },
-      ],
-      xAxis: [
-        {
-          type: "category",
-          data: data.categoryData,
-          silent: false,
-          splitLine: {
-            show: false,
-          },
-          splitArea: {
-            show: false,
-          },
-        },
-      ],
-      yAxis: [
-        {
-          type: "value",
-          splitArea: {
-            show: false,
-          },
-        },
-      ],
       series: series_data,
     };
     option && myChart.setOption(option);
@@ -88,8 +62,8 @@ const StackedBarChart = (props) => {
   return <div id={id} style={{ width: "100%", height: "100%" }}></div>;
 };
 
-StackedBarChart.propTypes = {
+LineChart.propTypes = {
   data: PropTypes.object,
 };
 
-export default StackedBarChart;
+export default LineChart;
