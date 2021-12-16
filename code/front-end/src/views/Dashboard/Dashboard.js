@@ -23,8 +23,9 @@ import { Input } from "@material-ui/core";
 import PieChart from "../../components/Charts/PieChart";
 import BarChart from "../../components/Charts/BarChart";
 import StackedBarChart from "../../components/Charts/StackedBarChart";
-//import MultiStackedBarChart from "components/Charts/MultiStackedChart";
+import LineChart from "components/Charts/LineChart";
 import axios from "axios";
+
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 const server = "http://122.51.228.166:8000";
@@ -162,18 +163,26 @@ export default function Dashboard() {
           }}
         />
       </div>
-      {/* <div style={{ width: "350px", height: "300px" }}>
-        <StackedBarChart
+      <div style={{ width: "350px", height: "300px" }}>
+        <LineChart
           data={{
             categoryData: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
             valueData: [
-              { name: "commit", detailData: [30, 20, 17, 29, 30, 18, 35] },
-              { name: "issue", detailData: [20, 10, 7, 9, 3, 8, 5] },
-              { name: "pull request", detailData: [10, 20, 7, 9, 13, 18, 25] },
+              {
+                repo: "BCJ",
+                name: "commit",
+                detailData: [10, 20, 7, 9, 13, 18, 25],
+              },
+              {
+                repo: "Clouding",
+                name: "commit",
+                detailData: [9, 12, 24, 12, 8, 9, 10],
+              },
             ],
+            smoothOrNot: true,
           }}
         />
-      </div> */}
+      </div>
       <div style={{ width: "350px", height: "300px" }}>
         <StackedBarChart
           data={{

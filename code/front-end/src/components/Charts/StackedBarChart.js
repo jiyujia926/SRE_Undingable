@@ -32,6 +32,7 @@ const StackedBarChart = (props) => {
             pixelRatio: 2,
           },
         },
+        bottom: "-2%",
       },
       tooltip: {
         trigger: "axis",
@@ -43,7 +44,7 @@ const StackedBarChart = (props) => {
       grid: {
         left: "3%",
         right: "4%",
-        bottom: "3%",
+        bottom: "15%",
         containLabel: true,
       },
       dataZoom: [
