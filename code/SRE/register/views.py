@@ -149,7 +149,7 @@ def AddtoFavor(request):
 
         
         elif chart_type == dashboard_models.Chart.StackedBarChart or chart_type == dashboard_models.Chart.LineChart:
-            user_chart = dashboard_models.Chart.objects.create(Name=chart_name,ChartType=chart_type,DataType=data_type,DataDetailType=data_detail_type,DataDetailType=data_detail_type)
+            user_chart = dashboard_models.Chart.objects.create(Name=chart_name,ChartType=chart_type,DataType=data_type,DataDetailType=data_detail_type)
             user_chart.User.add(user)
             user_chart.project.add(project)
             user_chart.HasProject.add(project)
