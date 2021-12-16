@@ -4,6 +4,7 @@ import * as eCharts from "echarts";
 import PropTypes from "prop-types";
 
 const BarChart = (props) => {
+  console.log(props);
   const { data } = props;
   let id = nanoid();
   const initChart = () => {

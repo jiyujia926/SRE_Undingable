@@ -53,25 +53,29 @@ def spideissue(url:str):
 def initialcommitdata(url:str):
     project = models.Project.objects.filter(RepositoryURL=url).first()
     list1 = list(models.CommitRecord.objects.values().filter(Project=project).order_by('Time'))
-    # print(list1)
+    print(list1)
     timelist = []
     valuelist = []
     commitlist = []
+    
     timecommitdict = {}
     for commitrecord in list1:
         thistime = commitrecord['Time']
         # print(thistime)
         if thistime in timecommitdict.keys():
-            timecommitdict[thistime] = timecommitdict[thistime] + 1
+            timecommitdict[thistime]['CommitCount'] = timecommitdict[thistime]['CommitCount'] + 1
+            timecommitdict[thistime]['ChangedFileCount'] = timecommitdict[thistime]['ChangedFileCount'] + commitrecord['ChangedFileCount']
+            timecommitdict[thistime]['AdditionCount'] = timecommitdict[thistime]['AdditionCount'] + commitrecord['AdditionCount']
+            timecommitdict[thistime]['DeletionCount'] = timecommitdict[thistime]['DeletionCount'] + commitrecord['DeletionCount']
         else:
-            timecommitdict[thistime] = 1
+            timecommitdict[thistime] = {'CommitCount':1,'ChangedFileCount':commitrecord['ChangedFileCount'],'AdditionCount':commitrecord['AdditionCount'],'DeletionCount':commitrecord['DeletionCount']}
     # print(timecommitdict)
     timelist = list(timecommitdict.keys())
     valuelist = list(timecommitdict.values())
     # print(timelist)
     # print(valuelist)
     for i in range(0,len(timelist)):
-        allcommit = models.AllCommit.objects.create(Time=timelist[i],Count=valuelist[i])
+        allcommit = models.AllCommit.objects.create(Time=timelist[i],committedCount=valuelist[i]['CommitCount'],changedCount=valuelist[i]['ChangedFileCount'],addedCount=valuelist[i]['AdditionCount'],deletedCount=valuelist[i]['DeletionCount'])
         allcommit.Project.add(project)
     # commitlist = list(models.AllCommit.objects.values().filter(Project=project).order_by('Time'))
     # print(commitlist)
@@ -89,18 +93,20 @@ def get_data(request):
     projectname = projectlist[0]['Name'][1:]
     chartname = projectname + "-" + data['Datatype'] + "-" + data['Charttype']
     print(chartname)
-    chart = models.Chart.objects.create(Name=chartname,ChartType=data['Charttype'],DataType=data['Datatype'])
+    chart = models.Chart.objects.create(Name=chartname,ChartType=data['Charttype'],DataType=data['Datatype'],DataDetailType=data['Datatype'])
     chart.project.add(project)
     chart.HasProject.add(project)
     commitlist = list(models.AllCommit.objects.values().filter(Project=project).order_by('Time'))
     print(commitlist)
     timelist=[]
-    countlist=[]
+    commitcountlist=[]
     for allcommit in commitlist:
         timelist.append(str(allcommit['Time']))
-        countlist.append(str(allcommit['Count']))
+        commitcountlist.append(allcommit['committedCount'])
     print(timelist)
-    print(countlist)
+    print(commitcountlist)
+    databag = {'categoryData':timelist,'valueData':commitcountlist}
+    return HttpResponse(json.dumps(databag))
     
     
     

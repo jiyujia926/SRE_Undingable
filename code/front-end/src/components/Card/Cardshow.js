@@ -38,26 +38,33 @@ export default function Cardshow(props) {
   console.log(props);
   //const classes = useStyles();
   const [charttype, setChart] = useState(props.charttype);
-
+  const [res, setChartdata] = useState({});
+  // let res;
   useEffect(() => {
     setChart(props.charttype);
+    upload();
+    console.log(res);
   }, String);
 
   //传输
   const datatype = props.datatype;
   const address = props.address;
-  let res;
-
   async function upload() {
     let data = {
       Datatype: datatype,
       Charttype: charttype,
       Address: address,
     };
-    res = await axios.post(`${server}/get_data/`, data);
-    console.log(res);
+    let res1 = await axios.post(`${server}/get_data/`, data);
+    console.log(res1.data);
+    setChartdata(res1.data);
+    // return res.data;
   }
-  upload();
+  // upload();
+
+  // console.log(res);
+  // upload();
+  // console.log(res);
 
   function changechart(event) {
     setChart(event.target.value);

@@ -96,7 +96,6 @@ export default function Dashboard() {
           <Search />
         </Button>
       </div>
-
       <Cardshow
         datatype="commit"
         charttype="barchart"
