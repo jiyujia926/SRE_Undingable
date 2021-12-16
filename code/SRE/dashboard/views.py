@@ -37,12 +37,7 @@ def checkurl(request):
             project.save()
             importDB(address)
             return HttpResponse("添加进数据库")
-# def spider(url:str):
-#     analyze_commit(url)
 
-# def analyze_commit(url:str):
-#     commitbag = getcommit(url)
-#     print(commitbag)
 
 #celery tasks
 def importDB(url:str):

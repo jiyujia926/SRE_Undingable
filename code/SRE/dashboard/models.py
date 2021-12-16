@@ -47,14 +47,14 @@ class Contributor(models.Model):
     Name = models.CharField(max_length=20)
     Github = models.CharField(max_length=30, primary_key=True)
     #贡献量是计算还是存储？
-
+    
 class CommitRecord(models.Model):
     Project = models.ManyToManyField(Project)
     Contributor = models.ManyToManyField(Contributor)
-    Time = models.DateTimeField()
     ChangedFileCount = models.IntegerField(null=True, blank=True)
     AdditionCount = models.IntegerField(null=True, blank=True)
     DeletionCount = models.IntegerField(null=True, blank=True)
+    Time = models.DateTimeField()
 
 class IssueRecord(models.Model):
     Contributor = models.ManyToManyField(Contributor)

@@ -6,9 +6,7 @@ class User(models.Model):
     Password = models.CharField(max_length=20, blank=False)
     Email = models.EmailField(max_length=30)
 
-
-    # def save(self, *args, **kwargs):
-    #     md5 = hashlib.md5()
-    #     md5.update(self.password.encode())
-    #     self.password = md5.hexdigest()
-    #     super(Student, self).save(*args, **kwargs)
+class IdentifyingCode(models.Model):
+    User = models.ManyToManyField(User)
+    Code = models.CharField(max_length=10)
+    Time = models.DateTimeField(auto_now_add=True)
