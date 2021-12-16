@@ -47,8 +47,8 @@ class DiagramValue(models.Model):
 
 class Contributor(models.Model):
     Project = models.ManyToManyField(Project) #先实验一下看下该主键最终是什么样子的
-    Name = models.CharField(max_length=256)
-    Github = models.CharField(max_length=256, primary_key=True)
+    Name = models.CharField(max_length=255)
+    Github = models.CharField(max_length=255, primary_key=True)
     #贡献量是计算还是存储？
 
 class CommitRecord(models.Model):
@@ -84,7 +84,7 @@ class ClosedIssueRecord(models.Model):
     Contributor = models.ManyToManyField(Contributor)
     Project = models.ManyToManyField(Project)
     Opentime = models.DateTimeField()
-    CloseTime = models.DateTimeField()
+    Closetime = models.DateTimeField()
 
 #以天为时间单位，一个项目的总贡献量
 class AllCommit(models.Model):
