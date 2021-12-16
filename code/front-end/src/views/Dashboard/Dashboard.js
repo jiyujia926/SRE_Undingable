@@ -23,6 +23,7 @@ import { Input } from "@material-ui/core";
 import PieChart from "../../components/Charts/PieChart";
 import BarChart from "../../components/Charts/BarChart";
 import StackedBarChart from "../../components/Charts/StackedBarChart";
+//import MultiStackedBarChart from "components/Charts/MultiStackedChart";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
@@ -161,7 +162,7 @@ export default function Dashboard() {
           }}
         />
       </div>
-      <div style={{ width: "350px", height: "300px" }}>
+      {/* <div style={{ width: "350px", height: "300px" }}>
         <StackedBarChart
           data={{
             categoryData: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
@@ -169,6 +170,45 @@ export default function Dashboard() {
               { name: "commit", detailData: [30, 20, 17, 29, 30, 18, 35] },
               { name: "issue", detailData: [20, 10, 7, 9, 3, 8, 5] },
               { name: "pull request", detailData: [10, 20, 7, 9, 13, 18, 25] },
+            ],
+          }}
+        />
+      </div> */}
+      <div style={{ width: "350px", height: "300px" }}>
+        <StackedBarChart
+          data={{
+            categoryData: ["Mon", "Tue", "Wed", "Thu", "Fri", 6, "Sun"],
+            valueData: [
+              {
+                repo: "BaiCaoJian",
+                name: "commit",
+                detailData: [20, 30, 4, 19, 20, 40, 25],
+              },
+              {
+                repo: "BaiCaoJian",
+                name: "issue",
+                detailData: [2, 1, 8, 5, 5, 8, 9],
+              },
+              {
+                repo: "BaiCaoJian",
+                name: "pull request",
+                detailData: [16, 10, 3, 6, 7, 9, 15],
+              },
+              {
+                repo: "Clouding",
+                name: "commit",
+                detailData: [30, 20, 17, 29, 30, 18, 35],
+              },
+              {
+                repo: "Clouding",
+                name: "issue",
+                detailData: [20, 10, 7, 9, 3, 8, 5],
+              },
+              {
+                repo: "Clouding",
+                name: "pull request",
+                detailData: [10, 20, 7, 9, 13, 18, 25],
+              },
             ],
           }}
         />

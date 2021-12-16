@@ -10,9 +10,9 @@ const StackedBarChart = (props) => {
   let series_data = [];
   for (let i = 0; i < data.valueData.length; i++) {
     let item = new Object();
-    item.name = data.valueData[i].name;
+    item.name = data.valueData[i].repo + "-" + data.valueData[i].name;
     item.type = "bar";
-    item.stack = "git";
+    item.stack = data.valueData[i].repo;
     item.emphasis = { focus: "series" };
     item.data = data.valueData[i].detailData;
     item.large = true;
