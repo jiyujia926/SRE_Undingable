@@ -38,6 +38,7 @@ export default function Cardshow(props) {
   console.log(props);
   //const classes = useStyles();
   const [charttype, setChart] = useState(props.charttype);
+  const [loading, setloading] = useState(true);
   const [res, setChartdata] = useState({});
   // let res;
   useEffect(() => {
@@ -58,6 +59,9 @@ export default function Cardshow(props) {
     let res1 = await axios.post(`${server}/get_data/`, data);
     console.log(res1.data);
     setChartdata(res1.data);
+    setloading(false);
+    // setChart(charttype);
+    // console.log(charttype);
     // return res.data;
   }
   // upload();
@@ -89,6 +93,7 @@ export default function Cardshow(props) {
                     onChange={changechart}
                     input={<Input />}
                     label="图表类型"
+                    defaultValue={"piechart"}
                   >
                     <MenuItem value={"stackedbarchart"}>
                       stacked barchart
@@ -160,6 +165,7 @@ export default function Cardshow(props) {
                     onChange={changechart}
                     input={<Input />}
                     label="图表类型"
+                    defaultValue={"barchart"}
                   >
                     <MenuItem value={"stackedbarchart"}>
                       stacked barchart
@@ -220,7 +226,7 @@ export default function Cardshow(props) {
                     }}
                   /> */}
                   {/* 固定数据 */}
-                  <BarChart data={res} />
+                  {loading ? <h3>图片加载中</h3> : <BarChart data={res} />}
                 </div>
               </div>
             </CardBody>
@@ -248,6 +254,7 @@ export default function Cardshow(props) {
                     onChange={changechart}
                     input={<Input />}
                     label="图表类型"
+                    defaultValue={"stackedbarchart"}
                   >
                     <MenuItem value={"stackedbarchart"}>
                       stacked barchart
@@ -337,6 +344,7 @@ export default function Cardshow(props) {
                     onChange={changechart}
                     input={<Input />}
                     label="图表类型"
+                    defaultValue={"linechart"}
                   >
                     <MenuItem value={"stackedbarchart"}>
                       stacked barchart
@@ -352,7 +360,7 @@ export default function Cardshow(props) {
                 <div style={{ width: "40px" }} />
                 <div style={{ width: "350px", height: "300px" }}>
                   {/* 固定数据 */}
-                  <LineChart
+                  {/* <LineChart
                     data={{
                       categoryData: [
                         "Mon",
@@ -377,9 +385,9 @@ export default function Cardshow(props) {
                       ],
                       smoothOrNot: true,
                     }}
-                  />
+                  /> */}
                   {/* 固定数据 */}
-                  {/* <LineChart data={res} /> */}
+                  <LineChart data={res} />
                 </div>
               </div>
             </CardBody>
