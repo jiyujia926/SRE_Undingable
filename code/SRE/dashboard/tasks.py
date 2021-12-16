@@ -39,7 +39,7 @@ def analyze_open_issue(url:str):
         for item in openissuelist:
             openissue = models.OpenIssueRecord.objects.create(Opentime=item['opentime'])
             openissue.Project.add(project)
-            for name in item.participator:
+            for name in item['participator']:
                 NameList = list(models.Contributor.objects.values().filter(Name=name))
                 if NameList:
                     contributor = models.Contributor.objects.filter(Name=name).first()
@@ -58,7 +58,7 @@ def analyze_close_issue(url:str):
         for item in closeissuelist:
             closeissue = models.ClosedIssueRecord.objects.create(Opentime=item['opentime'],Closetime=item['closetime'])
             closeissue.Project.add(project)
-            for name in item.participator:
+            for name in item['participator']:
                 NameList = list(models.Contributor.objects.values().filter(Name=name))
                 if NameList:
                     contributor = models.Contributor.objects.filter(Name=name).first()
