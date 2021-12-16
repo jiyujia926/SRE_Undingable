@@ -120,6 +120,7 @@ def AddtoFavor(request):
         chart_name = data['Name']
         chart_type = data['Chart_type']
         data_type = data['Data_type']
+        data_detail_type = data['Data_detail_type']
 
         if chart_type == dashboard_models.Chart.BarChart:
             #存储图表的基本信息
@@ -127,7 +128,7 @@ def AddtoFavor(request):
             if project == []:
                 return HttpResponse("项目不存在")
                 
-            user_chart = dashboard_models.Chart.objects.create(Name=chart_name,ChartType=chart_type,DataType=data_type)
+            user_chart = dashboard_models.Chart.objects.create(Name=chart_name,ChartType=chart_type,DataType=data_type,DataDetailType=data_detail_type)
             user_chart.User.add(user)
             user_chart.project.add(project)
             user_chart.HasProject.add(project)
@@ -136,7 +137,7 @@ def AddtoFavor(request):
             #存储图表的基本信息
             if project == []:
                 return HttpResponse("项目不存在")
-            user_chart = dashboard_models.Chart.objects.create(Name=chart_name,ChartType=chart_type,DataType=data_type)
+            user_chart = dashboard_models.Chart.objects.create(Name=chart_name,ChartType=chart_type,DataType=data_type,DataDetailType=data_detail_type)
             user_chart.User.add(user)
             user_chart.project.add(project)
             user_chart.HasProject.add(project)
@@ -148,7 +149,7 @@ def AddtoFavor(request):
 
         
         elif chart_type == dashboard_models.Chart.StackedBarChart or chart_type == dashboard_models.Chart.LineChart:
-            user_chart = dashboard_models.Chart.objects.create(Name=chart_name,ChartType=chart_type,DataType=data_type)
+            user_chart = dashboard_models.Chart.objects.create(Name=chart_name,ChartType=chart_type,DataType=data_type,DataDetailType=data_detail_type,DataDetailType=data_detail_type)
             user_chart.User.add(user)
             user_chart.project.add(project)
             user_chart.HasProject.add(project)
@@ -165,15 +166,48 @@ def AddtoFavor(request):
 
 def returnFavor(request):
     data = json.loads(request.body)
-    Email = data['Email']
     user = models.User.objects.filter(Email=data['Email']).first()
+    project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
 
     if user:
-        user_diagram_list = list(dashboard_models.objects.filter(User=user))
-        for chart in user_diagram_list:
+        user_chart_list = list(dashboard_models.Chart.objects.filter(User=user,Project=project))
+        Chart={}
+        for chart in user_chart_list:
             chart_name = chart.Name
-            chart_type = chart.Type
+            chart_type = chart.ChartType
+            data_type = chart.DataType
+            data_detail_type = chart.DataDetailType
+            repo_list = list(chart.HasProject)
 
-            # if chart_type == 
+            Time = {}
+            Value = {}
+            for repo in repo_list:
+                repoTime = {}
+                repoValue = {}
+                repoURL = dashboard_models.AllCommit.objects.values('RepositoryURL').filter(project==repo).first
+                for type in data_type.split('_'):
+                    if type == "CommitRecord":
+                        time = list(dashboard_models.AllCommit.objects.values('Time').filter(project==repo))  
+                    elif type == "IssueRecord":
+                        time = list(dashboard_models.AllIssue.objects.values('Time').filter(project==repo))
+                    repoTime[type] = time
+                Time[repoURL] = repoTime
+
+                for type in data_detail_type.split('_'):
+                    if type == "committed":
+                        value = list(dashboard_models.AllCommit.values('commitCount').filter(project==project))
+                    elif type == "changed":
+                        value = list(dashboard_models.AllCommit.values('changedCount').filter(project==project))
+                    elif type == "added":
+                        value = list(dashboard_models.AllCommit.values('addCount').filter(project==project))
+                    elif type == "deleted":
+                        value = list(dashboard_models.AllCommit.values('deleteCount').filter(project==project))
+                    elif type == "opened":
+                        value = list(dashboard_models.AllIssue.values('openedCount').filter(project==project))
+                    elif type == "closed":
+                        value = list(dashboard_models.AllCommit.values('closedCount').filter(project==project))
+                    
+                    repoValue[type] = value
+                Value[repoURL] = repoValue
     else:
         return HttpResponse("邮箱未注册")

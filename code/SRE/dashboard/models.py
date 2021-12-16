@@ -26,23 +26,24 @@ class Chart(models.Model):
     }
 
     #数据类型
-    Commit = 'commit'
-    Changed = 'changed'
-    Add = 'add'
-    Delete = 'delete'
-    Open = 'open'
-    Close = 'close'
-    Data_type_choices = {
-        (Commit, 'Commit'),
-        (Changed, 'Changed'),
-        (Add, 'Add'),
-        (Delete, 'Delete'),
-        (Open, 'Open'),
-        (Close, 'Close')
-    }
+    # Commit = 'commit'
+    # Changed = 'changed'
+    # Add = 'add'
+    # Delete = 'delete'
+    # Open = 'open'
+    # Close = 'close'
+    # Data_type_choices = {
+    #     (Commit, 'Commit'),
+    #     (Changed, 'Changed'),
+    #     (Add, 'Add'),
+    #     (Delete, 'Delete'),
+    #     (Open, 'Open'),
+    #     (Close, 'Close')
+    # }
 
     ChartType = models.CharField(max_length=10, choices=Chart_type_choices)
-    DataType = models.CharField(max_length=10, choices=Data_type_choices)
+    DataType = models.CharField(max_length=50)
+    DataDetailType = models.CharField(max_length=100)
 
 
 
@@ -90,7 +91,10 @@ class ClosedIssueRecord(models.Model):
 class AllCommit(models.Model):
     Project = models.ManyToManyField(Project)
     Time = models.DateField()
-    Count = models.IntegerField(null=True, blank=True)
+    committedCount = models.IntegerField(null=True, blank=True)
+    changedCount = models.IntegerField(null=True, blank=True)
+    addedCount = models.IntegerField(null=True, blank=True)
+    deletedCount = models.IntegerField(null=True, blank=True)
 
 class AllIssue(models.Model):
     Project = models.ManyToManyField(Project)
