@@ -51,7 +51,6 @@ export default function Cardshow(props) {
 
   function changechart(event: any) {
     setChart(event.target.value);
-    //this.forceUpdate();
   }
 
   if (charttype == "piechart") {
