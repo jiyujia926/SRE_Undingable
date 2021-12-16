@@ -91,6 +91,8 @@ export default function Cardshow(props) {
               <div style={{ display: "flex" }}>
                 <div style={{ width: "350px", height: "300px" }}>
                   {/* 固定数据 */}
+                  
+                  {/* 饼图还不能正常连后端数据进行处理，因为不知道多个仓库的数据包内容 */}
                   <PieChart
                     data={[
                       { value: 300, name: "Fine" },
