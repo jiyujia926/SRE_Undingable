@@ -10,13 +10,13 @@ import CardBody from "./CardBody";
 import GridContainer from "components/Grid/GridContainer";
 import GridItem from "components/Grid/GridItem";
 //import AccessTime from "@material-ui/icons/AccessTime";
-//import { makeStyles } from "@material-ui/core/styles";
-
+import { makeStyles } from "@material-ui/core/styles";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import InputLabel from "@material-ui/core/InputLabel";
 import { MenuItem } from "@material-ui/core";
 import FormControl from "@material-ui/core/FormControl";
 
-//import styles from "assets/jss/material-dashboard-react/components/buttonStyle.js";
+import styles from "assets/jss/material-dashboard-react/components/buttonStyle.js";
 import PieChart from "../../components/Charts/PieChart";
 import BarChart from "components/Charts/BarChart";
 import StackedBarChart from "../../components/Charts/StackedBarChart";
@@ -32,11 +32,11 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
 // const server = "http://122.51.228.166:8000";
 const server = "http://127.0.0.1:8000";
 
-//const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles);
 
 export default function Cardshow(props) {
   console.log(props);
-  //const classes = useStyles();
+  const classes = useStyles();
   const [charttype, setChart] = useState(props.charttype);
   const [loading, setloading] = useState(true);
   const [res, setChartdata] = useState({});
@@ -226,7 +226,14 @@ export default function Cardshow(props) {
                     }}
                   /> */}
                   {/* 固定数据 */}
-                  {loading ? <h3>图片加载中</h3> : <BarChart data={res} />}
+                  {loading ? (
+                    <CircularProgress
+                      color="primary"
+                      className={classes.itemProgress}
+                    />
+                  ) : (
+                    <BarChart data={res} />
+                  )}
                 </div>
               </div>
             </CardBody>
