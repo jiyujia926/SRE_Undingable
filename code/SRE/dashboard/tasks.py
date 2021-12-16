@@ -1,7 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 from .get_commit import getcommit
-from .get_issue import open_issue_time
+from .get_issue import open_issue_time,closed_issue_time
 from . import models
 import django
 django.setup()  					# 前4句引入django测试环境
@@ -10,6 +10,8 @@ django.setup()  					# 前4句引入django测试环境
 @shared_task
 def spider(url:str):
     analyze_commit(url)
+    analyze_open_issue(url)
+    analyze_close_issue(url)
 
 @shared_task
 def analyze_commit(url:str):
@@ -19,6 +21,8 @@ def analyze_commit(url:str):
         NameList = list(models.Contributor.objects.values().filter(Name=item['commitor']))
         if NameList:
             contributor = models.Contributor.objects.filter(Name=item['commitor']).first()
+            if project not in contributor.Project.all():
+                contributor.Project.add(project)
         else:
             contributor = models.Contributor.objects.create(Name=item['commitor'],Github=item['commitor'])
             contributor.Project.add(project)
@@ -31,4 +35,33 @@ def analyze_open_issue(url:str):
     openissuelist = open_issue_time(url)
     project = models.Project.objects.filter(RepositoryURL=url).first()
     for item in openissuelist:
-        models.IssueRecord.objects.create(Issue_type="opened")
+        openissue = models.OpenIssueRecord.objects.create(Opentime=item['opentime'])
+        openissue.Project.add(project)
+        for name in item.participator:
+            NameList = list(models.Contributor.objects.values().filter(Name=name))
+            if NameList:
+                contributor = models.Contributor.objects.filter(Name=name).first()
+                if project not in contributor.Project.all():
+                    contributor.Project.add(project)
+            else:
+                contributor = models.Contributor.objects.create(Name=name,Github=name)
+                contributor.Project.add(project)
+        openissue.Contributor.add(contributor)
+        
+@shared_task
+def analyze_close_issue(url:str):
+    closeissuelist = closed_issue_time(url)
+    project = models.Project.objects.filter(RepositoryURL=url).first()
+    for item in closeissuelist:
+        closeissue = models.ClosedIssueRecord.objects.create(Opentime=item['opentime'],Closetime=item['closetime'])
+        closeissue.Project.add(project)
+        for name in item.participator:
+            NameList = list(models.Contributor.objects.values().filter(Name=name))
+            if NameList:
+                contributor = models.Contributor.objects.filter(Name=name).first()
+                if project not in contributor.Project.all():
+                    contributor.Project.add(project)
+            else:
+                contributor = models.Contributor.objects.create(Name=name,Github=name)
+                contributor.Project.add(project)
+        closeissue.Contributor.add(contributor)
