@@ -26,12 +26,12 @@ class Chart(models.Model):
     }
 
     #数据类型
-    Commit = '1'
-    Changed = '2'
-    Add = '3'
-    Delete = '4'
-    Open = '5'
-    Close = '6'
+    Commit = 'commit'
+    Changed = 'changed'
+    Add = 'add'
+    Delete = 'delete'
+    Open = 'open'
+    Close = 'close'
     Data_type_choices = {
         (Commit, 'Commit'),
         (Changed, 'Changed'),
