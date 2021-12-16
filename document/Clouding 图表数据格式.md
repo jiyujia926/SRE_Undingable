@@ -133,7 +133,7 @@ import LineChart from "components/Charts/LineChart";
 </div>
 ```
 
-数据格式：object （与 StackedBarChart 完全相同）
+数据格式：object （与 StackedBarChart 基本相同，多了一个smoothOrNot 的布尔变量）
 
 ```jsx
 data = {
@@ -141,6 +141,7 @@ data = {
   valueData: [
     { repo: "Jyj/BaiCaoJian", name: "item-name", detailData: [value1, value2, value3] }, // y轴对应的数据
   ],
+  smoothOrNot: true, // true: 平滑曲线；false: 折线
 }
 ```
 
@@ -152,6 +153,7 @@ data = {
     { repo: "Jyj/BaiCaoJian", name: "issue", detailData: [20, 10, 7, 9, 3, 8, 5] },
     { repo: "Jyj/BaiCaoJian", name: "pull request", detailData: [10, 20, 7, 9, 13, 18, 25] },
   ],
+  smoothOrNot: true,
 }
 ```
 
