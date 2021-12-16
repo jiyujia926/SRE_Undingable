@@ -19,11 +19,13 @@ class Diagram(models.Model):
     #图表类型
     BarChart = 'BarC'
     StackedBarChart = 'SBarC'
-    PieChart = 'PIEC'
+    PieChart = 'PieC'
+    LineChart = 'LineC'
     Diagram_type_choices = {
         (BarChart, 'BarChart'),
         (StackedBarChart, 'StackedBarChart'),
-        (PieChart, 'PieChart')
+        (PieChart, 'PieChart'),
+        (LineChart, 'LineChart')
     }
     Diagram_type = models.CharField(max_length=10, choices=Diagram_type_choices)
 
@@ -37,9 +39,9 @@ class DiagramValue(models.Model):
     Diagram = models.ManyToManyField(Diagram)
     #柱状图横轴的时间
     Date = models.DateField()   
-    #饼状图键值对的键
+    #饼状图键值对的键、y轴名字的值
     Key = models.CharField(max_length=20)
-    #y轴的值或者键值对的值
+    #y轴的值、键值对的值
     value = models.DecimalField( max_digits=20, decimal_places=4)
 
 class Contributor(models.Model):
@@ -47,7 +49,7 @@ class Contributor(models.Model):
     Name = models.CharField(max_length=20)
     Github = models.CharField(max_length=30, primary_key=True)
     #贡献量是计算还是存储？
-    
+
 class CommitRecord(models.Model):
     Project = models.ManyToManyField(Project)
     Contributor = models.ManyToManyField(Contributor)

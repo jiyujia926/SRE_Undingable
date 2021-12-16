@@ -9,6 +9,7 @@ import random
 import datetime
 import pytz
 from . import models
+from dashboard import models as dashboard_models
 # Create your views here.
 def register(request):
     data = json.loads(request.body)
@@ -108,3 +109,63 @@ def Verifycode(request):
             return HttpResponse("邮箱无验证码")
     else:
         return HttpResponse("邮箱未注册")
+
+def AddtoFavor(request):
+    data = json.loads(request.body)
+    Email = data['Email']
+    user = models.User.objects.filter(Email=data['Email']).first()
+    
+    if user:
+        #图表基本信息
+        chart_name = data['Name']
+        chart_type = data['Type']
+        categoryData_name = data['categoryData_name'] #x轴标签名字
+        categoryData = data['categoryData'] #x轴数据
+        valueData = data['valueData']
+
+        if chart_type == dashboard_models.Diagram.BarChart:
+            #存储图表的基本信息
+            project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
+            valueData_name = data['valueData_name']
+            user_diagram = dashboard_models.Diagram.objects.create(Name=chart_name,Diagram_type=chart_type,horizontal_axis_name=categoryData_name,vertical_axis_name=valueData_name)
+            user_diagram.User.add(user)
+            user_diagram.PID.add(project)
+
+            #存储图表的数据
+            for xitem, yitem in categoryData, valueData:
+                key_value_pairs = dashboard_models.DiagramValue.objects.create(Date=xitem,value=yitem)
+                key_value_pairs.Diagram.add(user_diagram)
+
+        elif chart_type == dashboard_models.Diagram.PieChart:
+            #存储图表的基本信息
+            project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
+            valueData_name = data['valueData_name']
+            user_diagram = dashboard_models.Diagram.objects.create(Name=chart_name,Diagram_type=chart_type,horizontal_axis_name=categoryData_name,vertical_axis_name=valueData_name)
+            user_diagram.User.add(user)
+            user_diagram.PID.add(project)
+
+            #存储图表的数据
+            for xitem, yitem in categoryData, valueData:
+                key_value_pairs = dashboard_models.DiagramValue.objects.create(key=xitem,value=yitem)
+                key_value_pairs.Diagram.add(user_diagram)
+
+        
+        elif chart_type == dashboard_models.Diagram.StackedBarChart or chart_type == dashboard_models.Diagram.LineChart:
+            project = dashboard_models.Project.objects.filter(RepositoryURL=valueData['repo']).first()
+            user_diagram = dashboard_models.Diagram.objects.create(Name=chart_name,Diagram_type=chart_type,horizontal_axis_name=categoryData_name)
+            user_diagram.User.add(user)
+            
+            for item in valueData:
+                #图表对应多个Project
+                user_diagram.PID.add(project)
+                detailData = item['detailData']
+                detailData_name = item['name']
+
+                #存储每张图表的数据
+                for xitem, yitem in categoryData, detailData:
+                    key_value_pairs = dashboard_models.DiagramValue.objects.create(Date=xitem,key=detailData_name,value=yitem)
+                    key_value_pairs.Diagram.add(user_diagram)
+        
+
+    else:
+        return HttpResponse("邮箱未注册或项目不存在")
