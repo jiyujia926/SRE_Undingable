@@ -24,7 +24,7 @@ def checkurl(request):
     if list1:
         # 这个链接仓库里有
         # print(list1[0]['RepositoryURL']==address)
-        
+        # spideissue(address)
         return HttpResponse("true")
     else:
         # 这个链接仓库里没有
@@ -37,12 +37,17 @@ def checkurl(request):
             project.save()
             importDB(address)
             return HttpResponse("添加进数据库")
-# def spider(url:str):
-#     analyze_commit(url)
 
 # def analyze_commit(url:str):
 #     commitbag = getcommit(url)
 #     print(commitbag)
+def spideissue(url:str):
+    infolist = get_open_issue(url)
+    print(infolist)
+    infolist = get_closed_issue(url)
+    print(infolist)
+    
+    
 
 #celery tasks
 def importDB(url:str):

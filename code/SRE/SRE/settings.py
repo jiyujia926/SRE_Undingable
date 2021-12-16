@@ -166,3 +166,12 @@ CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0' # Broker配置，使用Redis作�
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0' # BACKEND配置，这里使用redis
 
 CELERY_RESULT_SERIALIZER = 'json' # 结果序列化方案
+
+#邮件发送设置
+EMAIL_USE_TLS = True   #是否使用TLS安全传输协议
+EMAIL_HOST = 'smtp.qq.com' 
+EMAIL_PORT = 587
+EMAIL_HOST_USER = '2482892055@qq.com' # 帐号
+EMAIL_HOST_PASSWORD = 'nqkaaqdqqivmeaab' 
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

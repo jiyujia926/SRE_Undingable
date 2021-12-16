@@ -25,4 +25,6 @@ urlpatterns = [
     # path('spider/',dash_view.spider),
     path('checkurl/',dash_view.checkurl),
     path('modifypassword',user_view.modifyPassword),
+    path('find_pwd/', user_view.findPassword),
+    path('verify_code/', user_view.Verifycode)
 ]

@@ -28,8 +28,8 @@ import Typography from "@material-ui/core/Typography";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
-const server = "http://122.51.228.166:8000";
-// const server = "http://127.0.0.1:8000";
+// const server = "http://122.51.228.166:8000";
+const server = "http://127.0.0.1:8000";
 
 const useStyles = makeStyles(styles);
 
@@ -184,7 +184,6 @@ export default function AdminNavbarLinks() {
       Name: formData.username,
       Password: formData.password,
       Email: formData.email,
-      Github: "ababa",
     };
     console.log(data);
     let res = await axios.post(`${server}/register/`, data);
@@ -289,8 +288,10 @@ export default function AdminNavbarLinks() {
     }
   };
   async function sendemail() {
-    let res = { data: "邮箱已注册" };
-    //let res = await axios.post(`${server}//`, { Email: formData.email });
+    // let res = { data: "邮箱已注册" };
+    let res = await axios.post(`${server}/find_pwd/`, {
+      Email: formData.email,
+    });
     if (res.data === "邮箱未注册") {
       setFormData({
         ...formData,
@@ -351,8 +352,8 @@ export default function AdminNavbarLinks() {
       Newpassword: formData.newpassword,
     };
     console.log(data);
-    let res = { data: "设置成功" };
-    //let res = await axios.post(`${server}//`, data);
+    // let res = { data: "设置成功" };
+    let res = await axios.post(`${server}/verify_code/`, data);
     if (res.data === "设置成功") {
       handleToLogin();
       setFormData({ ...formData, email: "", password: "" });
