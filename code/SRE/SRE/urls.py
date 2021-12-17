@@ -30,4 +30,7 @@ urlpatterns = [
     path('get_data/',dash_view.get_data),
     # path('test/',dash_view.test),
     path('checkstate/',dash_view.checkstate),
+    path('addfavor/',user_view.addFavor),
+    path('checkfavor/',user_view.checkFavor),
+    path('deletefavor/',user_view.deleteFavor)
 ]
