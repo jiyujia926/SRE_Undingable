@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from register import views as user_view
 from dashboard import views as dash_view
+from dashboard import tasks as dash_tasks
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/',user_view.register),
@@ -30,4 +31,5 @@ urlpatterns = [
     path('get_data/',dash_view.get_data),
     # path('test/',dash_view.test),
     path('checkstate/',dash_view.checkstate),
+    path('wdnmd/',dash_tasks.threespider)
 ]
