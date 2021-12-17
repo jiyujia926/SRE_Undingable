@@ -23,13 +23,13 @@ const useStyles = makeStyles(styles);
 export default function ListBox(props) {
   const classes = useStyles();
   const { showFunc, para } = props;
-  const [test, setTest] = React.useState(1);
   const [input, setInput] = React.useState("");
+  //const [timer, setTimer] = React.useState(false);
   //const [address, setAddress] = React.useState([]);
   const [addressList, setAddressList] = React.useState([
     { address: "1111", ready: true, checked: false },
     { address: "2222", ready: true, checked: false },
-    { address: "3333", ready: true, checked: false },
+    { address: "3333", ready: false, checked: false },
     { address: "4444", ready: false, checked: false },
   ]);
   const handleInputChange = (event) => {
@@ -119,9 +119,46 @@ export default function ListBox(props) {
       })
     );
   };
+  async function checkState() {
+    let data = {
+      Address: "",
+    };
+    let res;
+    let promises = addressList.map(async (current) => {
+      if (current.ready) {
+        return current;
+      } else {
+        data.Address = current.address;
+        res = await axios.post(`${server}/checkstate/`, data);
+        //res = { data: "爬好" };
+        if (res.data === "爬好了") {
+          return {
+            address: current.address,
+            ready: true,
+            checked: current.checked,
+          };
+        } else {
+          return current;
+        }
+      }
+    });
+    setAddressList(await Promise.all(promises));
+  }
   React.useEffect(() => {
-    setTest(test + 1);
-  }, []);
+    let interval;
+    let state = addressList.some((current) => {
+      return current.ready === false;
+    });
+    //setTimer(state);
+    if (state) {
+      interval = setInterval(() => {
+        checkState();
+      }, 1000);
+    } else {
+      alert("stop");
+    }
+    return () => clearInterval(interval);
+  });
   return (
     <Card className={classes.root}>
       <List className={classes.list}>

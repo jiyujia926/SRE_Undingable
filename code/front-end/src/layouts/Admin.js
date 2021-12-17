@@ -13,7 +13,7 @@ import routes from "routes.js";
 
 import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 
-import logo from "assets/img/reactlogo.png";
+import logo from "assets/img/cloudinglogo.png";
 
 let ps;
 
