@@ -8,6 +8,10 @@ class Project(models.Model):
     State = models.BooleanField()
     RepositoryURL = models.URLField()
 
+class Favor(models.Model):
+    User = models.ManyToManyField(User)
+    project = models.ManyToManyField(Project)
+
 class Chart(models.Model):
     User = models.ManyToManyField(User)
     project = models.ManyToManyField(Project, related_name='Project')
