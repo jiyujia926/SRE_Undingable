@@ -159,6 +159,46 @@ data = {
 
 
 
+## 5. 数据表格 TablePro
+
+组件名：`TablePro`
+
+使用方法：直接调用即可
+
+```jsx
+import TablePro from .. ;
+<TablePro data={{data}} />
+```
+
+数据格式：object
+
+要求的数据比较多，考虑到 Dashboard 展示 contributor 信息和 customizationList 页面展示自定义的信息展示都要用到，所以除了数据外还需要传入对应数据域的列宽width
+
+```jsx
+data = {
+  // column: array, 每个item是一个object，存放一列的表格信息
+  columns: [ // 通常包括field(域名)，headerName(显示的表头名), width(列宽)
+    { field: "id", headerName: "ID", width: 90 },
+    { field: "repoName", headerName: "Repo Name", width: 200 },
+    { field: "address", headerName: "Repo Address", width: 200 },
+    { field: "favorTime", headerName: "Favor Time", width: 150 },
+  ],
+  // rows: array, 每个item是一个object，存放自定义的dashboard的信息
+  rows: [ // 每个item的key值要与column中的field相对应
+    {
+      id: 1,
+      repoName: "JYJ/BaiCaoJian",
+      address: "github/JYJ/BCJ",
+      favorTime: "yy-mm-dd"
+    },
+  ],
+  pageRows: 5,    // 表示表格一页展示多少条数据
+  checkBox: true, // true表示可以勾选
+}
+```
+
+
+
 ## 补充 Addition
 
 尺寸：要调整图标大小直接修改父组件的内联style即可
@@ -166,3 +206,4 @@ data = {
 配色：在图表功能全部完善以后再重新配色
 
 Resize：后续会增加需要传入的`props`，会增加一个布尔变量来判断是否要放大
+
