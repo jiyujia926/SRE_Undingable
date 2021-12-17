@@ -45,6 +45,17 @@ class Chart(models.Model):
     DataType = models.CharField(max_length=50)
     DataDetailType = models.CharField(max_length=100)
 
+    TimeScale = models.CharField(max_length=20)
+    CreatedTime = models.DateTimeField(auto_now_add=True)
+
+class Template(models.Model):
+    User = models.ManyToManyField(User)
+    Chart = models.ManyToManyField(Chart)
+    Name = models.CharField(max_length=255)
+    Info = models.TextField()
+  
+    CreatedTime = models.DateTimeField(auto_now_add=True)
+
 
 
 class Contributor(models.Model):
@@ -88,7 +99,7 @@ class ClosedIssueRecord(models.Model):
     CloseTime = models.DateField()
 
 #以天为时间单位，一个项目的总贡献量
-class AllCommit(models.Model):
+class DayCommit(models.Model):
     Project = models.ManyToManyField(Project)
     Time = models.DateField()
     committedCount = models.IntegerField(null=True, blank=True)
@@ -96,9 +107,44 @@ class AllCommit(models.Model):
     addedCount = models.IntegerField(null=True, blank=True)
     deletedCount = models.IntegerField(null=True, blank=True)
 
-class AllIssue(models.Model):
+#以月为时间单位，一个项目的总贡献量
+class MonthCommit(models.Model):
+    Project = models.ManyToManyField(Project)
+    Time = models.CharField(max_length=20)
+    committedCount = models.IntegerField(null=True, blank=True)
+    changedCount = models.IntegerField(null=True, blank=True)
+    addedCount = models.IntegerField(null=True, blank=True)
+    deletedCount = models.IntegerField(null=True, blank=True)
+
+#以年为时间单位，一个项目的总贡献量
+class YearCommit(models.Model):
+    Project = models.ManyToManyField(Project)
+    Time = models.CharField(max_length=20)
+    committedCount = models.IntegerField(null=True, blank=True)
+    changedCount = models.IntegerField(null=True, blank=True)
+    addedCount = models.IntegerField(null=True, blank=True)
+    deletedCount = models.IntegerField(null=True, blank=True)
+
+#以天为时间单位
+class DayIssue(models.Model):
     Project = models.ManyToManyField(Project)
     Time = models.DateField()
+    Count = models.IntegerField(null=True, blank=True)
+    closedCount = models.IntegerField(null=True, blank=True)
+    openedCount = models.IntegerField(null=True, blank=True)
+
+#以天为时间单位
+class MonthIssue(models.Model):
+    Project = models.ManyToManyField(Project)
+    Time = models.CharField(max_length=20)
+    Count = models.IntegerField(null=True, blank=True)
+    closedCount = models.IntegerField(null=True, blank=True)
+    openedCount = models.IntegerField(null=True, blank=True)
+
+#以天为时间单位
+class YearIssue(models.Model):
+    Project = models.ManyToManyField(Project)
+    Time = models.CharField(max_length=20)
     Count = models.IntegerField(null=True, blank=True)
     closedCount = models.IntegerField(null=True, blank=True)
     openedCount = models.IntegerField(null=True, blank=True)

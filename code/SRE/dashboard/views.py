@@ -1,3 +1,4 @@
+from django.db.models.aggregates import Count
 from django.http.response import ResponseHeaders
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -135,3 +136,11 @@ def analyze_commit(url:str):
 #celery tasks
 def importDB(url:str):
     tasks.spider.delay(url)
+
+#聚合函数测试
+# def test(request):
+#     url = "https://github.com/jiyujia926/NFTauction/"
+#     project = models.Project.objects.filter(RepositoryURL=url).first()
+#     list1 = list(models.CommitRecord.objects.values('Time').filter(Project=project).order_by('Time').annotate(Commit=Count('id'),Change=Count('ChangedFileCount'),Add=Count('AdditionCount'),delete=Count('DeletionCount')))
+#     print(list1)
+#     return HttpResponse("caonima")
