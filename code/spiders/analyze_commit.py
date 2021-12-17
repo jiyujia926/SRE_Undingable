@@ -7,6 +7,7 @@ from datetime import datetime
 from datetime import timedelta
 def commit_data(url:str):
     # url = "https://github.com/jiyujia926/NFTauction/commit/02dfc9ddd0fc4fac62bf23eb774970700ef9ca9e"
+    # print(url)
     strhtml = requests.get(url)
     soup = BeautifulSoup(strhtml.text,'lxml')
     data = soup.select('#repo-content-pjax-container > div.commit.full-commit.mt-0.px-2.pt-2 > div.commit-meta.p-2.d-flex.flex-wrap > div.flex-self-start.no-wrap.mr-md-4.mr-0')
@@ -32,13 +33,26 @@ def commit_data(url:str):
     # print(local_date_str)
     bag['commit_time']=local_date_str[:10]
     data = soup.select('#toc > div.toc-diff-stats > button')
-    if data[0]:
+    # print(data)
+    if data:
         rawchanged = str(data[0])
         startindex = rawchanged.find('>')
         endindex = rawchanged.find('changed')
         changed = rawchanged[startindex+10:endindex-1]
         # print(changed+" changed file")
         bag['changed_file']=changed
+    else:
+        data = soup.select('#toc > div.toc-diff-stats > strong:nth-child(2)')
+        # print(data)
+        if data:
+            rawchanged = str(data[0])
+            startindex = rawchanged.find('>')
+            endindex = rawchanged.find('changed')
+            changed = rawchanged[startindex+1:endindex-1]
+            # print(changed+" changed file")
+            bag['changed_file']=changed.replace(',','')
+        else:
+            bag['changed_file']='0'
     data = soup.select('#toc > div.toc-diff-stats > strong:nth-child(3)')
     if data[0]:
         rawaddition = str(data[0])
@@ -57,6 +71,7 @@ def commit_data(url:str):
         bag['deletions']=deletions.replace(',',"")
     # print(newtime)
     # print(commitor)
+    # print(bag)
     return bag
     # commit_user = ""
     # for item in soup.find_all('a'):
