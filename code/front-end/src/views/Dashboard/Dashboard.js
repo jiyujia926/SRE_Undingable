@@ -15,6 +15,7 @@ import Card from "components/Card/Card.js";
 import CheckBoxSet from "../../components/CheckBoxSet/CheckBoxSet";
 import ListBox from "../../components/ListBox/ListBox";
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
+import { Fab } from "@material-ui/core";
 //import Cardshow from "../../components/Card/Cardshow";
 //import PieChart from "../../components/Charts/PieChart";
 //import BarChart from "../../components/Charts/BarChart";
@@ -71,6 +72,14 @@ export default function Dashboard() {
               )
           )}
       </GridContainer>
+      <div className={classes.fabset}>
+        <Fab variant="extended" color="secondary" className={classes.fab}>
+          Apply
+        </Fab>
+        <Fab variant="extended" color="secondary" className={classes.fab}>
+          Customization
+        </Fab>
+      </div>
       {/*
       <Cardshow
         datatype="commit"

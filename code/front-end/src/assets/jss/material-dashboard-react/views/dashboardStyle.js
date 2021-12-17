@@ -119,6 +119,17 @@ const dashboardStyle = (theme) => ({
     alignItems: "center",
     padding: "15px 0",
   },
+  fabset: {
+    position: "fixed",
+    display: "flex",
+    flexDirection: "column",
+    bottom: theme.spacing(4),
+    right: theme.spacing(2),
+  },
+  fab: {
+    margin: "7px 0",
+    padding: "0 22px",
+  },
 });
 
 export default dashboardStyle;

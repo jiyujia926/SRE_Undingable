@@ -14,6 +14,7 @@ export default function CheckBoxSet(props) {
   const { setFunc } = props;
   const [dataTypes, setDataTypes] = React.useState({
     Commit: true,
+
     Issue: true,
     "Pull/Request": false,
     Contributor: false,

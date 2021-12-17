@@ -46,9 +46,7 @@ export default function ListBox(props) {
   const [formData, setFormData] = React.useState(initialState);
   const [op, setOp] = React.useState("");
   const [index, setIndex] = React.useState(-1);
-  const [addressList, setAddressList] = React.useState([
-    { address: "1111", checked: false, ready: true, favor: false },
-  ]);
+  const [addressList, setAddressList] = React.useState([]);
   const handleInputChange = (event) => {
     setInput(event.target.value);
   };
@@ -79,11 +77,7 @@ export default function ListBox(props) {
           repo: tmpInput,
         };
         let res2 = await axios.post(`${server}/checkfavor/`, data2);
-        if (res2.data === "已收藏") {
-          isFavored = true;
-        } else {
-          isFavored = false;
-        }
+        isFavored = res2.data === "已收藏";
       }
       setAddressList([
         ...addressList,

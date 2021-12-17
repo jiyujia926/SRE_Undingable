@@ -11,6 +11,7 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 
 import styles from "assets/jss/material-dashboard-react/views/iconsStyle.js";
+import TablePro from "../../components/TablePro/TablePro";
 
 const useStyles = makeStyles(styles);
 
@@ -19,15 +20,57 @@ export default function Favorites() {
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
-        <Card plain>
-          <CardHeader plain color="primary">
-            <h4 className={classes.cardTitleWhite}>Material Design Icons</h4>
-            <p className={classes.cardCategoryWhite}>
-              Handcrafted by our friends from{" "}
-            </p>
-          </CardHeader>
-          <CardBody>
-          </CardBody>
+        <Card>
+          <TablePro
+            data={{
+            columns: [
+              { field: "id", headerName: "ID", width: 90 },
+              { field: "repoName", headerName: "Repo Name", width: 200 },
+              { field: "address", headerName: "Repo Address", width: 200 },
+              { field: "favorTime", headerName: "Favor Time", width: 150 },
+            ],
+            rows: [
+              {
+                id: 1,
+                repoName: "JYJ/BaiCaoJian",
+                address: "github/JYJ/BCJ",
+                favorTime: "yy-mm-dd",
+              },
+              {
+                id: 2,
+                repoName: "JYJ/Clouding",
+                address: "github/JYJ/Clouding",
+                favorTime: "yy-mm-dd",
+              },
+              {
+                id: 3,
+                repoName: "meta/React",
+                address: "github/meta/React",
+                favorTime: "yy-mm-dd",
+              },
+              {
+                id: 4,
+                repoName: "meta/Oculus",
+                address: "github/meta/Oculus",
+                favorTime: "yy-mm-dd",
+              },
+              {
+                id: 5,
+                repoName: "QsTech/zju-icicle",
+                address: "github/QsTech/zju-icicle",
+                favorTime: "yy-mm-dd",
+              },
+              {
+                id: 6,
+                repoName: "MS/HoloLens",
+                address: "github/MS/HoloLens",
+                favorTime: "yy-mm-dd",
+              },
+            ],
+            pageRows: 5,
+            checkBox: true,
+          }}
+            />
         </Card>
       </GridItem>
     </GridContainer>
