@@ -34,5 +34,6 @@ urlpatterns = [
     path('wdnmd/',dash_tasks.threespider),
     path('addfavor/',user_view.addFavor),
     path('checkfavor/',user_view.checkFavor),
+    path('returnfavor/',user_view.returnFavor),
     path('deletefavor/',user_view.deleteFavor)
 ]
