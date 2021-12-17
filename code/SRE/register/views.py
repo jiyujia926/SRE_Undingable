@@ -10,7 +10,6 @@ import random
 import datetime
 import pytz
 
-from code.SRE.dashboard.models import Project
 from . import models
 from dashboard import models as dashboard_models
 # Create your views here.
