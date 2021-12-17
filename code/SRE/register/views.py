@@ -211,7 +211,7 @@ def deleteFavor(request):
     else:
         return HttpResponse("删除失败")
 
-def returnFavor(request):
+def returnFavorchart(request):
     data = json.loads(request.body)
     user = models.User.objects.filter(Email=data['Email']).first()
     project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
