@@ -116,3 +116,8 @@ def initialcommitdata(url:str):
         print(item)
         yearcommit = models.YearCommit.objects.create(Time=item,committedCount=Year[item]['Commit'],changedCount=Year[item]['Change'],addedCount=Year[item]['Add'],deletedCount=Year[item]['Delete'])
         yearcommit.Project.add(project)
+    print("initial1")
+    proj=models.Project.objects.get(RepositoryURL=url)
+    proj.State=1
+    proj.save()
+    print("initial2")
