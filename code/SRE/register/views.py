@@ -171,27 +171,45 @@ def addFavor(request):
     data = json.loads(request.body)
     user = models.User.objects.filter(Email=data['Email']).first()
     project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
+    check = dashboard_models.Favor.objects.filter(User=user,project=project).first()
+    if check:
+        return HttpResponse("你已收藏")
     favor = dashboard_models.Favor.objects.create()
     favor.User.add(user)
-    favor.project.add(project)
+    favor.Project.add(project)
     return HttpResponse("收藏成功")
 
 def checkFavor(request):
     data = json.loads(request.body)
     user = models.User.objects.filter(Email=data['Email']).first()
     project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
-    favor = dashboard_models.Favor.objects.filter(User=user,project=project)
+    favor = dashboard_models.Favor.objects.filter(User=user,Project=project).first()
     if favor:
         return HttpResponse("已收藏")
     else:
         return HttpResponse("未收藏")
 
+def returnFavor(request):
+    data = json.loads(request.body)
+    user = models.User.objects.filter(Email=data['Email']).first()
+    project_list = list(dashboard_models.Favor.objects.values('project').filter(User=user))
+    list1=[]
+    for item in project_list:
+        url = dashboard_models.Project.objects.values().filter(PID=item['project']).first()
+        print(list(url['RepositoryURL']))
+        list1.append(url['RepositoryURL'])
+    return HttpResponse(json.dumps(list1))
+
 def deleteFavor(request):
     data = json.loads(request.body)
     user = models.User.objects.filter(Email=data['Email']).first()
     project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
-    favor = dashboard_models.Favor.objects.filter(User=user,project=project).delete()
-    return HttpResponse("删除成功")
+    favor = dashboard_models.Favor.objects.filter(User=user,Project=project).first()
+    if favor:
+        favor.delete()
+        return HttpResponse("删除成功")
+    else:
+        return HttpResponse("删除失败")
 
 def returnFavor(request):
     data = json.loads(request.body)
@@ -243,9 +261,11 @@ def returnFavor(request):
                         value = list(dashboard_models.DayIssue.values('closedCount').filter(project==project))
                     
                     repo_value[type] = value
-                Value[repoURL] = repoValue
-            valueTime[type] = repoTime
     else:
         return HttpResponse("邮箱未注册")
 
-    
+def test(request):
+    url = "https://github.com/jiyujia926/NFTauction/"
+    Email= "3190103367@zju.edu.cn"
+    user = models.User.objects.filter(Email=Email).first()
+    project = dashboard_models.Project.objects.filter(RepositoryURL=url).first()
