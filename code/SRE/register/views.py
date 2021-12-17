@@ -176,14 +176,14 @@ def addFavor(request):
         return HttpResponse("你已收藏")
     favor = dashboard_models.Favor.objects.create()
     favor.User.add(user)
-    favor.Project.add(project)
+    favor.project.add(project)
     return HttpResponse("收藏成功")
 
 def checkFavor(request):
     data = json.loads(request.body)
     user = models.User.objects.filter(Email=data['Email']).first()
     project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
-    favor = dashboard_models.Favor.objects.filter(User=user,Project=project).first()
+    favor = dashboard_models.Favor.objects.filter(User=user,project=project).first()
     if favor:
         return HttpResponse("已收藏")
     else:
@@ -204,7 +204,7 @@ def deleteFavor(request):
     data = json.loads(request.body)
     user = models.User.objects.filter(Email=data['Email']).first()
     project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
-    favor = dashboard_models.Favor.objects.filter(User=user,Project=project).first()
+    favor = dashboard_models.Favor.objects.filter(User=user,project=project).first()
     if favor:
         favor.delete()
         return HttpResponse("删除成功")
