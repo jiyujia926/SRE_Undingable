@@ -94,9 +94,12 @@ def get_data(request):
     projectname = projectlist[0]['Name'][1:]
     chartname = projectname + "-" + data['Datatype'] + "-" + data['Charttype']
     print(chartname)
-    chart = models.Chart.objects.create(Name=chartname,ChartType=data['Charttype'],DataType=data['Datatype'],DataDetailType=data['Datatype'])
-    chart.project.add(project)
-    chart.HasProject.add(project)
+    list1 = list(models.Chart.objects.filter(project=project))
+    print(list1)
+    if not list1:
+        chart = models.Chart.objects.create(Name=chartname,ChartType=data['Charttype'],DataType=data['Datatype'],DataDetailType=data['Datatype'])
+        chart.project.add(project)
+        chart.HasProject.add(project)
     commitlist = list(models.AllCommit.objects.values().filter(Project=project).order_by('Time'))
     print(commitlist)
     timelist=[]
