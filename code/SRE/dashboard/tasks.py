@@ -1,10 +1,12 @@
 from __future__ import absolute_import, unicode_literals
+from django import http
 from django.db.models.aggregates import Count, Sum
 from celery import shared_task
 from .get_commit import getcommit
 from .get_issue import get_open_issue,get_closed_issue
 from . import models
 import django
+from django.http import HttpResponse
 django.setup()  					# 前4句引入django测试环境
 
 
@@ -14,7 +16,8 @@ def spider(url:str):
     initialcommitdata(url)
     # analyze_open_issue(url)
     # analyze_close_issue(url)
-
+def threespider():
+    return HttpResponse("wdnmd")
 @shared_task
 def analyze_commit(url:str):
     commitbag = getcommit(url)
