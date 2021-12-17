@@ -75,7 +75,7 @@ export default function Dashboard() {
       <Cardshow
         datatype="commit"
         charttype="barchart"
-        address="https://github.com/jiyujia926/NFTauction"
+        address="https://github.com/Bitergia/prosoul/"
       />
       <GridContainer>
         <GridItem xs={12} sm={12} md={4}>

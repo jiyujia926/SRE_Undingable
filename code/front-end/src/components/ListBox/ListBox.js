@@ -29,7 +29,7 @@ import Button from "@material-ui/core/Button";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 const server = "http://122.51.228.166:8000";
-//const server = "http://127.0.0.1:8000";
+// const server = "http://127.0.0.1:8000";
 const useStyles = makeStyles(styles);
 
 export default function ListBox(props) {
@@ -242,7 +242,7 @@ export default function ListBox(props) {
         return current;
       } else {
         data.Address = current.address;
-        //res = await axios.post(`${server}/checkstate/`, data);
+        res = await axios.post(`${server}/checkstate/`, data);
         res = { data: "爬好了" };
         if (res.data === "爬好了") {
           return {
