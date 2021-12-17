@@ -16,6 +16,7 @@ def spider(url:str):
     initialcommitdata(url)
     # analyze_open_issue(url)
     # analyze_close_issue(url)
+@shared_task
 def threespider():
     return HttpResponse("wdnmd")
 @shared_task
