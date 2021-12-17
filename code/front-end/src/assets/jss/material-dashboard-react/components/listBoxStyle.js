@@ -55,5 +55,16 @@ const listBoxStyle = {
   itemDone: {
     color: "primary",
   },
+  form_head: {
+    textAlign: "center",
+    padding: "20px 24px 0",
+  },
+  form_content: {
+    padding: "8px 24px 20px",
+  },
+  form_button: {
+    width: "30%",
+    margin: "15px 10% 0px",
+  },
 };
 export default listBoxStyle;
