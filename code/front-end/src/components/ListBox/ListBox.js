@@ -17,8 +17,8 @@ import { Divider, InputBase, Paper } from "@material-ui/core";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
-// const server = "http://122.51.228.166:8000";
-const server = "http://127.0.0.1:8000";
+const server = "http://122.51.228.166:8000";
+// const server = "http://127.0.0.1:8000";
 const useStyles = makeStyles(styles);
 
 export default function ListBox(props) {
@@ -27,12 +27,7 @@ export default function ListBox(props) {
   const [input, setInput] = React.useState("");
   //const [timer, setTimer] = React.useState(false);
   //const [address, setAddress] = React.useState([]);
-  const [addressList, setAddressList] = React.useState([
-    { address: "1111", ready: true, checked: false },
-    { address: "2222", ready: true, checked: false },
-    { address: "3333", ready: false, checked: false },
-    { address: "4444", ready: false, checked: false },
-  ]);
+  const [addressList, setAddressList] = React.useState([]);
   const handleInputChange = (event) => {
     setInput(event.target.value);
   };
@@ -56,6 +51,10 @@ export default function ListBox(props) {
       alert("请输入正确的开源github仓库地址");
     } else {
       alert("添加进数据库");
+      setAddressList([
+        ...addressList,
+        { address: input, ready: false, checked: false },
+      ]);
     }
   }
   const handleSearch = () => {
@@ -156,7 +155,7 @@ export default function ListBox(props) {
         checkState();
       }, 1000);
     } else {
-      alert("stop");
+      // alert("stop");
     }
     return () => clearInterval(interval);
   });

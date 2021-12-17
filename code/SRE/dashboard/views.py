@@ -26,7 +26,7 @@ def checkurl(request):
         # 这个链接仓库里有
         # print(list1[0]['RepositoryURL']==address)
         # spideissue(address)
-        tasks.initialcommitdata.delay(address)
+        # tasks.initialcommitdata.delay(address)
         return HttpResponse("true")
     else:
         # 这个链接仓库里没有
@@ -37,8 +37,8 @@ def checkurl(request):
             name = address[18:-1]
             project = models.Project(PID=uuid.uuid4(),Name=name,RepositoryURL=address,State=False)
             project.save()
-            # importDB(address)
-            spider(address)
+            importDB(address)
+            # spider(address)
             return HttpResponse("添加进数据库")
 
 # def analyze_commit(url:str):
@@ -50,6 +50,7 @@ def spideissue(url:str):
     infolist = get_closed_issue(url)
     print(infolist)
 
+
 def get_data(request):
     data = json.loads(request.body)
     print(data)
@@ -60,13 +61,15 @@ def get_data(request):
             address = address + '/'
     project = models.Project.objects.filter(RepositoryURL=address).first()
     projectlist = list(models.Project.objects.values().filter(RepositoryURL=address))
+    if not projectlist:
+        return HttpResponse("no")
     projectname = projectlist[0]['Name'][1:]
     chartname = projectname + "-" + data['Datatype'] + "-" + data['Charttype']
     print(chartname)
     list1 = list(models.Chart.objects.filter(project=project))
     print(list1)
     if not list1:
-        chart = models.Chart.objects.create(Name=chartname,ChartType=data['Charttype'],DataType=data['Datatype'],DataDetailType=data['Datatype'])
+        chart = models.Chart.objects.create(Name=chartname,ChartType=data['Charttype'],DataType=data['Datatype'],DataDetailType=data['Datatype'],TimeScale="day")
         chart.project.add(project)
         chart.HasProject.add(project)
     commitlist = list(models.DayCommit.objects.values().filter(Project=project).order_by('Time'))
