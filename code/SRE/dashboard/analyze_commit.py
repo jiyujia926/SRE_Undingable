@@ -32,13 +32,25 @@ def commit_data(url:str):
     # print(local_date_str)
     bag['commit_time']=local_date_str[:10]
     data = soup.select('#toc > div.toc-diff-stats > button')
-    if data[0]:
+    if data:
         rawchanged = str(data[0])
         startindex = rawchanged.find('>')
         endindex = rawchanged.find('changed')
         changed = rawchanged[startindex+10:endindex-1]
         # print(changed+" changed file")
         bag['changed_file']=changed
+    else:
+        data = soup.select('#toc > div.toc-diff-stats > strong:nth-child(2)')
+        # print(data)
+        if data:
+            rawchanged = str(data[0])
+            startindex = rawchanged.find('>')
+            endindex = rawchanged.find('changed')
+            changed = rawchanged[startindex+1:endindex-1]
+            # print(changed+" changed file")
+            bag['changed_file']=changed.replace(',','')
+        else:
+            bag['changed_file']='0'
     data = soup.select('#toc > div.toc-diff-stats > strong:nth-child(3)')
     if data[0]:
         rawaddition = str(data[0])

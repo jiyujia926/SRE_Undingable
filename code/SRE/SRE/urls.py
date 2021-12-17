@@ -29,10 +29,11 @@ urlpatterns = [
     path('find_pwd/', user_view.findPassword),
     path('verify_code/', user_view.Verifycode),
     path('get_data/',dash_view.get_data),
-    # path('test/',dash_view.test),
+    path('test/',user_view.test),
     path('checkstate/',dash_view.checkstate),
     path('wdnmd/',dash_tasks.threespider),
     path('addfavor/',user_view.addFavor),
     path('checkfavor/',user_view.checkFavor),
+    path('returnfavor/',user_view.returnFavor),
     path('deletefavor/',user_view.deleteFavor)
 ]
