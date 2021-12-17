@@ -24,7 +24,7 @@ export default function Sidebar(props) {
   function activeRoute(routeName) {
     return location.pathname === routeName;
   }
-  const { color, logo, logoText, routes } = props;
+  const { color, logo, routes } = props;
   var links = (
     <List className={classes.list}>
       {routes.map((prop, key) => {
@@ -71,14 +71,13 @@ export default function Sidebar(props) {
       <a
         href="/"
         className={classNames(classes.logoLink, {
-          [classes.logoLinkRTL]: props.rtlActive,
+          [classes.logoLinkRTL]: false,
         })}
         target="_self"
       >
         <div className={classes.logoImage}>
           <img src={logo} alt="logo" className={classes.img} />
         </div>
-        {logoText}
       </a>
     </div>
   );

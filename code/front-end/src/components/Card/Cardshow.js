@@ -74,7 +74,7 @@ export default function Cardshow(props) {
     setChart(event.target.value);
   }
 
-  if (charttype == "piechart") {
+  if (charttype === "piechart") {
     return (
       <GridContainer>
         <GridItem xs={5} sm={10} md={7}>
