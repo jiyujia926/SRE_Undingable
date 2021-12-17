@@ -28,8 +28,8 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
-const server = "http://122.51.228.166:8000";
-// const server = "http://127.0.0.1:8000";
+//const server = "http://122.51.228.166:8000";
+const server = "http://127.0.0.1:8000";
 const useStyles = makeStyles(styles);
 
 export default function ListBox(props) {
@@ -234,7 +234,7 @@ export default function ListBox(props) {
     if (state) {
       interval = setInterval(() => {
         checkState();
-      }, 1000);
+      }, 30000);
     } else {
       //alert("stop");
     }
