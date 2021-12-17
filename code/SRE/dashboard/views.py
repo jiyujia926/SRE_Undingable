@@ -76,7 +76,7 @@ def initialcommitdata(url:str):
     # print(timelist)
     # print(valuelist)
     for i in range(0,len(timelist)):
-        allcommit = models.AllCommit.objects.create(Time=timelist[i],committedCount=valuelist[i]['CommitCount'],changedCount=valuelist[i]['ChangedFileCount'],addedCount=valuelist[i]['AdditionCount'],deletedCount=valuelist[i]['DeletionCount'])
+        allcommit = models.DayCommit.objects.create(Time=timelist[i],committedCount=valuelist[i]['CommitCount'],changedCount=valuelist[i]['ChangedFileCount'],addedCount=valuelist[i]['AdditionCount'],deletedCount=valuelist[i]['DeletionCount'])
         allcommit.Project.add(project)
     # commitlist = list(models.AllCommit.objects.values().filter(Project=project).order_by('Time'))
     # print(commitlist)
@@ -100,7 +100,7 @@ def get_data(request):
         chart = models.Chart.objects.create(Name=chartname,ChartType=data['Charttype'],DataType=data['Datatype'],DataDetailType=data['Datatype'])
         chart.project.add(project)
         chart.HasProject.add(project)
-    commitlist = list(models.AllCommit.objects.values().filter(Project=project).order_by('Time'))
+    commitlist = list(models.DayCommit.objects.values().filter(Project=project).order_by('Time'))
     print(commitlist)
     timelist=[]
     commitcountlist=[]
@@ -134,6 +134,19 @@ def analyze_commit(url:str):
             commitRecord.Project.add(project)
             commitRecord.Contributor.add(contributor)
        
+def checkstate(request):
+    data = json.loads(request.body)
+    address = data['Address']
+    if address[-1] == '/':
+        pass
+    else:
+        address = address + '/'
+    # address = "https://github.com/jiyujia926/NFTauction/"
+    projlist = list(models.Project.objects.values().filter(RepositoryURL=address))
+    if projlist[0]['State']:
+        return HttpResponse("爬好了")
+    else:
+        return HttpResponse("还在爬")
     
 
 #celery tasks

@@ -28,5 +28,6 @@ urlpatterns = [
     path('find_pwd/', user_view.findPassword),
     path('verify_code/', user_view.Verifycode),
     path('get_data/',dash_view.get_data),
-    # path('test/',dash_view.test)
+    # path('test/',dash_view.test),
+    path('checkstate/',dash_view.checkstate),
 ]
