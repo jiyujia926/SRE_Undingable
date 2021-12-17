@@ -122,6 +122,9 @@ def initialcommitdata(url:str):
         print(item)
         yearcommit = models.YearCommit.objects.create(Time=item,committedCount=Year[item]['Commit'],changedCount=Year[item]['Change'],addedCount=Year[item]['Add'],deletedCount=Year[item]['Delete'])
         yearcommit.Project.add(project)
+    
+    models.Project.objects.filter(RepositoryURL=url).update(State=1)
+    
 
 def get_data(request):
     data = json.loads(request.body)
