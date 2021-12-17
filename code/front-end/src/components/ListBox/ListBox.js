@@ -1,4 +1,5 @@
 import React from "react";
+import cookie from "react-cookies";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
@@ -13,8 +14,18 @@ import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import Card from "../Card/Card";
 import styles from "assets/jss/material-dashboard-react/components/listBoxStyle.js";
 import { Favorite, FavoriteBorder } from "@material-ui/icons";
-import { Divider, InputBase, Paper } from "@material-ui/core";
+import {
+  Dialog,
+  DialogContent,
+  Divider,
+  InputBase,
+  Paper,
+} from "@material-ui/core";
 import axios from "axios";
+import Typography from "@material-ui/core/Typography";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 const server = "http://122.51.228.166:8000";
@@ -25,26 +36,48 @@ export default function ListBox(props) {
   const classes = useStyles();
   const { showFunc, para } = props;
   const [input, setInput] = React.useState("");
-  //const [timer, setTimer] = React.useState(false);
-  //const [address, setAddress] = React.useState([]);
-  const [addressList, setAddressList] = React.useState([]);
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const initialState = {
+    address: "",
+    description: "",
+    name: "",
+    info: [],
+  };
+  const [formData, setFormData] = React.useState(initialState);
+  const [op, setOp] = React.useState("");
+  const [index, setIndex] = React.useState(-1);
+  const [addressList, setAddressList] = React.useState([
+    { address: "1111", checked: false, ready: true, favor: false },
+  ]);
   const handleInputChange = (event) => {
     setInput(event.target.value);
   };
+  const handleClickDialog = () => {
+    setOpenDialog(true);
+  };
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+  const handleFormChange = (event) => {
+    let { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
   async function checkurl() {
-    // console.log(1);
+    let tmpInput = input[input.length - 1] === "/" ? input : input + "/";
     let data = {
-      RepositoryURL: input,
+      RepositoryURL: tmpInput,
     };
-    // console.log(data);
     let res = await axios.post(`${server}/checkurl/`, data);
-    // return res;
-    // console.log(res);
     //这里的返回有三种情况，在数据库的仓库，不在数据库的仓库，不是仓库/未开源
     if (res.data === true) {
+      // if (account)
+      // let info = {
+      //   Account: account
+      // };
+      // let isfavor = await axios.post(`${server}/checkfavor/`,)
       setAddressList([
         ...addressList,
-        { address: input, ready: false, checked: false },
+        { address: tmpInput, ready: false, checked: false, favor: true },
       ]);
       alert("数据库里有");
     } else if (res.data === "仓库不存在或未开源") {
@@ -53,7 +86,7 @@ export default function ListBox(props) {
       alert("添加进数据库");
       setAddressList([
         ...addressList,
-        { address: input, ready: false, checked: false },
+        { address: tmpInput, ready: false, checked: false, favor: false },
       ]);
     }
   }
@@ -61,14 +94,17 @@ export default function ListBox(props) {
     let reg = /^(?=^.{3,255}$)(http(s)?:\/\/)?(www\.)?(github.com\/)*([[a-zA-Z0-9]\/+=%&_\.~?-]*)*/; //正则表达式判断是否为github地址
     let result = reg.test(input);
     if (result) {
-      // let res = spider();
-      // 此处调用后端函数, 参数就是{Address: input}
-      // （根据之前的设想，先判断仓库能不能在数据库找到，可以就返回true；
-      // 不能找到就现场爬取，但要先判断是不是仓库(?)，能就返回true，同时更新数据库，没法爬返回false）
-      //alert("good");
-      //res = { data: true };
-      checkurl();
-      //console.log(address); //暂时无用应付编译器
+      if (
+        addressList.some((current) => {
+          return input[input.length - 1] === "/"
+            ? input === current.address
+            : input + "/" === current.address;
+        })
+      ) {
+        alert("项目已在列表中。");
+      } else {
+        checkurl();
+      }
     } else {
       alert("请输入github仓库地址。");
     }
@@ -87,6 +123,7 @@ export default function ListBox(props) {
               address: current.address,
               ready: current.ready,
               checked: !current.checked,
+              favor: current.favor,
             };
           } else {
             return current;
@@ -105,7 +142,50 @@ export default function ListBox(props) {
     }
   };
   const handleFavor = (i) => () => {
-    alert("favor " + i);
+    alert(cookie.load("username"));
+    if (!addressList[i].favor) {
+      setOp("favor");
+      setIndex(i);
+      setFormData({ ...formData, address: addressList[i].address });
+      handleClickDialog();
+    } else {
+      setAddressList(
+        addressList.map((current, index) => {
+          if (index === i) {
+            return {
+              address: current.address,
+              ready: current.ready,
+              checked: current.checked,
+              favor: false,
+            };
+          } else {
+            return current;
+          }
+        })
+      );
+    }
+  };
+  const handleSubmitFavor = () => {
+    //alert("submit favor");
+    setAddressList(
+      addressList.map((current) => {
+        if (index === index) {
+          return {
+            address: current.address,
+            ready: current.ready,
+            checked: current.checked,
+            favor: !current.favor,
+          };
+        } else {
+          return current;
+        }
+      })
+    );
+    setOpenDialog(false);
+  };
+  const handleCancel = () => {
+    //alert("cancel");
+    setOpenDialog(false);
   };
   const handleRemove = (i) => () => {
     setAddressList(
@@ -129,13 +209,14 @@ export default function ListBox(props) {
         return current;
       } else {
         data.Address = current.address;
-        res = await axios.post(`${server}/checkstate/`, data);
-        //res = { data: "爬好" };
+        //res = await axios.post(`${server}/checkstate/`, data);
+        res = { data: "爬好了" };
         if (res.data === "爬好了") {
           return {
             address: current.address,
             ready: true,
             checked: current.checked,
+            favor: current.favor,
           };
         } else {
           return current;
@@ -155,7 +236,7 @@ export default function ListBox(props) {
         checkState();
       }, 1000);
     } else {
-      // alert("stop");
+      //alert("stop");
     }
     return () => clearInterval(interval);
   });
@@ -184,7 +265,7 @@ export default function ListBox(props) {
                   checked={value.checked}
                   tabIndex={-1}
                   inputProps={{ "aria-labelledby": i }}
-                  onClick={handleToggle(i)}
+                  onChange={handleToggle(i)}
                 />
                 <Divider className={classes.divider} orientation="vertical" />
                 <ListItemText
@@ -208,7 +289,8 @@ export default function ListBox(props) {
                 <Checkbox
                   icon={<FavoriteBorder />}
                   checkedIcon={<Favorite />}
-                  onClick={handleFavor(i)}
+                  checked={value.favor}
+                  onChange={handleFavor(i)}
                   aria-label="favor"
                 />
                 <Divider className={classes.divider} orientation="vertical" />
@@ -224,6 +306,66 @@ export default function ListBox(props) {
           </ListItem>
         )}
       </List>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="form-dialog-title"
+      >
+        {op === "favor" && (
+          <div>
+            <DialogTitle id="form-dialog-title" className={classes.form_head}>
+              <Typography component="h1" variant="h5">
+                Favor
+              </Typography>
+            </DialogTitle>
+            <DialogContent className={classes.form_content}>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                }}
+                id="address"
+                label="Repository address"
+                name="address"
+                autoFocus
+                autoComplete="address"
+                value={formData.address}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                id="description"
+                label="Description"
+                name="description"
+                autoComplete="description"
+                value={formData.description}
+                onChange={handleFormChange}
+              />
+              <Button
+                fullWidth
+                variant="contained"
+                color="secondary"
+                className={classes.form_button}
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
+              <Button
+                fullWidth
+                variant="contained"
+                color="secondary"
+                className={classes.form_button}
+                onClick={handleSubmitFavor}
+              >
+                OK
+              </Button>
+            </DialogContent>
+          </div>
+        )}
+      </Dialog>
     </Card>
   );
 }
