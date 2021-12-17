@@ -15,7 +15,7 @@ import Card from "components/Card/Card.js";
 import CheckBoxSet from "../../components/CheckBoxSet/CheckBoxSet";
 import ListBox from "../../components/ListBox/ListBox";
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
-import Cardshow from "../../components/Card/Cardshow";
+//import Cardshow from "../../components/Card/Cardshow";
 //import PieChart from "../../components/Charts/PieChart";
 //import BarChart from "../../components/Charts/BarChart";
 //import StackedBarChart from "../../components/Charts/StackedBarChart";
@@ -71,12 +71,13 @@ export default function Dashboard() {
               )
           )}
       </GridContainer>
+      {/*
       <Cardshow
         datatype="commit"
         charttype="barchart"
         address="https://github.com/jiyujia926/NFTauction"
       />
-      {/*<GridContainer>
+      <GridContainer>
         <GridItem xs={12} sm={12} md={4}>
           <Card chart>
             <CardBody>

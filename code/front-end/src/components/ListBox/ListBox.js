@@ -28,8 +28,8 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
-//const server = "http://122.51.228.166:8000";
-const server = "http://127.0.0.1:8000";
+const server = "http://122.51.228.166:8000";
+//const server = "http://127.0.0.1:8000";
 const useStyles = makeStyles(styles);
 
 export default function ListBox(props) {
@@ -70,14 +70,24 @@ export default function ListBox(props) {
     let res = await axios.post(`${server}/checkurl/`, data);
     //这里的返回有三种情况，在数据库的仓库，不在数据库的仓库，不是仓库/未开源
     if (res.data === true) {
-      // if (account)
-      // let info = {
-      //   Account: account
-      // };
-      // let isfavor = await axios.post(`${server}/checkfavor/`,)
+      let isFavored;
+      if (cookie.load("username") === undefined) {
+        isFavored = false;
+      } else {
+        let data2 = {
+          Email: cookie.load("account"),
+          repo: tmpInput,
+        };
+        let res2 = await axios.post(`${server}/checkfavor/`, data2);
+        if (res2.data === "已收藏") {
+          isFavored = true;
+        } else {
+          isFavored = false;
+        }
+      }
       setAddressList([
         ...addressList,
-        { address: tmpInput, ready: false, checked: false, favor: true },
+        { address: tmpInput, ready: false, checked: false, favor: isFavored },
       ]);
       alert("数据库里有");
     } else if (res.data === "仓库不存在或未开源") {
@@ -142,15 +152,16 @@ export default function ListBox(props) {
     }
   };
   const handleFavor = (i) => () => {
-    alert(cookie.load("username"));
-    if (!addressList[i].favor) {
-      setOp("favor");
+    if (cookie.load("username") === undefined) {
+      alert("Please sign in first.");
+    } else if (!addressList[i].favor) {
       setIndex(i);
+      setOp("favor");
       setFormData({ ...formData, address: addressList[i].address });
       handleClickDialog();
     } else {
       setAddressList(
-        addressList.map((current, index) => {
+        addressList.map((current, i) => {
           if (index === i) {
             return {
               address: current.address,
@@ -163,13 +174,14 @@ export default function ListBox(props) {
           }
         })
       );
+      handleRemoveFavor(i);
     }
   };
-  const handleSubmitFavor = () => {
-    //alert("submit favor");
+  async function handleSubmitFavor() {
+    setOpenDialog(false);
     setAddressList(
-      addressList.map((current) => {
-        if (index === index) {
+      addressList.map((current, i) => {
+        if (index === i) {
           return {
             address: current.address,
             ready: current.ready,
@@ -181,8 +193,29 @@ export default function ListBox(props) {
         }
       })
     );
-    setOpenDialog(false);
-  };
+    let data = {
+      Email: cookie.load("account"),
+      repo: addressList[index].address,
+    };
+    let res = await axios.post(`${server}/addfavor/`, data);
+    if (res.data === "收藏成功") {
+      alert("Success");
+    } else {
+      alert("Error");
+    }
+  }
+  async function handleRemoveFavor(index) {
+    let data = {
+      Email: cookie.load("account"),
+      repo: addressList[index].address,
+    };
+    let res = await axios.post(`${server}/deletefavor/`, data);
+    if (res.data === "删除成功") {
+      alert("Success");
+    } else {
+      alert("Error");
+    }
+  }
   const handleCancel = () => {
     //alert("cancel");
     setOpenDialog(false);
