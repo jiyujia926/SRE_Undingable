@@ -9,6 +9,8 @@ import uuid
 import random
 import datetime
 import pytz
+
+from code.SRE.dashboard.models import Project
 from . import models
 from dashboard import models as dashboard_models
 # Create your views here.
@@ -111,7 +113,7 @@ def Verifycode(request):
     else:
         return HttpResponse("邮箱未注册")
 
-def AddtoFavor(request):
+def AddCharttoFavor(request):
     data = json.loads(request.body)
     user = models.User.objects.filter(Email=data['Email']).first()
     project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
@@ -166,36 +168,66 @@ def AddtoFavor(request):
     else:
         return HttpResponse("邮箱未注册或该项目不存在")
 
+def addFavor(request):
+    data = json.loads(request.body)
+    user = models.User.objects.filter(Email=data['Email']).first()
+    project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
+    favor = dashboard_models.Favor.objects.create()
+    favor.User.add(user)
+    favor.Project.add(project)
+    return HttpResponse("收藏成功")
+
+def checkFavor(request):
+    data = json.loads(request.body)
+    user = models.User.objects.filter(Email=data['Email']).first()
+    project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
+    favor = dashboard_models.Favor.objects.filter(User=user,Project=project)
+    if favor:
+        return HttpResponse("已收藏")
+    else:
+        return HttpResponse("未收藏")
+
+def deleteFavor(request):
+    data = json.loads(request.body)
+    user = models.User.objects.filter(Email=data['Email']).first()
+    project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
+    favor = dashboard_models.Favor.objects.filter(User=user,Project=project).delete()
+    return HttpResponse("删除成功")
+
 def returnFavor(request):
     data = json.loads(request.body)
     user = models.User.objects.filter(Email=data['Email']).first()
     project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
 
     if user:
-        user_chart_list = list(dashboard_models.Chart.objects.filter(User=user,Project=project))
-        Chart={}
+        user_chart_list = list(dashboard_models.Chart.objects.filter(User=user,Project=project).order_by('CreatedTime'))
+        Chartlist={}
         for chart in user_chart_list:
-            chart_name = str(chart.values('Name'))
-            chart_type = str(chart.values('ChartType'))
-            data_type = str(chart.values('DataType'))
-            data_detail_type = str(chart.values('DataDetailType'))
-            repo_list = list(chart.values('HasProject'))
-            time_scale = str(chart.values('TimeScale'))
-            created_time = chart.values('CreatedTime')
+            
+            chart_name = chart.Name
+            chart_type = chart.ChartType
+            data_type = chart.DataType
+            data_detail_type = chart.DataDetailType
+            repo_list = list(chart.HasProject)
+            time_scale = chart.TimeScale
+            created_time = chart.CreatedTime
 
-            Time = {}
+            Chartlist[created_time]={ 'name':chart_name,'type':chart_type,'data_type':data_detail_type,'time_scale':time_scale,'valueTime':{} }
+
+            valueTime = {}
             Value = {}
-            for repo in repo_list:
-                repoTime = {}
-                repoValue = {}
+            repo_time = {'CommitRecord':[],'IssueRecord':[]}
+            repo_value = {}
+            for index, repo in range( 0, len(repo_list) ),repo_list:
+                repo[index]={'Name':project.Name,'url':project.RepositoryURL,'value':{}}
                 repoURL = dashboard_models.AllCommit.objects.values('RepositoryURL').filter(project==repo).first
                 for type in data_type.split('_'):
                     if type == "CommitRecord":
                         time = list(dashboard_models.DayCommit.objects.values('Time').filter(project==repo))  
                     elif type == "IssueRecord":
                         time = list(dashboard_models.DayIssue.objects.values('Time').filter(project==repo))
-                    repoTime[type] = time
-                Time[repoURL] = repoTime
+                    repo_time[type] = list(set(time+repo_time[type]))
+                
 
                 for type in data_detail_type.split('_'):
                     if type == "committed":
@@ -211,8 +243,9 @@ def returnFavor(request):
                     elif type == "closed":
                         value = list(dashboard_models.DayIssue.values('closedCount').filter(project==project))
                     
-                    repoValue[type] = value
+                    repo_value[type] = value
                 Value[repoURL] = repoValue
+            valueTime[type] = repoTime
     else:
         return HttpResponse("邮箱未注册")
 
