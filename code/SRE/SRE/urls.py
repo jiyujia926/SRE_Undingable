@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from code.SRE.register.views import register
 from register import views as user_view
 from dashboard import views as dash_view
 urlpatterns = [
