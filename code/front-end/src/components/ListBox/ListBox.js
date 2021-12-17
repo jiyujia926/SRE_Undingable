@@ -209,7 +209,7 @@ export default function ListBox(props) {
         return current;
       } else {
         data.Address = current.address;
-        //res = await axios.post(`${server}/checkstate/`, data);
+        res = await axios.post(`${server}/checkstate/`, data);
         res = { data: "爬好了" };
         if (res.data === "爬好了") {
           return {
