@@ -16,7 +16,7 @@ import CheckBoxSet from "../../components/CheckBoxSet/CheckBoxSet";
 import ListBox from "../../components/ListBox/ListBox";
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import { Fab } from "@material-ui/core";
-//import Cardshow from "../../components/Card/Cardshow";
+import Cardshow from "../../components/Card/Cardshow";
 //import PieChart from "../../components/Charts/PieChart";
 //import BarChart from "../../components/Charts/BarChart";
 //import StackedBarChart from "../../components/Charts/StackedBarChart";
@@ -80,12 +80,10 @@ export default function Dashboard() {
           Customization
         </Fab>
       </div>
+      {address[0] && (
+        <Cardshow datatype="commit" charttype="barchart" address={address[0]} />
+      )}
       {/*
-      <Cardshow
-        datatype="commit"
-        charttype="barchart"
-        address="https://github.com/Bitergia/prosoul/"
-      />
       <GridContainer>
         <GridItem xs={12} sm={12} md={4}>
           <Card chart>

@@ -230,14 +230,12 @@ export default function ListBox(props) {
     let data = {
       Address: "",
     };
-    let res;
     let promises = addressList.map(async (current) => {
       if (current.ready) {
         return current;
       } else {
         data.Address = current.address;
-        res = await axios.post(`${server}/checkstate/`, data);
-        res = { data: "爬好了" };
+        let res = await axios.post(`${server}/checkstate/`, data);
         if (res.data === "爬好了") {
           return {
             address: current.address,
