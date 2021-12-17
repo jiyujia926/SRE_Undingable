@@ -51,6 +51,10 @@ export default function ListBox(props) {
       alert("请输入正确的开源github仓库地址");
     } else {
       alert("添加进数据库");
+      setAddressList([
+        ...addressList,
+        { address: input, ready: false, checked: false },
+      ]);
     }
   }
   const handleSearch = () => {
