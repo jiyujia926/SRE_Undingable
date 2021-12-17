@@ -1,4 +1,3 @@
-from django.db.models.aggregates import Count, Sum
 from django.http.response import ResponseHeaders
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -27,7 +26,7 @@ def checkurl(request):
         # 这个链接仓库里有
         # print(list1[0]['RepositoryURL']==address)
         # spideissue(address)
-        initialcommitdata(address)
+        tasks.initialcommitdata.delay(address)
         return HttpResponse("true")
     else:
         # 这个链接仓库里没有
@@ -197,4 +196,3 @@ def checkstate(request):
 #celery tasks
 def importDB(url:str):
     tasks.spider.delay(url)
-
