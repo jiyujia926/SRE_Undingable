@@ -79,6 +79,9 @@ const StackedBarChart = (props) => {
       series: series_data,
     };
     option && myChart.setOption(option);
+    window.addEventListener("resize", function () {
+      myChart.resize();
+    });
   };
 
   useEffect(() => {
