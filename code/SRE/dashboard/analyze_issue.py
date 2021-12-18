@@ -14,7 +14,7 @@ def open_issue_time(url:str):
     local_date = utc_date + timedelta(hours=8)
     local_date_str = datetime.strftime(local_date,'%Y-%m-%d %H:%M:%S')
     # print(local_date_str)
-    return local_date_str
+    return local_date_str[:10]
 def closed_issue_time(url:str):
     # url = "https://github.com/Bitergia/prosoul/issues/208"
     strhtml = requests.get(url)
@@ -25,7 +25,7 @@ def closed_issue_time(url:str):
     local_date = utc_date + timedelta(hours=8)
     local_date_str = datetime.strftime(local_date,'%Y-%m-%d %H:%M:%S')
     # print(local_date_str)
-    return local_date_str
+    return local_date_str[:10]
 def get_participators(url:str):
     strhtml = requests.get(url)
     soup = BeautifulSoup(strhtml.text,'lxml')

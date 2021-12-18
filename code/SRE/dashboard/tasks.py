@@ -16,10 +16,10 @@ import pytz
 
 @shared_task
 def spider(url:str):
-    analyze_commit(url)
-    initialcommitdata(url)
-    # analyze_open_issue(url)
-    # analyze_close_issue(url)
+    # analyze_commit(url)
+    # initialcommitdata(url)
+    analyze_open_issue(url)
+    analyze_close_issue(url)
 @shared_task
 def threespider(request):
     return HttpResponse("wdnmd")
@@ -50,15 +50,16 @@ def analyze_open_issue(url:str):
             openissue = models.OpenIssueRecord.objects.create(Opentime=item['opentime'])
             openissue.Project.add(project)
             for name in item['participator']:
-                NameList = list(models.Contributor.objects.values().filter(Name=name))
+                NameList = list(models.Contributor.objects.values().filter(Github=name))
                 if NameList:
-                    contributor = models.Contributor.objects.filter(Name=name).first()
+                    contributor = models.Contributor.objects.filter(Github=name).first()
                     if project not in contributor.Project.all():
                         contributor.Project.add(project)
                 else:
-                    contributor = models.Contributor.objects.create(Name=name,Github=name)
+                    contributor = models.Contributor.objects.create(Github=name)
                     contributor.Project.add(project)
             openissue.Contributor.add(contributor)
+    print("open issue ok")
         
 @shared_task
 def analyze_close_issue(url:str):
@@ -69,15 +70,16 @@ def analyze_close_issue(url:str):
             closeissue = models.ClosedIssueRecord.objects.create(Opentime=item['opentime'],Closetime=item['closetime'])
             closeissue.Project.add(project)
             for name in item['participator']:
-                NameList = list(models.Contributor.objects.values().filter(Name=name))
+                NameList = list(models.Contributor.objects.values().filter(Github=name))
                 if NameList:
-                    contributor = models.Contributor.objects.filter(Name=name).first()
+                    contributor = models.Contributor.objects.filter(Github=name).first()
                     if project not in contributor.Project.all():
                         contributor.Project.add(project)
                 else:
-                    contributor = models.Contributor.objects.create(Name=name,Github=name)
+                    contributor = models.Contributor.objects.create(Github=name)
                     contributor.Project.add(project)
             closeissue.Contributor.add(contributor)
+    print("close issue ok")
 
 @shared_task
 def initialcommitdata(url:str):
