@@ -14,44 +14,13 @@ class Favor(models.Model):
     Info = models.TextField()
 
 class Chart(models.Model):
-    User = models.ManyToManyField(User)
-    project = models.ManyToManyField(Project, related_name='Project')
-    HasProject = models.ManyToManyField(Project, related_name='HasProject')
-    Name = models.CharField(max_length=255)
-    #图表类型
-    BarChart = '1'
-    StackedBarChart = '2'
-    PieChart = '3'
-    LineChart = '4'
-    Chart_type_choices = {
-        (BarChart, 'BarChart'),
-        (StackedBarChart, 'StackedBarChart'),
-        (PieChart, 'PieChart'),
-        (LineChart, 'LineChart')
-    }
-
-    #数据类型
-    # Commit = 'commit'
-    # Changed = 'changed'
-    # Add = 'add'
-    # Delete = 'delete'
-    # Open = 'open'
-    # Close = 'close'
-    # Data_type_choices = {
-    #     (Commit, 'Commit'),
-    #     (Changed, 'Changed'),
-    #     (Add, 'Add'),
-    #     (Delete, 'Delete'),
-    #     (Open, 'Open'),
-    #     (Close, 'Close')
-    # }
-
-    ChartType = models.CharField(max_length=10, choices=Chart_type_choices)
+    ChartType = models.CharField(max_length=50)
     DataType = models.CharField(max_length=50)
-    DataDetailType = models.CharField(max_length=100)
+    Position = models.IntegerField()
+    TimeScale = models.CharField(max_length=20,default="day", blank=True)
+    CheckBox = models.CharField(max_length=50)
+    # "open-close" "open" "close" "open-close-merge" "open-merge" "close-merge" "changed-addition-deletion"
 
-    TimeScale = models.CharField(max_length=20)
-    CreatedTime = models.DateTimeField(auto_now_add=True)
 
 class Template(models.Model):
     User = models.ManyToManyField(User)
@@ -76,22 +45,6 @@ class CommitRecord(models.Model):
     DeletionCount = models.IntegerField(null=True, blank=True)
     Time = models.DateField()
 
-# class IssueRecord(models.Model):
-#     Contributor = models.ManyToManyField(Contributor)
-#     Project = models.ManyToManyField(Project)
-
-#     CLOSED = 'CL'
-#     OPENED = 'OP'
-#     Issue_type_choices = {
-#         (CLOSED, 'closed'),
-#         (OPENED, 'opened')
-#     }
-#     Issue_type = models.CharField(max_length=10, choices=Issue_type_choices)
-    
-#     IssueOpenCount = models.IntegerField(null=True, blank=True)
-#     IssueCloseCount = models.IntegerField(null=True, blank=True)
-#     OpenTime = models.DateField()
-#     CloseTime = models.DateField()
 class OpenIssueRecord(models.Model):
     Contributor = models.ManyToManyField(Contributor)
     Project = models.ManyToManyField(Project)
@@ -102,6 +55,24 @@ class ClosedIssueRecord(models.Model):
     Project = models.ManyToManyField(Project)
     Opentime = models.DateField()
     Closetime = models.DateField()
+
+class OpenPullrequestRecord(models.Model):
+    Contributor = models.ManyToManyField(Contributor)
+    Project = models.ManyToManyField(Project)
+    Opentime = models.DateField()
+
+class ClosedPullrequestRecord(models.Model):
+    Contributor = models.ManyToManyField(Contributor)
+    Project = models.ManyToManyField(Project)
+    Opentime = models.DateField()
+    Closetime = models.DateField()
+
+class MergedPullrequestRecord(models.Model):
+    Contributor = models.ManyToManyField(Contributor)
+    Project = models.ManyToManyField(Project)
+    Opentime = models.DateField()
+    Mergetime = models.DateField()
+
 
 #以天为时间单位，一个项目的总贡献量
 class DayCommit(models.Model):
@@ -134,22 +105,13 @@ class YearCommit(models.Model):
 class DayIssue(models.Model):
     Project = models.ManyToManyField(Project)
     Time = models.DateField()
-    Count = models.IntegerField(null=True, blank=True)
     closedCount = models.IntegerField(null=True, blank=True)
     openedCount = models.IntegerField(null=True, blank=True)
 
 #以天为时间单位
-class MonthIssue(models.Model):
+class DayPullrequest(models.Model):
     Project = models.ManyToManyField(Project)
-    Time = models.CharField(max_length=20)
-    Count = models.IntegerField(null=True, blank=True)
-    closedCount = models.IntegerField(null=True, blank=True)
+    Time = models.DateField()
     openedCount = models.IntegerField(null=True, blank=True)
-
-#以天为时间单位
-class YearIssue(models.Model):
-    Project = models.ManyToManyField(Project)
-    Time = models.CharField(max_length=20)
-    Count = models.IntegerField(null=True, blank=True)
     closedCount = models.IntegerField(null=True, blank=True)
-    openedCount = models.IntegerField(null=True, blank=True)
+    mergedCount = models.IntegerField(null=True, blank=True)
