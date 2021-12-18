@@ -171,11 +171,12 @@ def AddCharttoFavor(request):
 def addFavor(request):
     data = json.loads(request.body)
     user = models.User.objects.filter(Email=data['Email']).first()
-    project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
+    info = data['Description']
+    project = dashboard_models.Project.objects.filter(RepositoryURL=data['Repo']).first()
     check = dashboard_models.Favor.objects.filter(User=user,Project=project).first()
     if check:
         return HttpResponse("你已收藏")
-    favor = dashboard_models.Favor.objects.create()
+    favor = dashboard_models.Favor.objects.create(Info=info)
     favor.User.add(user)
     favor.Project.add(project)
     return HttpResponse("收藏成功")
@@ -183,7 +184,7 @@ def addFavor(request):
 def checkFavor(request):
     data = json.loads(request.body)
     user = models.User.objects.filter(Email=data['Email']).first()
-    project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
+    project = dashboard_models.Project.objects.filter(RepositoryURL=data['Repo']).first()
     favor = dashboard_models.Favor.objects.filter(User=user,Project=project).first()
     if favor:
         return HttpResponse("已收藏")
@@ -193,21 +194,21 @@ def checkFavor(request):
 def returnFavor(request):
     data = json.loads(request.body)
     user = models.User.objects.filter(Email=data['Email']).first()
-    project_list = list(dashboard_models.Favor.objects.values('Project','info').filter(User=user))
+    project_list = list(dashboard_models.Favor.objects.values('Project','Info').filter(User=user))
     list1=[]
     for item in project_list:
         repo={}
         url = dashboard_models.Project.objects.values().filter(PID=item['Project']).first()
-        repo['url'] = url['RepositoryURL']
-        repo['name'] = url['Name']
-        repo['discrpition'] = item['info']
+        repo['Url'] = url['RepositoryURL']
+        repo['Name'] = url['Name']
+        repo['Descrpition'] = item['Info']
         list1.append(repo)
     return HttpResponse(json.dumps(list1))
 
 def deleteFavor(request):
     data = json.loads(request.body)
     user = models.User.objects.filter(Email=data['Email']).first()
-    project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
+    project = dashboard_models.Project.objects.filter(RepositoryURL=data['Repo']).first()
     favor = dashboard_models.Favor.objects.filter(User=user,Project=project).first()
     if favor:
         favor.delete()
@@ -218,7 +219,7 @@ def deleteFavor(request):
 def returnFavorchart(request):
     data = json.loads(request.body)
     user = models.User.objects.filter(Email=data['Email']).first()
-    project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
+    project = dashboard_models.Project.objects.filter(RepositoryURL=data['Repo']).first()
 
     commit_model = {'day':dashboard_models.DayCommit,'month':dashboard_models.MonthCommit,'year':dashboard_models.YearCommit}
     issue_model = {'day':dashboard_models.DayIssue,'month':dashboard_models.MonthIssue,'year':dashboard_models.YearIssue}
