@@ -142,7 +142,7 @@ def initialissuedata(url:str):
     closed_Daylist = list(project_closed_issue.values('Closetime').order_by('Closetime').annotate(closed_issue=Count(id)))
     opened_Daylist = list(project_closed_issue.values('Opentime').order_by('Opentime').annotate(opened_issue=Count(id)))
 
-    if open_Daylist == []:
+    if open_Daylist == [] and closed_Daylist == []:
         return HttpResponse("no issue")
     if closed_Daylist[len(closed_Daylist)-1]['Closetime'] < open_Daylist[len(open_Daylist)-1]['Opentime']:
         end_time = open_Daylist[len(open_Daylist)-1]['Opentime']
@@ -191,11 +191,11 @@ def initialissuedata(url:str):
         day_issue = models.DayIssue.objects.create(Time=time_list[index],closedCount=Daylist['Closed'][index],openedCount=Daylist['Open'][index])
         day_issue.Project.add(project)
     
-    print("initial1")
-    proj=models.Project.objects.get(RepositoryURL=url)
-    proj.State=1
-    proj.save()
-    print("initial2")
+    # print("initial1")
+    # proj=models.Project.objects.get(RepositoryURL=url)
+    # proj.State=1
+    # proj.save()
+    # print("initial2")
 
 @shared_task
 def initial_pullrequest_data(url:str):
@@ -212,7 +212,7 @@ def initial_pullrequest_data(url:str):
     merged_Daylist = list(project_closed_pr.values('Closetime').order_by('Closetime').annotate(merged_issue=Count(id)))
     opened_merged_Daylist = list(project_closed_pr.values('Opentime').order_by('Opentime').annotate(opened_issue=Count(id)))
 
-    if open_Daylist == []:
+    if open_Daylist == [] and closed_Daylist == [] and merged_Daylist == []:
         return HttpResponse("no Pull request")
 
     if closed_Daylist[len(closed_Daylist)-1]['Closetime'] < open_Daylist[len(open_Daylist)-1]['Opentime']:
@@ -244,10 +244,6 @@ def initial_pullrequest_data(url:str):
 
     Daylist = {'Open':[],'Closed':[],'Merged':[]}
 
-    # print(open_Daylist)
-    # print(close_Daylist)
-    # print(opened_Daylist)
-    # print(len(open_Daylist))
     for item in time_list:
         time = datetime.datetime.strptime(item, '%Y-%m-%d').date()
         
@@ -274,8 +270,6 @@ def initial_pullrequest_data(url:str):
             open_count += 1
         Daylist['Open'].append(open_sum + opened_closed_sum + opened_merged_sum - closed_sum - opened_closed_sum)
 
-    # print(Daylist['Open'])
-    # print(Daylist['Close'])
     for index in range(0,len(time_list)):
         day_pullrequest = models.DayPullrequest.objects.create(Time=time_list[index],openedCount=Daylist['Open'][index],closedCount=Daylist['Closed'][index],mergedCount=Daylist['Merged'][index])
         day_pullrequest .Project.add(project)
@@ -290,9 +284,73 @@ def get_date_list(begin_date, end_date):
     date_list = [x.strftime('%Y-%m-%d') for x in list(pd.date_range(start=begin_date, end=end_date))]
     return date_list
 
+@shared_task
+def delete_project(url:str):
+    # project = models.Project.objects.filter(RepositoryURL=url).first()
+    #删除contributor信息
+    delete_contributor(url)
+    #删除commit信息
+    delete_commit(url)
+    #删除issue信息
+    delete_issue(url)
+    #删除pull request信息
+    delete_pullrequest(url)
+
+def delete_contributor(url:str):
+    project = models.Project.objects.filter(RepositoryURL=url).first()
+    check = models.Contributor.objects.filter(Project=project).all()
+    if check:
+        check.delete()
+        return True
+    else:
+        return False
+
+def delete_commit(url:str):
+    project = models.Project.objects.filter(RepositoryURL=url).first()
+    check = models.CommitRecord.objects.filter(Project=project).all()
+    if check:
+        check.delete()
+        models.DayCommit.objects.filter(Project=project).all().delete()
+        models.MonthCommit.objects.filter(Project=project).all().delete()
+        models.YearCommit.objects.filter(Project=project).all().delete()
+        return True
+    else:
+        return False
+
+def delete_issue(url:str):
+    project = models.Project.objects.filter(RepositoryURL=url).first()
+    check_open = models.OpenIssueRecord.objects.filter(Project=project).all()
+    check_closed = models.ClosedIssueRecord.objects.filter(Project=project).all() 
+    if check_open and check_closed:
+        check_open.delete()
+        check_closed.delete()
+        models.DayIssue.objects.filter(Project=project).all().delete()
+        return True
+    else:
+        return False
+
+def delete_pullrequest(url:str):
+    project = models.Project.objects.filter(RepositoryURL=url).first()
+    check_open = models.OpenPullrequestRecord.objects.filter(Project=project).all()
+    check_closed = models.ClosedPullrequestRecord.objects.filter(Project=project).all()
+    check_merged = models.MergedPullrequestRecord.objects.filter(Project=project).all()
+    if check_open and check_closed and check_merged:
+        check_open.delete()
+        check_closed.delete()
+        check_merged.delete()
+        models.DayPullrequest.objects.filter(Project=project).all().delete()
+        return True
+    else:
+        return False
+
 def test(request):
     url = "https://github.com/Bitergia/prosoul/"
     Email= "3190103367@zju.edu.cn"
     user = models.User.objects.filter(Email=Email).first()
     project = models.Project.objects.filter(RepositoryURL=url).first()
+    check = models.Contributor.objects.filter(Project=project).all()
+    if check:
+        return HttpResponse("sss")
+    else:
+        return HttpResponse("aaa")
     
