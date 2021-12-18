@@ -77,6 +77,7 @@ export default function AdminNavbarLinks() {
     handleCloseProfile();
     setAccount({ email: "", username: "" });
     cookie.remove("username");
+    cookie.remove("addressList");
   };
   const handleClickDialog = () => {
     setOp("login");
@@ -125,6 +126,7 @@ export default function AdminNavbarLinks() {
       handleCloseDialog();
       cookie.save("account", formData.email);
       cookie.save("username", name.data);
+      cookie.remove("addressList");
       if (remember) {
         cookie.save("password", formData.password);
       } else {
