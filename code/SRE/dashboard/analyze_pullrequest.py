@@ -12,7 +12,7 @@ def open_pullrequest_time(url:str):
     utc_date = datetime.strptime(rawtime,"%Y-%m-%dT%H:%M:%SZ")
     local_date = utc_date + timedelta(hours=8)
     local_date_str = datetime.strftime(local_date,'%Y-%m-%d %H:%M:%S')
-    print(local_date_str)
+    print(local_date_str[:10])
 
 def merged_pullrequest_closed_time(url:str):
     strhtml = requests.get(url)
@@ -26,7 +26,7 @@ def merged_pullrequest_closed_time(url:str):
     utc_date = datetime.strptime(rawtime,"%Y-%m-%dT%H:%M:%SZ")
     local_date = utc_date + timedelta(hours=8)
     local_date_str = datetime.strftime(local_date,'%Y-%m-%d %H:%M:%S')
-    print(local_date_str)
+    print(local_date_str[:10])
 def merged_pullrequest_open_time(url:str):
     strhtml = requests.get(url)
     soup = BeautifulSoup(strhtml.text,'lxml')
@@ -38,7 +38,7 @@ def merged_pullrequest_open_time(url:str):
     utc_date = datetime.strptime(rawtime,"%Y-%m-%dT%H:%M:%SZ")
     local_date = utc_date + timedelta(hours=8)
     local_date_str = datetime.strftime(local_date,'%Y-%m-%d %H:%M:%S')
-    print(local_date_str)
+    print(local_date_str[:10])
 def closed_pullrequest_open_time(url:str):
     strhtml = requests.get(url)
     soup = BeautifulSoup(strhtml.text,'lxml')
@@ -48,7 +48,7 @@ def closed_pullrequest_open_time(url:str):
     utc_date = datetime.strptime(rawtime,"%Y-%m-%dT%H:%M:%SZ")
     local_date = utc_date + timedelta(hours=8)
     local_date_str = datetime.strftime(local_date,'%Y-%m-%d %H:%M:%S')
-    print(local_date_str)
+    print(local_date_str[:10])
 def closed_pullrequest_closed_time(url:str):
     strhtml = requests.get(url)
     soup = BeautifulSoup(strhtml.text,'lxml')
@@ -58,7 +58,7 @@ def closed_pullrequest_closed_time(url:str):
     utc_date = datetime.strptime(rawtime,"%Y-%m-%dT%H:%M:%SZ")
     local_date = utc_date + timedelta(hours=8)
     local_date_str = datetime.strftime(local_date,'%Y-%m-%d %H:%M:%S')
-    print(local_date_str)
+    print(local_date_str[:10])
 def pullrequest_status(url:str):
     status=""
     strhtml = requests.get(url)
