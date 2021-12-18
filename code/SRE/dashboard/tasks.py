@@ -6,6 +6,7 @@ from celery import shared_task
 from .get_commit import getcommit
 from .get_issue import get_open_issue,get_closed_issue
 from . import models
+from django.db.models import F
 import django
 from django.http import HttpResponse
 django.setup()  					# 前4句引入django测试环境
@@ -126,80 +127,72 @@ def initialcommitdata(url:str):
         print(item)
         yearcommit = models.YearCommit.objects.create(Time=item,committedCount=Year[item]['Commit'],changedCount=Year[item]['Change'],addedCount=Year[item]['Add'],deletedCount=Year[item]['Delete'])
         yearcommit.Project.add(project)
-    print("initial1")
-    proj=models.Project.objects.get(RepositoryURL=url)
-    proj.State=1
-    proj.save()
-    print("initial2")
+    # print("initial1")
+    # proj=models.Project.objects.get(RepositoryURL=url)
+    # proj.State=1
+    # proj.save()
+    # print("initial2")
 
 @shared_task
 def initialissuedata(url:str):
-    
     project = models.Project.objects.filter(RepositoryURL=url).first()
-    
-    project_issue = models.OpenIssueRecord.objects.values().filter(Project=project)
-    open_Daylist = list(project_issue.values('Opentime').order_by('Opentime').annotate(open_issue=Count(id)))
-    close_Daylist = list(project_issue.values('CloseTime').order_by('CloseTime').annotate(close_issue=Count(id)))
+    open_project_issue = models.OpenIssueRecord.objects.values().filter(Project=project)
+    close_project_issue = models.ClosedIssueRecord.objects.values().filter(Project=project)
+    open_Daylist = list(open_project_issue.values('Opentime').order_by('Opentime').annotate(open_issue=Count(id)))
+    close_Daylist = list(close_project_issue.values('Closetime').order_by('Closetime').annotate(close_issue=Count(id)))
+    opened_Daylist = list(close_project_issue.values('Opentime').order_by('Opentime').annotate(opened_issue=Count(id)))
 
-    time_list = get_date_list(open_Daylist[0]['Opentime'], datetime.now().day())
-    #在close的对应时间减去相应的open_issue数量，以最开始的open和最后的close作为结束，后续open数量保持不变，close为0，例如：
-    #open:{12-11:4,12-12:5},close:{12-13:8}；则补全后：open:{12-11:4,12-12:9,12-13:1},close:{12-11:0,12-12:0,12-13:8}
-    
-    openCount = 0
-    openSum = 0
-    closeCount = 0
-    closeSum = 0
-    Daylist = {'open':[],'close':[]}
+    if open_Daylist == []:
+        return HttpResponse("no issue")
+    if close_Daylist[len(close_Daylist)-1]['Closetime'] < open_Daylist[len(open_Daylist)-1]['Opentime']:
+        end_time = open_Daylist[len(open_Daylist)-1]['Opentime']
+    else:
+        end_time = close_Daylist[len(close_Daylist)-1]['Closetime']
+    time_list = get_date_list(open_Daylist[0]['Opentime'],end_time)
+
+    #到目前为止仍在开启的issue的数组index和数量
+    open_count = 0
+    open_sum = 0
+
+    #到目前为止已经关闭的issue的数组index和数量
+    close_count = 0
+    close_sum = 0
+
+    #到目前为止曾经开启的issue的数组index和数量
+    opened_count = 0
+    opened_sum = 0
+    Daylist = {'Open':[],'Close':[]}
+
+    # print(open_Daylist)
+    # print(close_Daylist)
+    # print(opened_Daylist)
+    # print(len(open_Daylist))
+    list1 = []
     for item in time_list:
-        if item in open_Daylist[openCount].keys():
-            closeSum += close_Daylist[openCount][item]
-            Daylist['open'].append(openSum)
-        else:
-            Daylist['open'].append(open_Daylist[openCount][item])
+        time = datetime.datetime.strptime(item, '%Y-%m-%d').date()
+        
+        if close_count<len(close_Daylist) and time == close_Daylist[close_count]['Closetime']:
+            close_sum += close_Daylist[close_count]['close_issue']
+            close_count += 1
 
-        if open_Daylist[openCount][item]:
-            openSum += open_Daylist[openCount][item]
-            Daylist['open'].append(openSum)
-        else:
-            Daylist['open'].append(open_Daylist[openCount][item])
+        Daylist['Close'].append(close_sum)
+        
+        if opened_count<len(opened_Daylist) and time == opened_Daylist[opened_count]['Opentime']:
+            opened_sum += opened_Daylist[opened_count]['opened_issue']
+            opened_count += 1
 
-    Month={}
-    Year={}
-    for item in Daylist:
-        time = str(item['Time']).split('-')
-        monthtime = time[0]+"-"+time[1]
-        yeartime = time[0]
-        if monthtime in Month.keys():
-            Month[monthtime]['Commit'] = Month[monthtime]['Commit'] + item['Commit']
-            Month[monthtime]['Change'] = Month[monthtime]['Change'] + item['Change']
-            Month[monthtime]['Add'] = Month[monthtime]['Add'] + item['Add']
-            Month[monthtime]['Delete'] = Month[monthtime]['Delete'] + item['Delete']
-        else :
-            Month[monthtime] = {'Commit':item['Commit'], 'Change':item['Change'], 'Add':item['Add'], 'Delete':item['Delete']}
+        print(open_count,time,open_sum)
+        if open_count<len(open_Daylist) and time == open_Daylist[open_count]['Opentime']:
+            open_sum += open_Daylist[open_count]['open_issue']
+            open_count += 1
 
-        if yeartime in Year.keys():
-            Year[yeartime]['Commit'] = Year[yeartime]['Commit'] + item['Commit']
-            Year[yeartime]['Change'] = Year[yeartime]['Change'] + item['Change']
-            Year[yeartime]['Add'] = Year[yeartime]['Add'] + item['Add']
-            Year[yeartime]['Delete'] = Year[yeartime]['Delete'] + item['Delete']
-        else:
-            Year[yeartime] = {'Commit':item['Commit'], 'Change':item['Change'], 'Add':item['Add'], 'Delete':item['Delete']}
-    # print(Month)
-    # print(Year)
-
-    for item in Daylist:
-        daycommit = models.DayCommit.objects.create(Time=item['Time'],committedCount=item['Commit'],changedCount=item['Change'],addedCount=item['Add'],deletedCount=item['Delete'])
-        daycommit.Project.add(project)
-
-    for item in Month:
-        print(item)
-        monthcommit = models.MonthCommit.objects.create(Time=item,committedCount=Month[item]['Commit'],changedCount=Month[item]['Change'],addedCount=Month[item]['Add'],deletedCount=Month[item]['Delete'])
-        monthcommit.Project.add(project)
-
-    for item in Year:
-        print(item)
-        yearcommit = models.YearCommit.objects.create(Time=item,committedCount=Year[item]['Commit'],changedCount=Year[item]['Change'],addedCount=Year[item]['Add'],deletedCount=Year[item]['Delete'])
-        yearcommit.Project.add(project)
+        Daylist['Open'].append(open_sum+opened_sum-close_sum)
+    # print(Daylist['Open'])
+    # print(Daylist['Close'])
+    for index in range(0,len(time_list)):
+        day_issue = models.DayIssue.objects.create(Time=time_list[index],closedCount=Daylist['Close'][index],openedCount=Daylist['Open'][index])
+        day_issue.Project.add(project)
+    
     print("initial1")
     proj=models.Project.objects.get(RepositoryURL=url)
     proj.State=1
@@ -211,17 +204,8 @@ def get_date_list(begin_date, end_date):
     return date_list
 
 def test(request):
-    url = "https://github.com/jiyujia926/NFTauction/"
+    url = "https://github.com/Bitergia/prosoul/"
     Email= "3190103367@zju.edu.cn"
     user = models.User.objects.filter(Email=Email).first()
     project = models.Project.objects.filter(RepositoryURL=url).first()
-    project_commit = models.CommitRecord.objects.values().filter(Project=project)
-    Daylist = list(project_commit.values('Time').order_by('Time').annotate(Commit=Count(id),Change=Sum('ChangedFileCount'),Add=Sum('AdditionCount'),Delete=Sum('DeletionCount')))
-
-    # list1 = get_date_list(Daylist[0]['Time'],datetime.datetime.now().day())
-    print(datetime.datetime.now())
-    # print(Daylist[0]['Time'])
-    # print(Daylist[0]['Time'].strftime('%y-%m-%d'))
-    # if list1[0] == Daylist[0]['Time'].strftime('%Y-%m-%d'):
-    #     print("sss")
-    return HttpResponse("2222")
+    
