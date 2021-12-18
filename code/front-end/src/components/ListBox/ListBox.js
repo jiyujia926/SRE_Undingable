@@ -46,7 +46,9 @@ export default function ListBox(props) {
   const [formData, setFormData] = React.useState(initialState);
   const [op, setOp] = React.useState("");
   const [index, setIndex] = React.useState(-1);
-  const [addressList, setAddressList] = React.useState([]);
+  const [addressList, setAddressList] = React.useState(
+    cookie.load("addressList") ? cookie.load("addressList") : []
+  );
   const handleInputChange = (event) => {
     setInput(event.target.value);
   };
@@ -79,23 +81,31 @@ export default function ListBox(props) {
         let res2 = await axios.post(`${server}/checkfavor/`, data2);
         isFavored = res2.data === "已收藏";
       }
-      setAddressList([
+      let tmpList = [
         ...addressList,
         { address: tmpInput, ready: false, checked: false, favor: isFavored },
-      ]);
+      ];
+      setAddressList(tmpList);
+      cookie.save("addressList", tmpList, {
+        maxAge: 3600,
+      });
       alert("数据库里有");
     } else if (res.data === "仓库不存在或未开源") {
       alert("请输入正确的开源github仓库地址");
     } else {
       alert("添加进数据库");
-      setAddressList([
+      let tmpList = [
         ...addressList,
         { address: tmpInput, ready: false, checked: false, favor: false },
-      ]);
+      ];
+      setAddressList(tmpList);
+      cookie.save("addressList", tmpList, {
+        maxAge: 3600,
+      });
     }
   }
   const handleSearch = () => {
-    let reg = /^(?=^.{3,255}$)(http(s)?:\/\/)?(www\.)?(github.com\/)*([[a-zA-Z0-9]\/+=%&_\.~?-]*)*/; //正则表达式判断是否为github地址
+    let reg = /^(?=^.{3,255}$)(http(s)?:\/\/)?(www\.)?(github.com\/)([\w+=%.&_~?-]+)\/([\w+=%.&_~?-]+)(\/)?/; //正则表达式判断是否为github地址
     let result = reg.test(input);
     if (result) {
       if (
@@ -120,20 +130,22 @@ export default function ListBox(props) {
     } else if (!addressList[i].ready) {
       alert("Please wait.");
     } else {
-      setAddressList(
-        addressList.map((current, index) => {
-          if (index === i) {
-            return {
-              address: current.address,
-              ready: current.ready,
-              checked: !current.checked,
-              favor: current.favor,
-            };
-          } else {
-            return current;
-          }
-        })
-      );
+      let tmpList = addressList.map((current, index) => {
+        if (index === i) {
+          return {
+            address: current.address,
+            ready: current.ready,
+            checked: !current.checked,
+            favor: current.favor,
+          };
+        } else {
+          return current;
+        }
+      });
+      setAddressList(tmpList);
+      cookie.save("addressList", tmpList, {
+        maxAge: 3600,
+      });
       if (addressList[i].checked) {
         showFunc(
           para.filter((current) => {
@@ -154,39 +166,43 @@ export default function ListBox(props) {
       setFormData({ ...formData, address: addressList[i].address });
       handleClickDialog();
     } else {
-      setAddressList(
-        addressList.map((current, i) => {
-          if (index === i) {
-            return {
-              address: current.address,
-              ready: current.ready,
-              checked: current.checked,
-              favor: false,
-            };
-          } else {
-            return current;
-          }
-        })
-      );
-      handleRemoveFavor(i);
-    }
-  };
-  async function handleSubmitFavor() {
-    setOpenDialog(false);
-    setAddressList(
-      addressList.map((current, i) => {
+      let tmpList = addressList.map((current, i) => {
         if (index === i) {
           return {
             address: current.address,
             ready: current.ready,
             checked: current.checked,
-            favor: !current.favor,
+            favor: false,
           };
         } else {
           return current;
         }
-      })
-    );
+      });
+      setAddressList(tmpList);
+      cookie.save("addressList", tmpList, {
+        maxAge: 3600,
+      });
+      handleRemoveFavor(i);
+    }
+  };
+  async function handleSubmitFavor() {
+    setOpenDialog(false);
+    let tmpList = addressList.map((current, i) => {
+      if (index === i) {
+        return {
+          address: current.address,
+          ready: current.ready,
+          checked: current.checked,
+          favor: true,
+        };
+      } else {
+        return current;
+      }
+    });
+    setAddressList(tmpList);
+    cookie.save("addressList", tmpList, {
+      maxAge: 3600,
+    });
     let data = {
       Email: cookie.load("account"),
       repo: addressList[index].address,
@@ -215,11 +231,13 @@ export default function ListBox(props) {
     setOpenDialog(false);
   };
   const handleRemove = (i) => () => {
-    setAddressList(
-      addressList.filter((current, index) => {
-        return index !== i;
-      })
-    );
+    let tmpList = addressList.filter((current, index) => {
+      return index !== i;
+    });
+    setAddressList(tmpList);
+    cookie.save("addressList", tmpList, {
+      maxAge: 3600,
+    });
     showFunc(
       para.filter((current) => {
         return current !== addressList[i].address;
@@ -248,7 +266,11 @@ export default function ListBox(props) {
         }
       }
     });
-    setAddressList(await Promise.all(promises));
+    let tmpList = await Promise.all(promises);
+    setAddressList(tmpList);
+    cookie.save("addressList", tmpList, {
+      maxAge: 3600,
+    });
   }
   React.useEffect(() => {
     let interval;
