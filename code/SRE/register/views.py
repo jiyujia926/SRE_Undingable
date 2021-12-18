@@ -201,7 +201,7 @@ def returnFavor(request):
         url = dashboard_models.Project.objects.values().filter(PID=item['Project']).first()
         repo['Url'] = url['RepositoryURL']
         repo['Name'] = url['Name']
-        repo['Descrpition'] = item['Info']
+        repo['Description'] = item['Info']
         list1.append(repo)
     return HttpResponse(json.dumps(list1))
 

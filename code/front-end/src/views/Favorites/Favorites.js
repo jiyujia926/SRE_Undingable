@@ -33,9 +33,9 @@ export default function Favorites() {
           list.map((current, index) => {
             return {
               ID: index + 1,
-              "Repo Name": "unknown",
-              "Repo Address": current,
-              Description: "none",
+              "Repo Name": current.Name,
+              "Repo Address": current.Url,
+              Description: current.Description,
             };
           })
         );

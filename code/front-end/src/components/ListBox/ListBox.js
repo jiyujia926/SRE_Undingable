@@ -76,7 +76,7 @@ export default function ListBox(props) {
       } else {
         let data2 = {
           Email: cookie.load("account"),
-          repo: tmpInput,
+          Repo: tmpInput,
         };
         let res2 = await axios.post(`${server}/checkfavor/`, data2);
         isFavored = res2.data === "已收藏";
@@ -205,7 +205,8 @@ export default function ListBox(props) {
     });
     let data = {
       Email: cookie.load("account"),
-      repo: addressList[index].address,
+      Repo: addressList[index].address,
+      Description: formData.description,
     };
     let res = await axios.post(`${server}/addfavor/`, data);
     if (res.data === "收藏成功") {
@@ -217,7 +218,7 @@ export default function ListBox(props) {
   async function handleRemoveFavor(index) {
     let data = {
       Email: cookie.load("account"),
-      repo: addressList[index].address,
+      Repo: addressList[index].address,
     };
     let res = await axios.post(`${server}/deletefavor/`, data);
     if (res.data === "删除成功") {
@@ -279,6 +280,7 @@ export default function ListBox(props) {
     });
     //setTimer(state);
     if (state) {
+      checkState();
       interval = setInterval(() => {
         checkState();
       }, 30000);
