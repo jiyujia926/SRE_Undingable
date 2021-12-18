@@ -23,20 +23,37 @@ export default function Favorites() {
   let history = useHistory();
   const col = ["ID", "Repo Name", "Repo Address", "Description"];
   const [addressList, setAddressList] = React.useState([]);
-  function jump(index) {
-    cookie.save(
-      "addressList",
-      cookie.load("addressList").map((current, i) => {
+  async function jump(index) {
+    history.push("/admin/dashboard");
+    let tmpList = cookie.load("addressList") ? cookie.load("addressList") : [];
+    let isExisted = tmpList.some((current) => {
+      return current.address === addressList[index]["Repo Address"];
+    });
+    if (isExisted) {
+      tmpList = tmpList.map((current) => {
         return {
           ...current,
-          checked: index === i,
+          checked: current.address === addressList[index]["Repo Address"],
         };
-      }),
-      {
-        maxAge: 3600,
-      }
-    );
-    history.push("/admin/dashboard");
+      });
+    } else {
+      let res = await axios.post(`${server}/checkstate/`, {
+        Address: addressList[index]["Repo Address"],
+      });
+      let isDone = res.data === "爬好了";
+      tmpList = [
+        ...tmpList,
+        {
+          address: addressList[index]["Repo Address"],
+          ready: isDone,
+          checked: false,
+          favor: true,
+        },
+      ];
+    }
+    cookie.save("addressList", tmpList, {
+      maxAge: 3600,
+    });
   }
   async function remove(index) {
     let tmpList = addressList.filter((current, i) => {
@@ -48,24 +65,27 @@ export default function Favorites() {
     };
     let res = await axios.post(`${server}/deletefavor/`, data);
     setAddressList(tmpList);
-    cookie.save(
-      "addressList",
-      cookie.load("addressList").map((current, i) => {
-        if (index === i) {
+    tmpList = cookie.load("addressList") ? cookie.load("addressList") : [];
+    let isExisted = tmpList.some((current) => {
+      return current.address === addressList[index]["Repo Address"];
+    });
+    if (isExisted) {
+      cookie.save(
+        "addressList",
+        cookie.load("addressList").map((current) => {
           return {
-            address: current.address,
-            ready: current.ready,
-            checked: current.checked,
-            favor: false,
+            ...current,
+            favor:
+              current.address !== addressList[index]["Repo Address"]
+                ? current.favor
+                : false,
           };
-        } else {
-          return current;
+        }),
+        {
+          maxAge: 3600,
         }
-      }),
-      {
-        maxAge: 3600,
-      }
-    );
+      );
+    }
     if (res.data === "删除成功") {
       alert("Success");
     } else {

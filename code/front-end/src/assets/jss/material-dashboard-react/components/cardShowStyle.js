@@ -32,7 +32,7 @@ const cardShowStyle = {
   itemProgress: {
     color: "primary",
     textAlign: "center",
-  }
+  },
 };
 
 export default cardShowStyle;

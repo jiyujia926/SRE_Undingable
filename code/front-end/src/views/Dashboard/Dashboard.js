@@ -32,10 +32,10 @@ export default function Dashboard() {
   const classes = useStyles();
   const [address, setAddress] = React.useState([]);
   const [type, setType] = React.useState({
+    Contributor: true,
     Commit: true,
     Issue: true,
     "Pull/Request": false,
-    Contributor: false,
   });
   const [types, setTypes] = React.useState(Object.keys(type));
   const handleSetDataTypeSet = (data) => {
@@ -66,8 +66,10 @@ export default function Dashboard() {
           types.map(
             (t, i) =>
               type[t] && (
-                <div key={i} name={type}>
-                  {t}: {address}
+                <div key={i}>
+                  {/*<CardText dataType={t} address={address}/>
+                <Cardshow datatype={t} isMiddle=true address={address}/>
+                  <Cardshow datatype={t} isMiddle=true address={address}/>*/}
                 </div>
               )
           )}

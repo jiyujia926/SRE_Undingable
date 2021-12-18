@@ -5,8 +5,8 @@ const checkBoxSetStyle = {
   },
   labelbox: {
     color: "black",
-    width: "31%",
-    margin: "10px 0px 0 2.3%",
+    width: "47%",
+    margin: "10px 0px 0 3%",
   },
   button: {
     alignSelf: "flex-end",
