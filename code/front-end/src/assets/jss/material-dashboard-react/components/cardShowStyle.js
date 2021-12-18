@@ -31,6 +31,7 @@ const cardShowStyle = {
   },
   itemProgress: {
     color: "primary",
+    marginLeft: "45%",
     textAlign: "center",
   },
 };
