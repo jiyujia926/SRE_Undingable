@@ -13,11 +13,10 @@ export default function CheckBoxSet(props) {
   const classes = useStyles();
   const { setFunc } = props;
   const [dataTypes, setDataTypes] = React.useState({
+    Contributor: true,
     Commit: true,
-
     Issue: true,
     "Pull/Request": false,
-    Contributor: false,
   });
   const types = Object.keys(dataTypes);
   const handleChange = (event) => {

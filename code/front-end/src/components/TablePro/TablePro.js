@@ -92,7 +92,7 @@ EnhancedTableHead.propTypes = {
 
 const TablePro = (props) => {
   const classes = useStyles();
-  const { data, func } = props;
+  const { data, removeFunc, jumpFunc } = props;
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("ID");
   const [page, setPage] = React.useState(0);
@@ -112,8 +112,12 @@ const TablePro = (props) => {
     setPage(0);
   };
 
+  const handleJump = (i) => () => {
+    jumpFunc(i);
+  };
+
   const handleRemove = (i) => () => {
-    func(i);
+    removeFunc(i);
   };
 
   const emptyRows =
@@ -154,6 +158,8 @@ const TablePro = (props) => {
                         </TableCell>
                         {data.columns.map((col, i) => (
                           <TableCell
+                            to="/admin/dashboard"
+                            onClick={handleJump(index)}
                             id={labelId}
                             key={row + col}
                             scope="row"
@@ -192,7 +198,8 @@ const TablePro = (props) => {
 
 TablePro.propTypes = {
   data: PropTypes.object,
-  func: PropTypes.func,
+  removeFunc: PropTypes.func,
+  jumpFunc: PropTypes.func,
 };
 
 export default TablePro;

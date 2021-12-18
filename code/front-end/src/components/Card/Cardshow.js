@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 
 import PropTypes from "prop-types";
-import { Card, Input, Select } from "@material-ui/core";
+import { Card, Grid, Input, Select } from "@material-ui/core";
 import { Divider } from "@material-ui/core";
 import CardBody from "./CardBody";
 //import CardFooter from "./CardFooter";
@@ -16,21 +16,18 @@ import InputLabel from "@material-ui/core/InputLabel";
 import { MenuItem } from "@material-ui/core";
 import FormControl from "@material-ui/core/FormControl";
 
-import styles from "assets/jss/material-dashboard-react/components/buttonStyle.js";
+import styles from "assets/jss/material-dashboard-react/components/cardShowStyle.js";
 import PieChart from "../../components/Charts/PieChart";
-import BarChart from "components/Charts/BarChart";
+//import BarChart from "components/Charts/BarChart";
 import StackedBarChart from "../../components/Charts/StackedBarChart";
 import LineChart from "components/Charts/LineChart";
-
-//现在为直接写数据版本，如果要传输数据，就把注释着{固定数据}的部分注释掉，把注释着{传输}部分的注释取消
-//以及虽然现在有四个图表选项，但折线图的选项暂时是假的
 
 //传输
 import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
-const server = "http://122.51.228.166:8000";
-// const server = "http://127.0.0.1:8000";
+// const server = "http://122.51.228.166:8000";
+const server = "http://127.0.0.1:8000";
 
 const useStyles = makeStyles(styles);
 
@@ -40,7 +37,12 @@ export default function Cardshow(props) {
   const [charttype, setChart] = useState(props.charttype);
   const [loading, setloading] = useState(true);
   const [res, setChartdata] = useState({});
-  // let res;
+  const datatype = props.datatype;
+  const address = props.address;
+
+  //增加时间刻度
+
+  const [time, setTime] = useState("day");
   useEffect(() => {
     setChart(props.charttype);
     upload();
@@ -48,22 +50,19 @@ export default function Cardshow(props) {
   }, String);
 
   //传输
-  const datatype = props.datatype;
-  const address = props.address;
   async function upload() {
     let data = {
       Datatype: datatype,
       Charttype: charttype,
       Address: address,
+      Time: time,
     };
     let res1 = await axios.post(`${server}/get_data/`, data);
     console.log(res1.data);
     setChartdata(res1.data);
     setloading(false);
-    // setChart(charttype);
-    // console.log(charttype);
-    // return res.data;
   }
+
   // upload();
 
   // console.log(res);
@@ -74,43 +73,35 @@ export default function Cardshow(props) {
     setChart(event.target.value);
   }
 
+  function changetime(event) {
+    setTime(event.target.value);
+    upload();
+  }
+  //空数据还没判断
   if (charttype === "piechart") {
     return (
       <GridContainer>
-        <GridItem xs={5} sm={10} md={7}>
+        <GridItem xs={5} sm={13} md={6}>
           <Card chart>
             <CardBody>
-              <div style={{ display: "flex" }}>
-                <div style={{ width: "330px" }} />
-                <div>
-                  <h3>{datatype}</h3>
-                </div>
-              </div>
-              <div style={{ width: "150px" }}>
-                <FormControl fullWidth>
-                  <InputLabel>图表类型</InputLabel>
-                  <Select
-                    onChange={changechart}
-                    input={<Input />}
-                    label="图表类型"
-                    defaultValue={"piechart"}
-                  >
-                    <MenuItem value={"stackedbarchart"}>
-                      stacked barchart
-                    </MenuItem>
-                    <MenuItem value={"barchart"}>bar chart</MenuItem>
-                    <MenuItem value={"piechart"}>pie chart</MenuItem>
-                    <MenuItem value={"linechart"}>line chart</MenuItem>
-                  </Select>
-                </FormControl>
-              </div>
-              <div style={{ height: "30px" }} />
-              <div style={{ display: "flex" }}>
-                <div style={{ width: "350px", height: "300px" }}>
-                  {/* 固定数据 */}
-
-                  {/* 饼图还不能正常连后端数据进行处理，因为不知道多个仓库的数据包内容 */}
-                  <PieChart
+              <h3 className={classes.head}>{datatype}</h3>
+              <FormControl className={classes.pieselect}>
+                <InputLabel>时间刻度</InputLabel>
+                <Select
+                  onChange={changetime}
+                  input={<Input />}
+                  label="时间刻度"
+                  defaultValue={"day"}
+                >
+                  <MenuItem value={"day"}>day</MenuItem>
+                  <MenuItem value={"month"}>month</MenuItem>
+                  <MenuItem value={"year"}>year</MenuItem>
+                </Select>
+              </FormControl>
+              {/* 固定数据 */}
+              <Grid className={classes.piegrid}>
+                <Grid className={classes.piechart}>
+                  {/* <PieChart
                     data={[
                       { value: 300, name: "Fine" },
                       { value: 1300, name: "Goodgood" },
@@ -118,16 +109,21 @@ export default function Cardshow(props) {
                       { value: 300, name: "Rainy" },
                       { value: 500, name: "Kathbaby" },
                     ]}
-                  />
+                  /> */}
+                  {loading ? (
+                    <CircularProgress
+                      color="primary"
+                      className={classes.itemProgress}
+                    />
+                  ) : (
+                    <PieChart data={res} />
+                  )}
                   {/* 固定数据 */}
-                  {/* <PieChart data={res} /> */}
-                </div>
-                <div style={{ width: "35px" }}></div>
+                </Grid>
                 <Divider orientation="vertical" flexItem />
-                <div style={{ width: "35px" }}></div>
-                <div style={{ width: "350px", height: "300px" }}>
+                <Grid className={classes.piechart}>
                   {/* 固定数据 */}
-                  <PieChart
+                  {/* <PieChart
                     data={[
                       { value: 300, name: "Fine" },
                       { value: 1300, name: "Goodgood" },
@@ -135,95 +131,6 @@ export default function Cardshow(props) {
                       { value: 300, name: "Rainy" },
                       { value: 500, name: "Kathbaby" },
                     ]}
-                  />
-                  {/* 固定数据 */}
-                  {/* <PieChart data={res} /> */}
-                </div>
-              </div>
-            </CardBody>
-            <div style={{ height: "30px" }} />
-          </Card>
-        </GridItem>
-      </GridContainer>
-    );
-  } else if (charttype == "barchart") {
-    return (
-      <GridContainer>
-        <GridItem xs={4} sm={10} md={4}>
-          <Card chart>
-            <CardBody>
-              <div style={{ display: "flex" }}>
-                <div style={{ width: "150px" }} />
-                <div>
-                  <h3>{datatype}</h3>
-                </div>
-              </div>
-              <div style={{ width: "150px" }}>
-                <FormControl fullWidth>
-                  <InputLabel>图表类型</InputLabel>
-                  <Select
-                    onChange={changechart}
-                    input={<Input />}
-                    label="图表类型"
-                    defaultValue={"barchart"}
-                  >
-                    <MenuItem value={"stackedbarchart"}>
-                      stacked barchart
-                    </MenuItem>
-                    <MenuItem value={"barchart"}>bar chart</MenuItem>
-                    <MenuItem value={"piechart"}>pie chart</MenuItem>
-                    <MenuItem value={"linechart"}>line chart</MenuItem>
-                  </Select>
-                </FormControl>
-              </div>
-              <div style={{ height: "30px" }} />
-              <div style={{ display: "flex" }}>
-                <div style={{ width: "40px" }} />
-                <div style={{ width: "350px", height: "300px" }}>
-                  {/* 固定数据 */}
-                  {/* <BarChart
-                    data={{
-                      categoryData: [
-                        "2021-09-08",
-                        "2021-10-09",
-                        "2021-11-10",
-                        "2021-12-11",
-                        "2021-12-12",
-                        "2021-12-31",
-                        "2022-01-01",
-                        "2021-02-02",
-                        "2022-03-03",
-                        "2022-04-04",
-                        "2022-05-05",
-                        "2022-06-06",
-                        "2022-07-07",
-                        "2022-08-08",
-                        "2022-09-09",
-                        "2022-10-10",
-                        "2022-11-11",
-                        "2022-12-12",
-                      ],
-                      valueData: [
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
-                        7,
-                        8,
-                        9,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
-                        7,
-                        8,
-                        9,
-                      ],
-                    }}
                   /> */}
                   {/* 固定数据 */}
                   {loading ? (
@@ -232,12 +139,11 @@ export default function Cardshow(props) {
                       className={classes.itemProgress}
                     />
                   ) : (
-                    <BarChart data={res} />
+                    <PieChart data={res} />
                   )}
-                </div>
-              </div>
+                </Grid>
+              </Grid>
             </CardBody>
-            <div style={{ height: "40px" }} />
           </Card>
         </GridItem>
       </GridContainer>
@@ -245,89 +151,83 @@ export default function Cardshow(props) {
   } else if (charttype == "stackedbarchart") {
     return (
       <GridContainer>
-        <GridItem xs={4} sm={10} md={4}>
+        <GridItem xs={6} sm={10} md={4}>
           <Card chart>
             <CardBody>
-              <div style={{ display: "flex" }}>
-                <div style={{ width: "100px" }} />
-                <div>
-                  <h3>{datatype}</h3>
-                </div>
-              </div>
-              <div style={{ width: "150px" }}>
-                <FormControl fullWidth>
-                  <InputLabel>图表类型</InputLabel>
-                  <Select
-                    onChange={changechart}
-                    input={<Input />}
-                    label="图表类型"
-                    defaultValue={"stackedbarchart"}
-                  >
-                    <MenuItem value={"stackedbarchart"}>
-                      stacked barchart
-                    </MenuItem>
-                    <MenuItem value={"barchart"}>bar chart</MenuItem>
-                    <MenuItem value={"piechart"}>pie chart</MenuItem>
-                    <MenuItem value={"linechart"}>line chart</MenuItem>
-                  </Select>
-                </FormControl>
-              </div>
-              <div style={{ height: "30px" }} />
-              <div style={{ display: "flex" }}>
-                <div style={{ width: "40px" }} />
-                <div style={{ width: "350px", height: "300px" }}>
-                  {/* 固定数据 */}
-                  <StackedBarChart
-                    data={{
-                      categoryData: [
-                        "Mon",
-                        "Tue",
-                        "Wed",
-                        "Thu",
-                        "Fri",
-                        6,
-                        "Sun",
-                      ],
-                      valueData: [
-                        {
-                          repo: "BaiCaoJian",
-                          name: "commit",
-                          detailData: [20, 30, 4, 19, 20, 40, 25],
-                        },
-                        {
-                          repo: "BaiCaoJian",
-                          name: "issue",
-                          detailData: [2, 1, 8, 5, 5, 8, 9],
-                        },
-                        {
-                          repo: "BaiCaoJian",
-                          name: "pull request",
-                          detailData: [16, 10, 3, 6, 7, 9, 15],
-                        },
-                        {
-                          repo: "Clouding",
-                          name: "commit",
-                          detailData: [30, 20, 17, 29, 30, 18, 35],
-                        },
-                        {
-                          repo: "Clouding",
-                          name: "issue",
-                          detailData: [20, 10, 7, 9, 3, 8, 5],
-                        },
-                        {
-                          repo: "Clouding",
-                          name: "pull request",
-                          detailData: [10, 20, 7, 9, 13, 18, 25],
-                        },
-                      ],
-                    }}
-                  />
-                  {/* 固定数据 */}
-                  {/* <StackedBarChart data={res} /> */}
-                </div>
-              </div>
+              <h3 className={classes.head}>{datatype}</h3>
+              <FormControl className={classes.select}>
+                <InputLabel>图表类型</InputLabel>
+                <Select
+                  onChange={changechart}
+                  input={<Input />}
+                  label="图表类型"
+                  defaultValue={"stackedbarchart"}
+                >
+                  <MenuItem value={"stackedbarchart"}>
+                    stacked barchart
+                  </MenuItem>
+                  <MenuItem value={"linechart"}>line chart</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl className={classes.select}>
+                <InputLabel>时间刻度</InputLabel>
+                <Select
+                  onChange={changetime}
+                  input={<Input />}
+                  label="时间刻度"
+                  defaultValue={"day"}
+                >
+                  <MenuItem value={"day"}>day</MenuItem>
+                  <MenuItem value={"month"}>month</MenuItem>
+                  <MenuItem value={"year"}>year</MenuItem>
+                </Select>
+              </FormControl>
+              {/* 固定数据 */}
+              <Grid className={classes.chart}>
+                {/* <StackedBarChart
+                  data={{
+                    categoryData: ["Mon", "Tue", "Wed", "Thu", "Fri", 6, "Sun"],
+                    valueData: [
+                      {
+                        repo: "BaiCaoJian",
+                        name: "commit",
+                        detailData: [20, 30, 4, 19, 20, 40, 25],
+                      },
+                      {
+                        repo: "BaiCaoJian",
+                        name: "issue",
+                        detailData: [2, 1, 8, 5, 5, 8, 9],
+                      },
+                      {
+                        repo: "BaiCaoJian",
+                        name: "pull request",
+                        detailData: [16, 10, 3, 6, 7, 9, 15],
+                      },
+                      {
+                        repo: "Clouding",
+                        name: "commit",
+                        detailData: [30, 20, 17, 29, 30, 18, 35],
+                      },
+                      {
+                        repo: "Clouding",
+                        name: "issue",
+                        detailData: [20, 10, 7, 9, 3, 8, 5],
+                      },
+                      {
+                        repo: "Clouding",
+                        name: "pull request",
+                        detailData: [10, 20, 7, 9, 13, 18, 25],
+                      },
+                    ],
+                  }}
+                /> */}
+                {loading ? (
+                  <CircularProgress className={classes.itemProgress} />
+                ) : (
+                  <StackedBarChart data={res} />
+                )}
+              </Grid>
             </CardBody>
-            <div style={{ height: "40px" }} />
           </Card>
         </GridItem>
       </GridContainer>
@@ -338,67 +238,73 @@ export default function Cardshow(props) {
         <GridItem xs={4} sm={10} md={4}>
           <Card chart>
             <CardBody>
-              <div style={{ display: "flex" }}>
-                <div style={{ width: "100px" }} />
-                <div>
-                  <h3>{datatype}</h3>
-                </div>
-              </div>
-              <div style={{ width: "150px" }}>
-                <FormControl fullWidth>
-                  <InputLabel>图表类型</InputLabel>
-                  <Select
-                    onChange={changechart}
-                    input={<Input />}
-                    label="图表类型"
-                    defaultValue={"linechart"}
-                  >
-                    <MenuItem value={"stackedbarchart"}>
-                      stacked barchart
-                    </MenuItem>
-                    <MenuItem value={"barchart"}>bar chart</MenuItem>
-                    <MenuItem value={"piechart"}>pie chart</MenuItem>
-                    <MenuItem value={"linechart"}>line chart</MenuItem>
-                  </Select>
-                </FormControl>
-              </div>
-              <div style={{ height: "30px" }} />
-              <div style={{ display: "flex" }}>
-                <div style={{ width: "40px" }} />
-                <div style={{ width: "350px", height: "300px" }}>
-                  {/* 固定数据 */}
-                  {/* <LineChart
-                    data={{
-                      categoryData: [
-                        "Mon",
-                        "Tue",
-                        "Wed",
-                        "Thu",
-                        "Fri",
-                        "Sat",
-                        "Sun",
-                      ],
-                      valueData: [
-                        {
-                          repo: "BCJ",
-                          name: "commit",
-                          detailData: [10, 20, 7, 9, 13, 18, 25],
-                        },
-                        {
-                          repo: "Clouding",
-                          name: "commit",
-                          detailData: [9, 12, 24, 12, 8, 9, 10],
-                        },
-                      ],
-                      smoothOrNot: true,
-                    }}
-                  /> */}
-                  {/* 固定数据 */}
+              <h3 className={classes.head}>{datatype}</h3>
+              <FormControl className={classes.select}>
+                <InputLabel>图表类型</InputLabel>
+                <Select
+                  onChange={changechart}
+                  input={<Input />}
+                  label="图表类型"
+                  defaultValue={"linechart"}
+                >
+                  <MenuItem value={"stackedbarchart"}>
+                    stacked barchart
+                  </MenuItem>
+                  <MenuItem value={"linechart"}>line chart</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl className={classes.select}>
+                <InputLabel>时间刻度</InputLabel>
+                <Select
+                  onChange={changetime}
+                  input={<Input />}
+                  label="时间刻度"
+                  defaultValue={"day"}
+                >
+                  <MenuItem value={"day"}>day</MenuItem>
+                  <MenuItem value={"month"}>month</MenuItem>
+                  <MenuItem value={"year"}>year</MenuItem>
+                </Select>
+              </FormControl>
+              <Grid className={classes.chart}>
+                {/* 固定数据 */}
+                {/* <LineChart
+                  data={{
+                    categoryData: [
+                      "Mon",
+                      "Tue",
+                      "Wed",
+                      "Thu",
+                      "Fri",
+                      "Sat",
+                      "Sun",
+                    ],
+                    valueData: [
+                      {
+                        repo: "BCJ",
+                        name: "commit",
+                        detailData: [10, 20, 7, 9, 13, 18, 25],
+                      },
+                      {
+                        repo: "Clouding",
+                        name: "commit",
+                        detailData: [9, 12, 24, 12, 8, 9, 10],
+                      },
+                    ],
+                    smoothOrNot: true,
+                  }}
+                /> */}
+                {/* 固定数据 */}
+                {loading ? (
+                  <CircularProgress
+                    color="primary"
+                    className={classes.itemProgress}
+                  />
+                ) : (
                   <LineChart data={res} />
-                </div>
-              </div>
+                )}
+              </Grid>
             </CardBody>
-            <div style={{ height: "40px" }} />
           </Card>
         </GridItem>
       </GridContainer>
@@ -407,13 +313,8 @@ export default function Cardshow(props) {
 }
 
 Cardshow.propTypes = {
-  datatype: PropTypes.oneOf(["pull request", "issue", "commit"]),
-  charttype: PropTypes.oneOf([
-    "stackedbarchart",
-    "barchart",
-    "piechart",
-    "linechart",
-  ]),
+  datatype: PropTypes.oneOf(["pullrequest", "issue", "commit", "contributor"]),
+  charttype: PropTypes.oneOf(["stackedbarchart", "piechart", "linechart"]),
   cardheight: PropTypes.any,
   cardwidth: PropTypes.any,
   address: PropTypes.any,
