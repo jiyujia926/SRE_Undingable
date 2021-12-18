@@ -82,7 +82,7 @@ export default function Cardshow(props) {
     upload();
   }
 
-  if (charttype == "pie") {
+  if (charttype == "piechart") {
     if (datatype == "commit" || datatype == "subcommit") {
       alert("错误的图表类型！");
     } else if (res.length == 1) {
@@ -143,7 +143,7 @@ export default function Cardshow(props) {
         </GridContainer>
       );
     }
-  } else if (charttype == "bar") {
+  } else if (charttype == "barchart") {
     //bar图
     if (datatype == "contributor") {
       alert("错误的图表类型！");
