@@ -10,6 +10,7 @@ import GridContainer from "components/Grid/GridContainer.js";
 //import styles from "assets/jss/material-dashboard-react/views/iconsStyle.js";
 import TablePro from "../../components/TablePro/TablePro";
 import axios from "axios";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 //const server = "http://122.51.228.166:8000";
@@ -19,8 +20,24 @@ const server = "http://127.0.0.1:8000";
 
 export default function Favorites() {
   //const classes = useStyles();
+  let history = useHistory();
   const col = ["ID", "Repo Name", "Repo Address", "Description"];
   const [addressList, setAddressList] = React.useState([]);
+  function jump(index) {
+    cookie.save(
+      "addressList",
+      cookie.load("addressList").map((current, i) => {
+        return {
+          ...current,
+          checked: index === i,
+        };
+      }),
+      {
+        maxAge: 3600,
+      }
+    );
+    history.push("/admin/dashboard");
+  }
   async function remove(index) {
     let tmpList = addressList.filter((current, i) => {
       return index !== i;
@@ -86,7 +103,8 @@ export default function Favorites() {
               columns: col,
               rows: addressList,
             }}
-            func={remove}
+            removeFunc={remove}
+            jumpFunc={jump}
           />
         )}
       </GridItem>
