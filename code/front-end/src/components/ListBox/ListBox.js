@@ -70,20 +70,29 @@ export default function ListBox(props) {
     let res = await axios.post(`${server}/checkurl/`, data);
     //这里的返回有三种情况，在数据库的仓库，不在数据库的仓库，不是仓库/未开源
     if (res.data === true) {
-      let isFavored;
+      let isFavored, isDone;
+      let res = await axios.post(`${server}/checkstate/`, {
+        Address: tmpInput,
+      });
+      isDone = res.data === "爬好了";
       if (cookie.load("username") === undefined) {
         isFavored = false;
       } else {
-        let data2 = {
+        let data = {
           Email: cookie.load("account"),
           Repo: tmpInput,
         };
-        let res2 = await axios.post(`${server}/checkfavor/`, data2);
-        isFavored = res2.data === "已收藏";
+        let res = await axios.post(`${server}/checkfavor/`, data);
+        isFavored = res.data === "已收藏";
       }
       let tmpList = [
         ...addressList,
-        { address: tmpInput, ready: false, checked: false, favor: isFavored },
+        {
+          address: tmpInput,
+          ready: isDone,
+          checked: false,
+          favor: isFavored,
+        },
       ];
       setAddressList(tmpList);
       cookie.save("addressList", tmpList, {
@@ -166,27 +175,17 @@ export default function ListBox(props) {
       setFormData({ ...formData, address: addressList[i].address });
       handleClickDialog();
     } else {
-      let tmpList = addressList.map((current, i) => {
-        if (index === i) {
-          return {
-            address: current.address,
-            ready: current.ready,
-            checked: current.checked,
-            favor: false,
-          };
-        } else {
-          return current;
-        }
-      });
-      setAddressList(tmpList);
-      cookie.save("addressList", tmpList, {
-        maxAge: 3600,
-      });
       handleRemoveFavor(i);
     }
   };
   async function handleSubmitFavor() {
     setOpenDialog(false);
+    let data = {
+      Email: cookie.load("account"),
+      Repo: addressList[index].address,
+      Description: formData.description,
+    };
+    let res = await axios.post(`${server}/addfavor/`, data);
     let tmpList = addressList.map((current, i) => {
       if (index === i) {
         return {
@@ -203,12 +202,6 @@ export default function ListBox(props) {
     cookie.save("addressList", tmpList, {
       maxAge: 3600,
     });
-    let data = {
-      Email: cookie.load("account"),
-      Repo: addressList[index].address,
-      Description: formData.description,
-    };
-    let res = await axios.post(`${server}/addfavor/`, data);
     if (res.data === "收藏成功") {
       alert("Success");
     } else {
@@ -221,6 +214,22 @@ export default function ListBox(props) {
       Repo: addressList[index].address,
     };
     let res = await axios.post(`${server}/deletefavor/`, data);
+    let tmpList = addressList.map((current, i) => {
+      if (index === i) {
+        return {
+          address: current.address,
+          ready: current.ready,
+          checked: current.checked,
+          favor: false,
+        };
+      } else {
+        return current;
+      }
+    });
+    setAddressList(tmpList);
+    cookie.save("addressList", tmpList, {
+      maxAge: 3600,
+    });
     if (res.data === "删除成功") {
       alert("Success");
     } else {
@@ -274,13 +283,23 @@ export default function ListBox(props) {
     });
   }
   React.useEffect(() => {
+    showFunc(
+      addressList
+        .filter((current) => {
+          return current.checked;
+        })
+        .map((current) => {
+          return current.address;
+        })
+    );
+  }, []);
+  React.useEffect(() => {
     let interval;
     let state = addressList.some((current) => {
       return current.ready === false;
     });
     //setTimer(state);
     if (state) {
-      checkState();
       interval = setInterval(() => {
         checkState();
       }, 30000);
@@ -289,6 +308,11 @@ export default function ListBox(props) {
     }
     return () => clearInterval(interval);
   });
+  React.useEffect(() => {
+    setAddressList(
+      cookie.load("addressList") ? cookie.load("addressList") : []
+    );
+  }, []);
   return (
     <Card className={classes.root}>
       <List className={classes.list}>

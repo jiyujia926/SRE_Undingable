@@ -21,6 +21,41 @@ export default function Favorites() {
   //const classes = useStyles();
   const col = ["ID", "Repo Name", "Repo Address", "Description"];
   const [addressList, setAddressList] = React.useState([]);
+  async function remove(index) {
+    let tmpList = addressList.filter((current, i) => {
+      return index !== i;
+    });
+    let data = {
+      Email: cookie.load("account"),
+      Repo: addressList[index]["Repo Address"],
+    };
+    let res = await axios.post(`${server}/deletefavor/`, data);
+    setAddressList(tmpList);
+    cookie.save(
+      "addressList",
+      cookie.load("addressList").map((current, i) => {
+        if (index === i) {
+          return {
+            address: current.address,
+            ready: current.ready,
+            checked: current.checked,
+            favor: false,
+          };
+        } else {
+          return current;
+        }
+      }),
+      {
+        maxAge: 3600,
+      }
+    );
+    if (res.data === "删除成功") {
+      alert("Success");
+    } else {
+      alert("Error");
+    }
+  }
+
   React.useEffect(async () => {
     if (cookie.load("username") !== undefined) {
       let data = {
@@ -51,6 +86,7 @@ export default function Favorites() {
               columns: col,
               rows: addressList,
             }}
+            func={remove}
           />
         )}
       </GridItem>
