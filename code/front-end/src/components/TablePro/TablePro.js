@@ -14,6 +14,8 @@ import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
 import TableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
+import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
+import IconButton from "@material-ui/core/IconButton";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -49,6 +51,11 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
+        <TableCell padding="checkbox">
+          <IconButton color="secondary" disabled aria-label="remove">
+            <RemoveCircleOutlineIcon />
+          </IconButton>
+        </TableCell>
         {headCells.map((headCell, i) => (
           <TableCell
             key={headCell}
@@ -85,7 +92,7 @@ EnhancedTableHead.propTypes = {
 
 const TablePro = (props) => {
   const classes = useStyles();
-  const { data } = props;
+  const { data, func } = props;
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("ID");
   const [page, setPage] = React.useState(0);
@@ -105,11 +112,14 @@ const TablePro = (props) => {
     setPage(0);
   };
 
+  const handleRemove = (i) => () => {
+    func(i);
+  };
+
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, data.rows.length - page * rowsPerPage);
   return (
     <Card className={classes.root}>
-      {/*<DataGrid rows={data.rows} columns={data.columns} />*/}
       <Paper className={classes.paper}>
         <TableContainer>
           <Table
@@ -133,30 +143,25 @@ const TablePro = (props) => {
                     const labelId = `enhanced-table-checkbox-${index}`;
                     return (
                       <TableRow hover tabIndex={-1} key={row["ID"]}>
-                        {
-                          data.columns.map((col, i) => (
-                            <TableCell
-                              id={labelId}
-                              key={row + col}
-                              scope="row"
-                              padding={i === 1 ? "none" : "normal"}
-                            >
-                              {row[col]}
-                            </TableCell>
-                          ))
-                          /*<TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          padding="none"
-                        >
-                          {row.name}
+                        <TableCell padding="checkbox">
+                          <IconButton
+                            color="secondary"
+                            onClick={handleRemove(index)}
+                            aria-label="remove"
+                          >
+                            <RemoveCircleOutlineIcon />
+                          </IconButton>
                         </TableCell>
-                        <TableCell align="right">{row.calories}</TableCell>
-                        <TableCell align="right">{row.fat}</TableCell>
-                        <TableCell align="right">{row.carbs}</TableCell>
-                        <TableCell align="right">{row.protein}</TableCell>*/
-                        }
+                        {data.columns.map((col, i) => (
+                          <TableCell
+                            id={labelId}
+                            key={row + col}
+                            scope="row"
+                            padding={i === 1 ? "none" : "normal"}
+                          >
+                            {row[col]}
+                          </TableCell>
+                        ))}
                       </TableRow>
                     );
                   })}
@@ -176,7 +181,7 @@ const TablePro = (props) => {
             count={data.rows.length}
             rowsPerPage={rowsPerPage}
             page={page}
-            onPageChange={handleChangePage}
+            onChangePage={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         }
@@ -187,6 +192,7 @@ const TablePro = (props) => {
 
 TablePro.propTypes = {
   data: PropTypes.object,
+  func: PropTypes.func,
 };
 
 export default TablePro;
