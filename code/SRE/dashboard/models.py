@@ -10,7 +10,8 @@ class Project(models.Model):
 
 class Favor(models.Model):
     User = models.ManyToManyField(User)
-    project = models.ManyToManyField(Project)
+    Project = models.ManyToManyField(Project)
+    Info = models.TextField()
 
 class Chart(models.Model):
     User = models.ManyToManyField(User)

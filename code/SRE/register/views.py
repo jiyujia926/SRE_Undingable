@@ -10,6 +10,7 @@ import random
 import datetime
 import pytz
 
+
 from . import models
 from dashboard import models as dashboard_models
 # Create your views here.
@@ -171,19 +172,19 @@ def addFavor(request):
     data = json.loads(request.body)
     user = models.User.objects.filter(Email=data['Email']).first()
     project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
-    check = dashboard_models.Favor.objects.filter(User=user,project=project).first()
+    check = dashboard_models.Favor.objects.filter(User=user,Project=project).first()
     if check:
         return HttpResponse("你已收藏")
     favor = dashboard_models.Favor.objects.create()
     favor.User.add(user)
-    favor.project.add(project)
+    favor.Project.add(project)
     return HttpResponse("收藏成功")
 
 def checkFavor(request):
     data = json.loads(request.body)
     user = models.User.objects.filter(Email=data['Email']).first()
     project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
-    favor = dashboard_models.Favor.objects.filter(User=user,project=project).first()
+    favor = dashboard_models.Favor.objects.filter(User=user,Project=project).first()
     if favor:
         return HttpResponse("已收藏")
     else:
@@ -192,19 +193,22 @@ def checkFavor(request):
 def returnFavor(request):
     data = json.loads(request.body)
     user = models.User.objects.filter(Email=data['Email']).first()
-    project_list = list(dashboard_models.Favor.objects.values('project').filter(User=user))
+    project_list = list(dashboard_models.Favor.objects.values('Project','info').filter(User=user))
     list1=[]
     for item in project_list:
-        url = dashboard_models.Project.objects.values().filter(PID=item['project']).first()
-        print(list(url['RepositoryURL']))
-        list1.append(url['RepositoryURL'])
+        repo={}
+        url = dashboard_models.Project.objects.values().filter(PID=item['Project']).first()
+        repo['url'] = url['RepositoryURL']
+        repo['name'] = url['Name']
+        repo['discrpition'] = item['info']
+        list1.append(repo)
     return HttpResponse(json.dumps(list1))
 
 def deleteFavor(request):
     data = json.loads(request.body)
     user = models.User.objects.filter(Email=data['Email']).first()
     project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
-    favor = dashboard_models.Favor.objects.filter(User=user,project=project).first()
+    favor = dashboard_models.Favor.objects.filter(User=user,Project=project).first()
     if favor:
         favor.delete()
         return HttpResponse("删除成功")
@@ -216,6 +220,8 @@ def returnFavorchart(request):
     user = models.User.objects.filter(Email=data['Email']).first()
     project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
 
+    commit_model = {'day':dashboard_models.DayCommit,'month':dashboard_models.MonthCommit,'year':dashboard_models.YearCommit}
+    issue_model = {'day':dashboard_models.DayIssue,'month':dashboard_models.MonthIssue,'year':dashboard_models.YearIssue}
     if user:
         user_chart_list = list(dashboard_models.Chart.objects.filter(User=user,Project=project).order_by('CreatedTime'))
         Chartlist={}
@@ -225,42 +231,72 @@ def returnFavorchart(request):
             chart_type = chart.ChartType
             data_type = chart.DataType
             data_detail_type = chart.DataDetailType
-            repo_list = list(chart.HasProject)
+            repo_list = chart.HasProject
             time_scale = chart.TimeScale
             created_time = chart.CreatedTime
 
-            Chartlist[created_time]={ 'name':chart_name,'type':chart_type,'data_type':data_detail_type,'time_scale':time_scale,'valueTime':{} }
+            Chartlist[created_time]={ 'name':chart_name,'chart_type':chart_type,'data_type':data_detail_type,'time_scale':time_scale,'valueTime':{},'repo':[] }
 
-            valueTime = {}
-            Value = {}
-            repo_time = {'CommitRecord':[],'IssueRecord':[]}
-            repo_value = {}
+            Time = {'CommitRecord':[],'IssueRecord':[]}
             for index, repo in range( 0, len(repo_list) ),repo_list:
-                repo[index]={'Name':project.Name,'url':project.RepositoryURL,'value':{}}
-                repoURL = dashboard_models.AllCommit.objects.values('RepositoryURL').filter(project==repo).first
+                repo_time = {}
+                repoitem = dashboard_models.Project.objects.values('RepositoryURL').filter(PID=repo).first()
                 for type in data_type.split('_'):
                     if type == "CommitRecord":
-                        time = list(dashboard_models.DayCommit.objects.values('Time').filter(project==repo))  
+                        time = list(commit_model[time_scale].objects.values('Time').filter(Project=repoitem))  
                     elif type == "IssueRecord":
-                        time = list(dashboard_models.DayIssue.objects.values('Time').filter(project==repo))
-                    repo_time[type] = list(set(time+repo_time[type]))
-                
+                        time = list(issue_model[time_scale].objects.values('Time').filter(Project=repoitem))
+                    repo_time[type] = [time[i]['Time'] for i in range(0, len(time))]
+                Time[type] = list(set(repo_time[type]+Time[type]))
+            Chartlist[created_time]['valueTime'] = Time
 
+            for index, repo in range( 0, len(repo_list) ),repo_list:
+                repo_value = {}
+                proj = dashboard_models.Project.objects.filter(PID=repo).first
+                repo[index]={'Name':proj.Name,'url':proj.RepositoryURL}
                 for type in data_detail_type.split('_'):
+                    value=[]
+                    repo_value[type] = []
                     if type == "committed":
-                        value = list(dashboard_models.DayCommit.values('commitCount').filter(project==project))
+                        value = list(commit_model[time_scale].objects.values('Time','committedCount').filter(Project=project))
                     elif type == "changed":
-                        value = list(dashboard_models.DayCommit.values('changedCount').filter(project==project))
+                        value = list(commit_model[time_scale].objects.values('Time','changedCount').filter(Project=project))
                     elif type == "added":
-                        value = list(dashboard_models.DayCommit.values('addCount').filter(project==project))
+                        value = list(commit_model[time_scale].objects.values('Time','addedCount').filter(Project=project))
                     elif type == "deleted":
-                        value = list(dashboard_models.DayCommit.values('deleteCount').filter(project==project))
-                    elif type == "opened":
-                        value = list(dashboard_models.DayIssue.values('openedCount').filter(project==project))
-                    elif type == "closed":
-                        value = list(dashboard_models.DayIssue.values('closedCount').filter(project==project))
+                        value = list(commit_model[time_scale].objects.values('Time','deletedCount').filter(Project=project))
+
+                    if value:
+                        count = 0
+                        for time in Time['CommitRecord']:
+                            if time == value[count]['Time']:
+                                repo_value[type].append(value[count][type+'Count'])
+                                count += 1
+                            else:
+                                repo_value[type].append(0)
+                        continue
+
+                            
                     
-                    repo_value[type] = value
+                    elif type == "opened":
+                        value = list(issue_model[time_scale].dashboard_models.DayIssue.objects.values('Time','openedCount').filter(Project=project))
+                    elif type == "closed":
+                        value = list(issue_model[time_scale].objects.values('Time','closedCount').filter(Project=project))
+
+                    if value:
+                        count = 0
+                        for time in Time['IssueRecord']:
+                            if time == value[count]['Time']:
+                                repo_value[type].append(value[count][type+'Count'])
+                                count += 1
+                            else:
+                                repo_value[type].append(0)
+                        continue
+                repo[index]['repo_value'] = repo_value
+            Chartlist[created_time]['repo'] = repo
+            
+        return HttpResponse(json.dumps(Chartlist)) 
+
     else:
         return HttpResponse("邮箱未注册")
 
@@ -269,3 +305,6 @@ def test(request):
     Email= "3190103367@zju.edu.cn"
     user = models.User.objects.filter(Email=Email).first()
     project = dashboard_models.Project.objects.filter(RepositoryURL=url).first()
+    value = dashboard_models.DayCommit.objects.values('Time','changedCount').filter(Project=project)
+    print(value)
+    return HttpResponse("gan")
