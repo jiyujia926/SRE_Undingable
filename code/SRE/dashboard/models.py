@@ -101,7 +101,7 @@ class ClosedIssueRecord(models.Model):
     Contributor = models.ManyToManyField(Contributor)
     Project = models.ManyToManyField(Project)
     Opentime = models.DateField()
-    CloseTime = models.DateField()
+    Closetime = models.DateField()
 
 #以天为时间单位，一个项目的总贡献量
 class DayCommit(models.Model):
