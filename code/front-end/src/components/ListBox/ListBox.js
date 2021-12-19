@@ -29,7 +29,7 @@ import Button from "@material-ui/core/Button";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 const server = "http://122.51.228.166:8000";
-// const server = "http://127.0.0.1:8000";
+//const server = "http://127.0.0.1:8000";
 const useStyles = makeStyles(styles);
 
 export default function ListBox(props) {
@@ -40,8 +40,6 @@ export default function ListBox(props) {
   const initialState = {
     address: "",
     description: "",
-    name: "",
-    info: [],
   };
   const [formData, setFormData] = React.useState(initialState);
   const [op, setOp] = React.useState("");
@@ -57,6 +55,7 @@ export default function ListBox(props) {
   };
   const handleCloseDialog = () => {
     setOpenDialog(false);
+    setFormData(initialState);
   };
   const handleFormChange = (event) => {
     let { name, value } = event.target;
@@ -205,7 +204,7 @@ export default function ListBox(props) {
     if (res.data === "收藏成功") {
       alert("Success");
     } else {
-      alert("Error");
+      alert("You have already favored.");
     }
   }
   async function handleRemoveFavor(index) {
@@ -233,13 +232,9 @@ export default function ListBox(props) {
     if (res.data === "删除成功") {
       alert("Success");
     } else {
-      alert("Error");
+      alert("You have already canceled.");
     }
   }
-  const handleCancel = () => {
-    //alert("cancel");
-    setOpenDialog(false);
-  };
   const handleRemove = (i) => () => {
     let tmpList = addressList.filter((current, index) => {
       return index !== i;
@@ -422,7 +417,7 @@ export default function ListBox(props) {
                 variant="contained"
                 color="secondary"
                 className={classes.form_button}
-                onClick={handleCancel}
+                onClick={handleCloseDialog}
               >
                 Cancel
               </Button>
