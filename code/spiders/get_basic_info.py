@@ -14,9 +14,11 @@ def checkUrl(url):
 def parseHtml(doc):
     soup = BeautifulSoup(doc, 'lxml')
     desc = soup.find(name='p', attrs={"class": "f4 my-3"})
-    description = desc.get_text()
-    print(description)
-
+    if (desc):
+        description = desc.get_text()
+        print(description)
+    else:
+        print("亲亲，该仓库暂时没有项目简介噢~")
 
 def main():
     # test repo: https://github.com/Wuxinberry/Java-Projects
