@@ -19,14 +19,19 @@ import pytz
 
 @shared_task
 def spider(url:str):
-    # analyze_commit(url)
-    # initialcommitdata(url)
-    # analyze_open_issue(url)
-    # analyze_close_issue(url)
-    # initialissuedata(url)
+    analyze_commit(url)
+    initialcommitdata(url)
+    analyze_open_issue(url)
+    analyze_close_issue(url)
+    initialissuedata(url)
     analyze_open_pullrequest(url)
     analyze_close_merge_pullrequest(url)
     initial_pullrequest_data(url)
+    print("initial1")
+    proj=models.Project.objects.get(RepositoryURL=url)
+    proj.State=1
+    proj.save()
+    print("initial2")
 @shared_task
 def analyze_commit(url:str):
     commitbag = getcommit(url)
@@ -332,11 +337,7 @@ def initial_pullrequest_data(url:str):
         day_pullrequest = models.DayPullrequest.objects.create(Time=time_list[index],openedCount=Daylist['Open'][index],closedCount=Daylist['Closed'][index],mergedCount=Daylist['Merged'][index])
         day_pullrequest .Project.add(project)
     
-    print("initial1")
-    proj=models.Project.objects.get(RepositoryURL=url)
-    proj.State=1
-    proj.save()
-    print("initial2")
+    
 
 def get_date_list(begin_date, end_date):
     date_list = [x.strftime('%Y-%m-%d') for x in list(pd.date_range(start=begin_date, end=end_date))]
