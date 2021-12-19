@@ -19,12 +19,12 @@ import pytz
 
 @shared_task
 def spider(url:str):
-    # analyze_commit(url)
-    # initialcommitdata(url)
-    # analyze_open_issue(url)
-    # analyze_close_issue(url)
-    # initialissuedata(url)
-    # analyze_open_pullrequest(url)
+    analyze_commit(url)
+    initialcommitdata(url)
+    analyze_open_issue(url)
+    analyze_close_issue(url)
+    initialissuedata(url)
+    analyze_open_pullrequest(url)
     analyze_close_merge_pullrequest(url)
     initial_pullrequest_data(url)
     print("initial1")
