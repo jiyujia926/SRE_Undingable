@@ -57,7 +57,7 @@ def get_open_issue(rawurl:str):
                 issuelist.append(link)
                 opentime = open_issue_time(link)
                 participator = get_participators(link)
-                print({'opentime':opentime,'participator':participator})
+                # print({'opentime':opentime,'participator':participator})
                 issueinfolist.append({'opentime':opentime,'participator':participator})
                 
     while (has_next_page):
@@ -100,7 +100,7 @@ def get_open_issue(rawurl:str):
                     open_issue_time(link)
                     get_participators(link)
                     issueinfolist.append({'opentime':opentime,'participator':participator})
-                    print({'opentime':opentime,'participator':participator})
+                    # print({'opentime':opentime,'participator':participator})
     # print(issuelist)      
     # print(len(issuelist)) 
     # print(issueinfolist)
