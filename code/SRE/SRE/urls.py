@@ -31,7 +31,6 @@ urlpatterns = [
     path('get_data/',dash_view.get_data),
     path('test/',dash_tasks.test),
     path('checkstate/',dash_view.checkstate),
-    path('wdnmd/',dash_tasks.threespider),
     path('addfavor/',user_view.addFavor),
     path('checkfavor/',user_view.checkFavor),
     path('returnfavor/',user_view.returnFavor),

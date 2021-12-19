@@ -87,12 +87,13 @@ def get_participators(url:str):
     return participator
 def combined_operations(url:str):
     if pullrequest_status(url) == "merged":
-        prbag={'status':'merged','opentime':merged_pullrequest_open_time(url),'closetime':merged_pullrequest_closed_time,'participator':get_participators(url)}
+        prbag={'status':'merged','opentime':merged_pullrequest_open_time(url),'mergetime':merged_pullrequest_closed_time,'participator':get_participators(url)}
     elif pullrequest_status(url) == "closed":
         prbag={'status':'closed','opentime':closed_pullrequest_open_time(url),'closetime':closed_pullrequest_closed_time,'participator':get_participators(url)}
     else:
         prbag={'status':'open','opentime':open_pullrequest_time,'participator':get_participators(url)}
     return prbag
+
 
 if __name__ == "__main__":
     url = input()
