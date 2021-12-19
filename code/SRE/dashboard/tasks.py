@@ -153,6 +153,10 @@ def initialcommitdata(url:str):
     project_commit = models.CommitRecord.objects.values().filter(Project=project)
     Daylist = list(project_commit.values('Time').order_by('Time').annotate(Commit=Count(id),Change=Sum('ChangedFileCount'),Add=Sum('AdditionCount'),Delete=Sum('DeletionCount')))
      #print(list1)
+
+    if Daylist == []:
+        return
+
     Month={}
     Year={}
     for item in Daylist:
@@ -206,12 +210,24 @@ def initialissuedata(url:str):
     opened_Daylist = list(project_closed_issue.values('Opentime').order_by('Opentime').annotate(opened_issue=Count(id)))
 
     if open_Daylist == [] and closed_Daylist == []:
-        return HttpResponse("no issue")
-    if closed_Daylist[len(closed_Daylist)-1]['Closetime'] < open_Daylist[len(open_Daylist)-1]['Opentime']:
-        end_time = open_Daylist[len(open_Daylist)-1]['Opentime']
-    else:
-        end_time = closed_Daylist[len(closed_Daylist)-1]['Closetime']
-    time_list = get_date_list(open_Daylist[0]['Opentime'],end_time)
+        # return HttpResponse("no issue")
+        return
+
+    list1=[]
+    list2=[]
+    if open_Daylist != []:
+        list1.append(open_Daylist[0]['Opentime'])
+        list2.append(open_Daylist[len(closed_Daylist)-1]['Opentime'])
+    if closed_Daylist != []:
+        list1.append(closed_Daylist[0]['Closetime'])
+        list2.append(closed_Daylist[0]['Closetime'])
+    if opened_Daylist != []:
+        list1.append(opened_Daylist[0]['Opentime'])
+        list2.append(opened_Daylist[len(closed_Daylist)-1]['Opentime'])
+
+    start_time = min(list1)
+    end_time = max(list2)
+    time_list = get_date_list(start_time,end_time)
 
     #到目前为止仍在开启的issue的数组index和数量
     open_count = 0
@@ -267,23 +283,40 @@ def initial_pullrequest_data(url:str):
     project_closed_pr = models.ClosedPullrequestRecord.objects.values().filter(Project=project)
     project_merged_pr = models.MergedPullrequestRecord.objects.values().filter(Project=project)
 
-    open_Daylist = list(project_open_pr.values('Opentime').order_by('Opentime').annotate(open_issue=Count(id)))
+    open_Daylist = list(project_open_pr.values('Opentime').order_by('Opentime').annotate(open_pullrequest=Count(id)))
 
-    closed_Daylist = list(project_closed_pr.values('Closetime').order_by('Closetime').annotate(closed_issue=Count(id)))
-    opened_closed_Daylist = list(project_closed_pr.values('Opentime').order_by('Opentime').annotate(opened_issue=Count(id)))
+    closed_Daylist = list(project_closed_pr.values('Closetime').order_by('Closetime').annotate(closed_pullrequest=Count(id)))
+    opened_closed_Daylist = list(project_closed_pr.values('Opentime').order_by('Opentime').annotate(opened_pullrequest=Count(id)))
     
-    merged_Daylist = list(project_closed_pr.values('Closetime').order_by('Closetime').annotate(merged_issue=Count(id)))
-    opened_merged_Daylist = list(project_closed_pr.values('Opentime').order_by('Opentime').annotate(opened_issue=Count(id)))
+    merged_Daylist = list(project_merged_pr.values('Mergetime').order_by('Mergetime').annotate(merged_pullrequest=Count(id)))
+    opened_merged_Daylist = list(project_merged_pr.values('Opentime').order_by('Opentime').annotate(opened_pullrequest=Count(id)))
 
     if open_Daylist == [] and closed_Daylist == [] and merged_Daylist == []:
-        return HttpResponse("no Pull request")
+        # return HttpResponse("no Pull request")
+        return
 
-    if closed_Daylist[len(closed_Daylist)-1]['Closetime'] < open_Daylist[len(open_Daylist)-1]['Opentime']:
-        end_time = open_Daylist[len(open_Daylist)-1]['Opentime']
-    else:
-        end_time = closed_Daylist[len(closed_Daylist)-1]['Closetime']
-    end_time = max( [ open_Daylist[len(open_Daylist)-1]['Opentime'], closed_Daylist[len(closed_Daylist)-1]['Closetime'], merged_Daylist[len(merged_Daylist)-1]['Closetime'] ] )
-    time_list = get_date_list(open_Daylist[0]['Opentime'],end_time)
+    #确定时间范围
+    list1 = []
+    list2 = []
+    if open_Daylist != []:
+        list1.append(open_Daylist[0]['Opentime'])
+        list2.append(open_Daylist[len(open_Daylist)-1]['Opentime'])
+    if closed_Daylist != []:
+        list1.append(closed_Daylist[0]['Closetime'])
+        list2.append(closed_Daylist[len(closed_Daylist)-1]['Closetime'])
+    if merged_Daylist != []:
+        list1.append(merged_Daylist[0]['Mergetime'])
+        list2.append(merged_Daylist[len(merged_Daylist)-1]['Mergetime'])
+    if opened_closed_Daylist != []:
+        list1.append(opened_closed_Daylist[0]['Opentime'])
+        list2.append(opened_closed_Daylist[len(opened_closed_Daylist)-1]['Opentime'])
+    if opened_merged_Daylist != []:
+        list1.append(opened_merged_Daylist[0]['Opentime'])
+        list2.append(opened_merged_Daylist[len(opened_merged_Daylist)-1]['Opentime'])
+
+    start_time = min(list1)
+    end_time = max(list2)
+    time_list = get_date_list(start_time,end_time)
 
     #到目前为止仍在等待的pull request的数组index和数量
     open_count = 0
@@ -311,25 +344,25 @@ def initial_pullrequest_data(url:str):
         time = datetime.datetime.strptime(item, '%Y-%m-%d').date()
         
         if closed_count<len(closed_Daylist) and time == closed_Daylist[closed_count]['Closetime']:
-            closed_sum += closed_Daylist[closed_count]['closed_issue']
+            closed_sum += closed_Daylist[closed_count]['closed_pullrequest']
             closed_count += 1
         Daylist['Closed'].append(closed_sum)
 
-        if merged_count<len(merged_Daylist) and time == merged_Daylist[merged_count]['Closetime']:
-            merged_sum += merged_Daylist[merged_count]['merged_issue']
+        if merged_count<len(merged_Daylist) and time == merged_Daylist[merged_count]['Mergetime']:
+            merged_sum += merged_Daylist[merged_count]['merged_pullrequest']
             merged_count += 1
         Daylist['Merged'].append(closed_sum)
         
         if opened_closed_count<len(opened_closed_Daylist) and time == opened_closed_Daylist[opened_closed_count]['Opentime']:
-            opened_closed_sum += opened_closed_Daylist[opened_closed_count]['opened_issue']
+            opened_closed_sum += opened_closed_Daylist[opened_closed_count]['opened_pullrequest']
             opened_closed_count += 1
         
         if opened_merged_count<len(opened_merged_Daylist) and time == opened_merged_Daylist[opened_merged_count]['Opentime']:
-            opened_merged_sum += opened_merged_Daylist[opened_merged_count]['opened_issue']
+            opened_merged_sum += opened_merged_Daylist[opened_merged_count]['opened_pullrequest']
             opened_merged_count += 1
 
         if open_count<len(open_Daylist) and time == open_Daylist[open_count]['Opentime']:
-            open_sum += open_Daylist[open_count]['open_issue']
+            open_sum += open_Daylist[open_count]['open_pullrequest']
             open_count += 1
         Daylist['Open'].append(open_sum + opened_closed_sum + opened_merged_sum - closed_sum - opened_closed_sum)
 
@@ -404,7 +437,7 @@ def delete_pullrequest(url:str):
         return False
 
 def test(request):
-    url = "https://github.com/Bitergia/prosoul/"
+    url = "https://github.com/microsoft/CodeBERT/"
     Email= "3190103367@zju.edu.cn"
     user = models.User.objects.filter(Email=Email).first()
     project = models.Project.objects.filter(RepositoryURL=url).first()
