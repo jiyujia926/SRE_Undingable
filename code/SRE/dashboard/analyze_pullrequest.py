@@ -12,7 +12,7 @@ def open_pullrequest_time(url:str):
     utc_date = datetime.strptime(rawtime,"%Y-%m-%dT%H:%M:%SZ")
     local_date = utc_date + timedelta(hours=8)
     local_date_str = datetime.strftime(local_date,'%Y-%m-%d %H:%M:%S')
-    print(local_date_str[:10])
+    return local_date_str[:10]
 
 def merged_pullrequest_closed_time(url:str):
     strhtml = requests.get(url)
@@ -26,7 +26,7 @@ def merged_pullrequest_closed_time(url:str):
     utc_date = datetime.strptime(rawtime,"%Y-%m-%dT%H:%M:%SZ")
     local_date = utc_date + timedelta(hours=8)
     local_date_str = datetime.strftime(local_date,'%Y-%m-%d %H:%M:%S')
-    print(local_date_str[:10])
+    return local_date_str[:10]
 def merged_pullrequest_open_time(url:str):
     strhtml = requests.get(url)
     soup = BeautifulSoup(strhtml.text,'lxml')
@@ -38,7 +38,7 @@ def merged_pullrequest_open_time(url:str):
     utc_date = datetime.strptime(rawtime,"%Y-%m-%dT%H:%M:%SZ")
     local_date = utc_date + timedelta(hours=8)
     local_date_str = datetime.strftime(local_date,'%Y-%m-%d %H:%M:%S')
-    print(local_date_str[:10])
+    return local_date_str[:10]
 def closed_pullrequest_open_time(url:str):
     strhtml = requests.get(url)
     soup = BeautifulSoup(strhtml.text,'lxml')
@@ -48,7 +48,7 @@ def closed_pullrequest_open_time(url:str):
     utc_date = datetime.strptime(rawtime,"%Y-%m-%dT%H:%M:%SZ")
     local_date = utc_date + timedelta(hours=8)
     local_date_str = datetime.strftime(local_date,'%Y-%m-%d %H:%M:%S')
-    print(local_date_str[:10])
+    return local_date_str[:10]
 def closed_pullrequest_closed_time(url:str):
     strhtml = requests.get(url)
     soup = BeautifulSoup(strhtml.text,'lxml')
@@ -58,7 +58,7 @@ def closed_pullrequest_closed_time(url:str):
     utc_date = datetime.strptime(rawtime,"%Y-%m-%dT%H:%M:%SZ")
     local_date = utc_date + timedelta(hours=8)
     local_date_str = datetime.strftime(local_date,'%Y-%m-%d %H:%M:%S')
-    print(local_date_str[:10])
+    return local_date_str[:10]
 def pullrequest_status(url:str):
     status=""
     strhtml = requests.get(url)
@@ -77,34 +77,23 @@ def get_participators(url:str):
     strhtml = requests.get(url)
     soup = BeautifulSoup(strhtml.text,'lxml')
     # print(soup)
+    participator = []
     for item in soup.find_all('a'):
         # print(item)
         itemstr = str(item)
         # print(itemstr)
         if itemstr.find('participant-avatar')>=0:
-            print(item['href'][1:])
+            participator.append(item['href'][1:])
+    return participator
 def combined_operations(url:str):
     if pullrequest_status(url) == "merged":
-        print("merged")
-        print("open at")
-        merged_pullrequest_open_time(url)
-        print("close at")
-        merged_pullrequest_closed_time(url)
-        print("participator")
-        get_participators(url)
+        prbag={'status':'merged','opentime':merged_pullrequest_open_time(url),'mergetime':merged_pullrequest_closed_time,'participator':get_participators(url)}
     elif pullrequest_status(url) == "closed":
-        print("closed")
-        print("open at")
-        closed_pullrequest_open_time(url)
-        print("close at")
-        closed_pullrequest_closed_time(url)
-        print("participator")
-        get_participators(url)
+        prbag={'status':'closed','opentime':closed_pullrequest_open_time(url),'closetime':closed_pullrequest_closed_time,'participator':get_participators(url)}
     else:
-        print("open")
-        print("open at")
-        open_pullrequest_time(url)
-        get_participators(url)
+        prbag={'status':'open','opentime':open_pullrequest_time,'participator':get_participators(url)}
+    return prbag
+
 
 if __name__ == "__main__":
     url = input()

@@ -1,10 +1,12 @@
 from __future__ import absolute_import, unicode_literals
 from io import open_code
+from bs4.element import ProcessingInstruction
 from django import http
 from django.db.models.aggregates import Count, Sum
 from celery import shared_task
 from .get_commit import getcommit
 from .get_issue import get_open_issue,get_closed_issue
+from .get_pullrequest import get_open_pullrequest,get_closed_pullrequest
 from . import models
 from django.db.models import F
 import django
@@ -17,13 +19,14 @@ import pytz
 
 @shared_task
 def spider(url:str):
-    # analyze_commit(url)
-    # initialcommitdata(url)
+    analyze_commit(url)
+    initialcommitdata(url)
     analyze_open_issue(url)
     analyze_close_issue(url)
-@shared_task
-def threespider(request):
-    return HttpResponse("wdnmd")
+    initialissuedata(url)
+    analyze_open_pullrequest(url)
+    analyze_close_merge_pullrequest(url)
+    initial_pullrequest_data(url)
 @shared_task
 def analyze_commit(url:str):
     commitbag = getcommit(url)
@@ -59,7 +62,7 @@ def analyze_open_issue(url:str):
                 else:
                     contributor = models.Contributor.objects.create(Github=name)
                     contributor.Project.add(project)
-            openissue.Contributor.add(contributor)
+                openissue.Contributor.add(contributor)
     print("open issue ok")
         
 @shared_task
@@ -79,9 +82,64 @@ def analyze_close_issue(url:str):
                 else:
                     contributor = models.Contributor.objects.create(Github=name)
                     contributor.Project.add(project)
-            closeissue.Contributor.add(contributor)
+                closeissue.Contributor.add(contributor)
     print("close issue ok")
+@shared_task
+def analyze_open_pullrequest(url:str):
+    openprbag = get_open_pullrequest(url)
+    project = models.Project.objects.filter(RepositoryURL=url).first()
+    if openprbag:
+        for item in openprbag:
+            openpr = models.OpenPullrequestRecord.objects.create(Opentime=item['opentime'])
+            openpr.Project.add(project)
+            for name in item['participator']:
+                Namelist = list(models.Contributor.objects.values().filter(Github=name))
+                if Namelist:
+                    contributor = models.Contributor.objects.filter(Github=name).first()
+                    if project not in contributor.Project.all():
+                        contributor.Project.add(project)
+                else:
+                    contributor = models.Contributor.objects.create(Github=name)
+                    contributor.Project.add(project)
+                openpr.Contributor.add(contributor)
+    print("open pr ok")
 
+@shared_task
+def analyze_close_merge_pullrequest(url:str):
+    cormbag = get_closed_pullrequest(url)
+    project = models.Project.objects.filter(RepositoryURL=url).first()
+    if cormbag:
+        for item in cormbag:
+            if item['status']=="closed":
+                closepr = models.ClosedPullrequestRecord.objects.create(Opentime=item['opentime'],Closetime=item['closetime'])
+                closepr.Project.add(project)
+                for name in item['participator']:
+                    Namelist = list(models.Contributor.objects.values().filter(Github=name))
+                    if Namelist:
+                        contributor = models.Contributor.objects.filter(Github=name).first()
+                        if project not in contributor.Project.all():
+                            contributor.Project.add(project)
+                    else:
+                        contributor = models.Contributor.objects.create(Github=name)
+                        contributor.Project.add(project)
+                    closepr.Contributor.add(contributor)
+            else:
+                mergepr = models.MergedPullrequestRecord.objects.create(Opentime=item['opentime'],Mergetime=item['mergetime'])
+                mergepr.Project.add(project)
+                for name in item['participator']:
+                    Namelist = list(models.Contributor.objects.values().filter(Github=name))
+                    if Namelist:
+                        contributor = models.Contributor.objects.filter(Github=name).first()
+                        if project not in contributor.Project.all():
+                            contributor.Project.add(project)
+                    else:
+                        contributor = models.Contributor.objects.create(Github=name)
+                        contributor.Project.add(project)
+                    mergepr.Contributor.add(contributor)
+    print("close or merge ok")
+                        
+                    
+            
 @shared_task
 def initialcommitdata(url:str):
     

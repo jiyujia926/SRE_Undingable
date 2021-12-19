@@ -6,6 +6,7 @@ from .analyze_pullrequest import combined_operations
 def get_open_pullrequest(rawurl:str):
     # url = "https://github.com/Bitergia/prosoul/issues"
     pullrequestlist=[]
+    oprbag=[]
     url = ""
     if rawurl[-1] == '/':
         url = rawurl + "pulls"
@@ -55,7 +56,7 @@ def get_open_pullrequest(rawurl:str):
                 continue
             else:
                 pullrequestlist.append(link)
-                combined_operations(link)
+                oprbag.append(combined_operations(link))
 
                 
     while (has_next_page):
@@ -95,16 +96,18 @@ def get_open_pullrequest(rawurl:str):
                     continue
                 else:
                     pullrequestlist.append(link)
-                    combined_operations(link)
+                    oprbag.append(combined_operations(link))
                     
 
     # print(pullrequestlist)      
     print(len(pullrequestlist)) 
+    return oprbag
 
 
 def get_closed_pullrequest(rawurl:str):
     pullrequestlist=[]
     url = ""
+    cprbag=[]
     if rawurl[-1] == '/':
         url = rawurl + "pulls?q=is%3Aissue+is%3Aclosed"
     else:
@@ -151,7 +154,7 @@ def get_closed_pullrequest(rawurl:str):
                 continue
             else:
                 pullrequestlist.append(link)
-                combined_operations(link)
+                cprbag.append(combined_operations(link))
                 
 
     while (has_next_page):
@@ -191,12 +194,12 @@ def get_closed_pullrequest(rawurl:str):
                     continue
                 else:
                     pullrequestlist.append(link)
-                    combined_operations(link)
+                    cprbag.append(combined_operations(link))
                     
 
     # print(pullrequestlist)    
     print(len(pullrequestlist))
-
+    return cprbag
 
 if __name__ == "__main__":
     url = input()
