@@ -217,13 +217,15 @@ def initialissuedata(url:str):
     list2=[]
     if open_Daylist != []:
         list1.append(open_Daylist[0]['Opentime'])
-        list2.append(open_Daylist[len(closed_Daylist)-1]['Opentime'])
-    if opened_Daylist != []:
-        list1.append(opened_Daylist[0]['Opentime'])
-        list2.append(opened_Daylist[len(opened_Daylist)-1]['Opentime'])
+        list2.append(open_Daylist[len(open_Daylist)-1]['Opentime'])
+    
     if closed_Daylist != []:
         list1.append(closed_Daylist[0]['Closetime'])
         list2.append(closed_Daylist[len(closed_Daylist)-1]['Closetime'])
+
+    if opened_Daylist != []:
+        list1.append(opened_Daylist[0]['Opentime'])
+        list2.append(opened_Daylist[len(opened_Daylist)-1]['Opentime'])
 
     start_time = min(list1)
     end_time = max(list2)
@@ -437,7 +439,7 @@ def delete_pullrequest(url:str):
         return False
 
 def test(request):
-    url = "https://github.com/microsoft/CodeBERT/"
+    url = "https://github.com/donnemartin/system-design-primer/"
     Email= "3190103367@zju.edu.cn"
     user = models.User.objects.filter(Email=Email).first()
     project = models.Project.objects.filter(RepositoryURL=url).first()
@@ -445,7 +447,7 @@ def test(request):
     Pr = list[models.Project.objects.values('RepositoryURL').filter()]
     print(Pr)
     if project:
-        delete_project(url)
+        # delete_project(url)
         return HttpResponse("sss")
     else:
         return HttpResponse("aaa")
