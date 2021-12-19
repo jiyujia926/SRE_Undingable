@@ -68,7 +68,7 @@ export default function Cardshow(props) {
     setChartdata(res1.data);
     setloading(false);
     //空数据判断
-    if (res.length == 0) {
+    if (res.length === 0) {
       alert("无数据，请换数据类型！");
     }
   }
@@ -82,8 +82,8 @@ export default function Cardshow(props) {
     upload();
   }
 
-  if (charttype == "piechart") {
-    if (datatype == "commit" || datatype == "subcommit") {
+  if (charttype === "piechart") {
+    if (datatype === "commit" || datatype === "subcommit") {
       return (
         <GridContainer>
           <GridItem xs={4} sm={10} md={4}>
@@ -95,7 +95,7 @@ export default function Cardshow(props) {
           </GridItem>
         </GridContainer>
       );
-    } else if (res.length == 1) {
+    } else if (res.length === 1) {
       return (
         <GridContainer>
           <GridItem xs={4} sm={10} md={4}>
@@ -153,9 +153,9 @@ export default function Cardshow(props) {
         </GridContainer>
       );
     }
-  } else if (charttype == "stackedbarchart") {
+  } else if (charttype === "stackedbarchart") {
     //bar图
-    if (datatype == "contributor") {
+    if (datatype === "contributor") {
       return (
         <GridContainer>
           <GridItem xs={4} sm={10} md={4}>
@@ -265,7 +265,7 @@ export default function Cardshow(props) {
     }
   } else {
     //line图
-    if (datatype == "contributor") {
+    if (datatype === "contributor") {
       alert("错误的图表类型！");
     } else {
       return (
@@ -288,7 +288,7 @@ export default function Cardshow(props) {
                     <MenuItem value={"linechart"}>line chart</MenuItem>
                   </Select>
                 </FormControl>
-                {datatype == "commit" || datatype == "subcommit" ? (
+                {datatype === "commit" || datatype === "subcommit" ? (
                   <FormControl className={classes.select}>
                     <InputLabel>时间刻度</InputLabel>
                     <Select

@@ -11,19 +11,16 @@ const useStyles = makeStyles(styles);
 
 export default function CheckBoxSet(props) {
   const classes = useStyles();
-  const { setFunc } = props;
-  const [dataTypes, setDataTypes] = React.useState({
-    Contributor: true,
-    Commit: true,
-    Issue: true,
-    "Pull/Request": false,
-  });
-  const types = Object.keys(dataTypes);
-  const handleChange = (event) => {
-    setDataTypes({ ...dataTypes, [event.target.name]: event.target.checked });
+  const { check, setFunc } = props;
+  const types = ["Contributor", "Commit", "Issue", "Pull/Request"];
+  const handleReset = () => {
+    setFunc([true, true, true, true]);
   };
-  const handleClick = () => {
-    setFunc(dataTypes);
+  const handleClick = (i) => () => {
+    let tmp = check.map((current, index) => {
+      return i === index ? !current : current;
+    });
+    setFunc(tmp);
   };
   return (
     <Card className={classes.root}>
@@ -33,8 +30,8 @@ export default function CheckBoxSet(props) {
             control={
               <Checkbox
                 name={type}
-                checked={dataTypes[type]}
-                onChange={handleChange}
+                checked={check[i]}
+                onChange={handleClick(i)}
                 color="primary"
               />
             }
@@ -46,15 +43,16 @@ export default function CheckBoxSet(props) {
       </FormGroup>
       <Button
         variant="contained"
-        onClick={handleClick}
+        onClick={handleReset}
         color="primary"
         className={classes.button}
       >
-        Show
+        Reset
       </Button>
     </Card>
   );
 }
 CheckBoxSet.propTypes = {
+  check: PropTypes.array,
   setFunc: PropTypes.func,
 };

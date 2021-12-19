@@ -17,6 +17,8 @@ import ListBox from "../../components/ListBox/ListBox";
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import { Fab } from "@material-ui/core";
 import Cardshow from "../../components/Card/Cardshow";
+import cookie from "react-cookies";
+//import Cardtext from "../../components/Card/Cardtext";
 //import PieChart from "../../components/Charts/PieChart";
 //import BarChart from "../../components/Charts/BarChart";
 //import StackedBarChart from "../../components/Charts/StackedBarChart";
@@ -31,17 +33,104 @@ const useStyles = makeStyles(styles);
 export default function Dashboard() {
   const classes = useStyles();
   const [address, setAddress] = React.useState([]);
-  const [type, setType] = React.useState({
-    Contributor: true,
-    Commit: true,
-    Issue: true,
-    "Pull/Request": false,
-  });
-  const [types, setTypes] = React.useState(Object.keys(type));
+  const defaultDashboard = [
+    {
+      Position: 0,
+      DataType: "contributor",
+      ChartType: "table",
+      DataScale: "day",
+      CheckBox: "",
+      Visible: true,
+    },
+    {
+      Position: 1,
+      DataType: "contributor",
+      ChartType: "piechart",
+      DataScale: "day",
+      CheckBox: "",
+      Visible: true,
+    },
+    {
+      Position: 2,
+      DataType: "commit",
+      ChartType: "stackedbarchart",
+      DataScale: "day",
+      CheckBox: "",
+      Visible: true,
+    },
+    {
+      Position: 3,
+      DataType: "commit",
+      ChartType: "stackedbarchart",
+      DataScale: "day",
+      CheckBox: "add-change-remove",
+      Visible: true,
+    },
+    {
+      Position: 4,
+      DataType: "issue",
+      ChartType: "stackedbarchart",
+      DataScale: "day",
+      CheckBox: "open-closed",
+      Visible: true,
+    },
+    {
+      Position: 5,
+      DataType: "issue",
+      ChartType: "piechart",
+      DataScale: "day",
+      CheckBox: "",
+      Visible: true,
+    },
+    {
+      Position: 6,
+      DataType: "pullrequest",
+      ChartType: "stackedbarchart",
+      DataScale: "day",
+      CheckBox: "open-closed-merged",
+      Visible: true,
+    },
+    {
+      Position: 7,
+      DataType: "pullrequest",
+      ChartType: "piechart",
+      DataScale: "day",
+      CheckBox: "",
+      Visible: true,
+    },
+  ];
+  const [dashboard, setDashboard] = React.useState(
+    cookie.load("dashboard") ? cookie.load("dashboard") : defaultDashboard
+  );
+  function changeDashboard(position, dataScale, checkBox) {
+    let tmpDashboard = dashboard.map((current) => {
+      if (current.Position === position) {
+        return {
+          ...current,
+          DataScale: dataScale,
+          CheckBox: checkBox,
+        };
+      } else {
+        return current;
+      }
+    });
+    setDashboard(tmpDashboard);
+    cookie.save("dashboard", tmpDashboard, {
+      maxAge: 3600,
+    });
+  }
   const handleSetDataTypeSet = (data) => {
-    if (address) {
-      setType(data);
-      setTypes(Object.keys(data));
+    if (address.length > 0) {
+      let tmpDashboard = dashboard.map((current) => {
+        return {
+          ...current,
+          Visible: data[Math.floor(current.Position / 2)],
+        };
+      });
+      setDashboard(tmpDashboard);
+      cookie.save("dashboard", tmpDashboard, {
+        maxAge: 3600,
+      });
     } else {
       alert("请选择项目！");
     }
@@ -60,21 +149,47 @@ export default function Dashboard() {
           </Card>
         </GridItem>
         <GridItem xs={12} sm={12} md={6}>
-          <CheckBoxSet setFunc={handleSetDataTypeSet} />
+          <CheckBoxSet
+            check={dashboard
+              .filter((current, i) => i % 2 === 0)
+              .map((current) => current.Visible)}
+            setFunc={handleSetDataTypeSet}
+          />
         </GridItem>
-        {address &&
-          types.map(
-            (t, i) =>
-              type[t] && (
-                <div key={i}>
-                  {/*<CardText dataType={t} address={address}/>
-                <Cardshow datatype={t} isMiddle=true address={address}/>
-                  <Cardshow datatype={t} isMiddle=true address={address}/>*/}
+        {address.length > 0 &&
+          dashboard.map(
+            (current, index) =>
+              current.Visible && (
+                <div key={index}>
+                  {current.Position % 2 === 0 && (
+                    <div onClick={changeDashboard}>1</div>
+                    //<Cardtext datatype={current.DataType} address={address} />
+                  )}
+                  {/*
+                    <Cardshow
+                      position={current.Position}
+                      datatype={current.DataType}
+                      charttype={current.ChartType}
+                      datascale={current.DataScale}
+                      checkbox={current.CheckBox}
+                      func={changeDashboard}
+                      address={address}
+                    />
+                  */}
                 </div>
               )
           )}
+        {address[0] && (
+          <GridItem xs={12} sm={12} md={12}>
+            <Cardshow
+              datatype="commit"
+              charttype="barchart"
+              address={address[0]}
+            />
+          </GridItem>
+        )}
       </GridContainer>
-      <div className={classes.fabset}>
+      <div className={classes.fabSet}>
         <Fab variant="extended" color="secondary" className={classes.fab}>
           Apply
         </Fab>
@@ -82,9 +197,6 @@ export default function Dashboard() {
           Customization
         </Fab>
       </div>
-      {address[0] && (
-        <Cardshow datatype="commit" charttype="barchart" address={address[0]} />
-      )}
       {/*
       <GridContainer>
         <GridItem xs={12} sm={12} md={4}>
