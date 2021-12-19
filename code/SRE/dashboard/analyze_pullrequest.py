@@ -64,15 +64,16 @@ def pullrequest_status(url:str):
     strhtml = requests.get(url)
     soup = BeautifulSoup(strhtml.text,'lxml')
     data = soup.find_all('svg')
+    # print(data)
     for item in data:
         if str(item['class']).find('closed')>=0:
             status="closed"
         if str(item['class']).find('merge')>=0:
             status="merged"
-        if str(item['class']).find('open')>=0:
-            status="open"
     # print(status)
     return status
+
+
 def get_participators(url:str):
     strhtml = requests.get(url)
     soup = BeautifulSoup(strhtml.text,'lxml')
@@ -87,13 +88,13 @@ def get_participators(url:str):
     return participator
 def combined_operations(url:str):
     if pullrequest_status(url) == "merged":
-        prbag={'status':'merged','opentime':merged_pullrequest_open_time(url),'mergetime':merged_pullrequest_closed_time,'participator':get_participators(url)}
+        prbag={'status':'merged','opentime':merged_pullrequest_open_time(url),'mergetime':merged_pullrequest_closed_time(url),'participator':get_participators(url)}
     elif pullrequest_status(url) == "closed":
-        prbag={'status':'closed','opentime':closed_pullrequest_open_time(url),'closetime':closed_pullrequest_closed_time,'participator':get_participators(url)}
-    else:
-        prbag={'status':'open','opentime':open_pullrequest_time(url),'participator':get_participators(url)}
+        prbag={'status':'closed','opentime':closed_pullrequest_open_time(url),'closetime':closed_pullrequest_closed_time(url),'participator':get_participators(url)}        
     return prbag
-
+def open_operations(url:str):
+    prbag={'status':'open','opentime':open_pullrequest_time(url),'participator':get_participators(url)}
+    return prbag
 
 if __name__ == "__main__":
     url = input()
@@ -104,4 +105,8 @@ if __name__ == "__main__":
     # closed_pullrequest_open_time(url)
     # closed_pullrequest_close_time(url)
     # closed_pullrequest_status(url)
-    combined_operations(url)
+    # print(combined_operations(url))
+    # print(merged_pullrequest_open_time(url))
+    # print(merged_pullrequest_closed_time(url))
+    # print(open_operations(url))
+    # print(pullrequest_status(url))

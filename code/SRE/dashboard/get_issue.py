@@ -163,7 +163,7 @@ def get_closed_issue(rawurl:str):
                 # print("closed:")
                 closetime=closed_issue_time(link)
                 participator=get_participators(link)
-                print({'opentime':opentime,'closetime':closetime,'participator':participator})
+                # print({'opentime':opentime,'closetime':closetime,'participator':participator})
                 issueinfolist.append({'opentime':opentime,'closetime':closetime,'participator':participator})
                 
     while (has_next_page):
@@ -208,7 +208,7 @@ def get_closed_issue(rawurl:str):
                 # print("closed:")
                 closetime=closed_issue_time(link)
                 participator=get_participators(link)
-                print({'opentime':opentime,'closetime':closetime,'participator':participator})
+                # print({'opentime':opentime,'closetime':closetime,'participator':participator})
                 issueinfolist.append({'opentime':opentime,'closetime':closetime,'participator':participator})
     # print(issuelist)    
     # print(len(issuelist))

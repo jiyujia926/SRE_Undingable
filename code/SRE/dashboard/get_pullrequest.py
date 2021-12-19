@@ -1,7 +1,7 @@
 
 import requests
 from bs4 import BeautifulSoup
-from .analyze_pullrequest import combined_operations
+from .analyze_pullrequest import combined_operations,open_operations
 
 def get_open_pullrequest(rawurl:str):
     # url = "https://github.com/Bitergia/prosoul/issues"
@@ -54,9 +54,12 @@ def get_open_pullrequest(rawurl:str):
                 continue
             if link in pullrequestlist:
                 continue
+            if link.find('#partial')>=0:
+                continue
             else:
                 pullrequestlist.append(link)
-                oprbag.append(combined_operations(link))
+                # print(link)
+                oprbag.append(open_operations(link))
 
                 
     while (has_next_page):
@@ -94,15 +97,18 @@ def get_open_pullrequest(rawurl:str):
                     continue
                 if link in pullrequestlist:
                     continue
+                if link.find('#partial')>=0:
+                    continue
                 else:
                     pullrequestlist.append(link)
-                    oprbag.append(combined_operations(link))
+                    # print(link)
+                    oprbag.append(open_operations(link))
                     
 
     # print(pullrequestlist)
     
-    print(len(pullrequestlist)) 
-    print(oprbag)
+    print(len(oprbag)) 
+    # print(oprbag)
     return oprbag
 
 
@@ -154,8 +160,11 @@ def get_closed_pullrequest(rawurl:str):
                 continue
             if link in pullrequestlist:
                 continue
+            if link.find('#partial')>=0:
+                continue
             else:
                 pullrequestlist.append(link)
+                # print(link)
                 cprbag.append(combined_operations(link))
                 
 
@@ -194,16 +203,20 @@ def get_closed_pullrequest(rawurl:str):
                     continue
                 if link in pullrequestlist:
                     continue
+                if link.find('#partial')>=0:
+                    continue
                 else:
                     pullrequestlist.append(link)
+                    # print(link)
                     cprbag.append(combined_operations(link))
                     
 
     # print(pullrequestlist)    
-    print(len(pullrequestlist))
+    print(len(cprbag))
     return cprbag
 
 if __name__ == "__main__":
     url = input()
-    get_open_pullrequest(url)
+    # get_open_pullrequest(url)
+    # print(get_open_pullrequest(url))
     get_closed_pullrequest(url)
