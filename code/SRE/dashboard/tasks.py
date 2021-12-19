@@ -444,10 +444,11 @@ def test(request):
     user = models.User.objects.filter(Email=Email).first()
     project = models.Project.objects.filter(RepositoryURL=url).first()
 
-    Pr = list[models.Project.objects.values('RepositoryURL').filter()]
-    print(Pr)
+    # Pr = models.Project.objects.values('RepositoryURL').all()
+    # print(Pr)
+    # for item in Pr:
+    #     print(item['RepositoryURL'])
     if project:
-        # delete_project(url)
         return HttpResponse("sss")
     else:
         return HttpResponse("aaa")
