@@ -5,9 +5,11 @@ import re
 import time
 from datetime import datetime
 from datetime import timedelta
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
+				'Accept-Language': 'zh-CN,zh;q=0.9'}
 def commit_data(url:str):
     # url = "https://github.com/jiyujia926/NFTauction/commit/02dfc9ddd0fc4fac62bf23eb774970700ef9ca9e"
-    strhtml = requests.get(url)
+    strhtml = requests.get(url,headers=headers)
     soup = BeautifulSoup(strhtml.text,'lxml')
     data = soup.select('#repo-content-pjax-container > div.commit.full-commit.mt-0.px-2.pt-2 > div.commit-meta.p-2.d-flex.flex-wrap > div.flex-self-start.no-wrap.mr-md-4.mr-0')
     # print(data[0])

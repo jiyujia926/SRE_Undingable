@@ -3,8 +3,10 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 from datetime import timedelta
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
+				'Accept-Language': 'zh-CN,zh;q=0.9'}
 def open_pullrequest_time(url:str):
-    strhtml = requests.get(url)
+    strhtml = requests.get(url,headers=headers)
     soup = BeautifulSoup(strhtml.text,'lxml')
     data = soup.find('relative-time')
     # print(data['datetime'])
@@ -15,7 +17,7 @@ def open_pullrequest_time(url:str):
     return local_date_str[:10]
 
 def merged_pullrequest_closed_time(url:str):
-    strhtml = requests.get(url)
+    strhtml = requests.get(url,headers=headers)
     soup = BeautifulSoup(strhtml.text,'lxml')
     data = soup.find_all('relative-time')
     for item in data:
@@ -28,7 +30,7 @@ def merged_pullrequest_closed_time(url:str):
     local_date_str = datetime.strftime(local_date,'%Y-%m-%d %H:%M:%S')
     return local_date_str[:10]
 def merged_pullrequest_open_time(url:str):
-    strhtml = requests.get(url)
+    strhtml = requests.get(url,headers=headers)
     soup = BeautifulSoup(strhtml.text,'lxml')
     data = soup.find_all('relative-time')
     # for item in data:
@@ -40,7 +42,7 @@ def merged_pullrequest_open_time(url:str):
     local_date_str = datetime.strftime(local_date,'%Y-%m-%d %H:%M:%S')
     return local_date_str[:10]
 def closed_pullrequest_open_time(url:str):
-    strhtml = requests.get(url)
+    strhtml = requests.get(url,headers=headers)
     soup = BeautifulSoup(strhtml.text,'lxml')
     data = soup.find('relative-time')
     # print(data['datetime'])
@@ -50,7 +52,7 @@ def closed_pullrequest_open_time(url:str):
     local_date_str = datetime.strftime(local_date,'%Y-%m-%d %H:%M:%S')
     return local_date_str[:10]
 def closed_pullrequest_closed_time(url:str):
-    strhtml = requests.get(url)
+    strhtml = requests.get(url,headers=headers)
     soup = BeautifulSoup(strhtml.text,'lxml')
     data = soup.find_all('relative-time')
     # print(data['datetime'])
@@ -61,7 +63,7 @@ def closed_pullrequest_closed_time(url:str):
     return local_date_str[:10]
 def pullrequest_status(url:str):
     status=""
-    strhtml = requests.get(url)
+    strhtml = requests.get(url,headers=headers)
     soup = BeautifulSoup(strhtml.text,'lxml')
     data = soup.find_all('svg')
     # print(data)
@@ -75,7 +77,7 @@ def pullrequest_status(url:str):
 
 
 def get_participators(url:str):
-    strhtml = requests.get(url)
+    strhtml = requests.get(url,headers=headers)
     soup = BeautifulSoup(strhtml.text,'lxml')
     # print(soup)
     participator = []
