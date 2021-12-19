@@ -223,7 +223,7 @@ def initialissuedata(url:str):
         list2.append(opened_Daylist[len(opened_Daylist)-1]['Opentime'])
     if closed_Daylist != []:
         list1.append(closed_Daylist[0]['Closetime'])
-        list2.append(closed_Daylist[0]['Closetime'])
+        list2.append(closed_Daylist[len(closed_Daylist)-1]['Closetime'])
 
     start_time = min(list1)
     end_time = max(list2)
@@ -442,8 +442,8 @@ def test(request):
     user = models.User.objects.filter(Email=Email).first()
     project = models.Project.objects.filter(RepositoryURL=url).first()
 
-    # Pr = list[models.Project.objects.values('RepositoryURL').filter()]
-    # print(Pr)
+    Pr = list[models.Project.objects.values('RepositoryURL').filter()]
+    print(Pr)
     if project:
         delete_project(url)
         return HttpResponse("sss")
