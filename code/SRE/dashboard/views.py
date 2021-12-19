@@ -28,7 +28,7 @@ def checkurl(request):
         # spideissue(address)
         # tasks.initialcommitdata.delay(address)
         # dotest(address)
-        importDB(address)
+        # importDB(address)
         return HttpResponse("true")
     else:
         # 这个链接仓库里没有
