@@ -286,7 +286,7 @@ def get_date_list(begin_date, end_date):
 
 @shared_task
 def delete_project(url:str):
-    # project = models.Project.objects.filter(RepositoryURL=url).first()
+    project = models.Project.objects.filter(RepositoryURL=url).first()
     #删除contributor信息
     delete_contributor(url)
     #删除commit信息
@@ -295,6 +295,7 @@ def delete_project(url:str):
     delete_issue(url)
     #删除pull request信息
     delete_pullrequest(url)
+    project.delete()
 
 def delete_contributor(url:str):
     project = models.Project.objects.filter(RepositoryURL=url).first()
@@ -348,8 +349,7 @@ def test(request):
     Email= "3190103367@zju.edu.cn"
     user = models.User.objects.filter(Email=Email).first()
     project = models.Project.objects.filter(RepositoryURL=url).first()
-    check = models.Contributor.objects.filter(Project=project).all()
-    if check:
+    if project:
         return HttpResponse("sss")
     else:
         return HttpResponse("aaa")
