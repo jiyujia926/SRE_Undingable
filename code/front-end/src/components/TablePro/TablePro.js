@@ -14,8 +14,9 @@ import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
 import TableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
-import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
-import IconButton from "@material-ui/core/IconButton";
+//import RemoveCircleOutlineIcon from "@material-ui/icons/RemoveCircleOutline";
+//import IconButton from "@material-ui/core/IconButton";
+import Button from "@material-ui/core/Button";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -51,16 +52,11 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <IconButton color="secondary" disabled aria-label="remove">
-            <RemoveCircleOutlineIcon />
-          </IconButton>
-        </TableCell>
-        {headCells.map((headCell, i) => (
+        {headCells.map((headCell) => (
           <TableCell
             key={headCell}
             align="left"
-            padding={i === 1 ? "none" : "normal"}
+            padding="normal"
             sortDirection={orderBy === headCell ? order : false}
           >
             <TableSortLabel
@@ -77,6 +73,7 @@ function EnhancedTableHead(props) {
             </TableSortLabel>
           </TableCell>
         ))}
+        <TableCell>Operation</TableCell>
       </TableRow>
     </TableHead>
   );
@@ -92,7 +89,7 @@ EnhancedTableHead.propTypes = {
 
 const TablePro = (props) => {
   const classes = useStyles();
-  const { data, removeFunc, jumpFunc } = props;
+  const { data, buttonType, removeFunc, jumpFunc, popFunc } = props;
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("ID");
   const [page, setPage] = React.useState(0);
@@ -118,6 +115,12 @@ const TablePro = (props) => {
 
   const handleRemove = (i) => () => {
     removeFunc(i);
+  };
+
+  const handlePop = (i) => () => {
+    if (buttonType === "apply") {
+      popFunc(i);
+    }
   };
 
   const emptyRows =
@@ -147,20 +150,10 @@ const TablePro = (props) => {
                     const labelId = `enhanced-table-checkbox-${index}`;
                     return (
                       <TableRow hover tabIndex={-1} key={row["ID"]}>
-                        <TableCell padding="checkbox">
-                          <IconButton
-                            color="secondary"
-                            onClick={handleRemove(index)}
-                            aria-label="remove"
-                          >
-                            <RemoveCircleOutlineIcon />
-                          </IconButton>
-                        </TableCell>
                         {data.columns.map((col, i) => (
                           <TableCell
-                            to="/admin/dashboard"
-                            onClick={handleJump(index)}
                             id={labelId}
+                            onClick={handlePop(index)}
                             key={row + col}
                             scope="row"
                             padding={i === 1 ? "none" : "normal"}
@@ -168,6 +161,25 @@ const TablePro = (props) => {
                             {row[col]}
                           </TableCell>
                         ))}
+                        <TableCell>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleJump(index)}
+                            aria-label="view"
+                            className={classes.button}
+                          >
+                            {buttonType}
+                          </Button>
+                          <Button
+                            variant="contained"
+                            onClick={handleRemove(index)}
+                            aria-label="remove"
+                            className={classes.button}
+                          >
+                            remove
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     );
                   })}
@@ -198,8 +210,10 @@ const TablePro = (props) => {
 
 TablePro.propTypes = {
   data: PropTypes.object,
+  buttonType: PropTypes.string,
   removeFunc: PropTypes.func,
   jumpFunc: PropTypes.func,
+  popFunc: PropTypes.func,
 };
 
 export default TablePro;

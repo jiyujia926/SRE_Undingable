@@ -25,6 +25,9 @@ const useStyles = makeStyles(() => ({
     top: 20,
     width: 1,
   },
+  button: {
+    marginRight: "5px",
+  },
 }));
 
 export default useStyles;

@@ -23,7 +23,7 @@ export default function Favorites() {
   let history = useHistory();
   const col = ["ID", "Repo Name", "Repo Address", "Description"];
   const [addressList, setAddressList] = React.useState([]);
-  async function jump(index) {
+  async function view(index) {
     history.push("/admin/dashboard");
     let tmpList = cookie.load("addressList") ? cookie.load("addressList") : [];
     let isExisted = tmpList.some((current) => {
@@ -123,8 +123,9 @@ export default function Favorites() {
               columns: col,
               rows: addressList,
             }}
+            buttonType="view"
             removeFunc={remove}
-            jumpFunc={jump}
+            jumpFunc={view}
           />
         )}
       </GridItem>

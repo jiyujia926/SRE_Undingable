@@ -77,6 +77,7 @@ export default function AdminNavbarLinks() {
     handleCloseProfile();
     setAccount({ email: "", username: "" });
     cookie.remove("username");
+    cookie.remove("time");
     cookie.remove("addressList");
   };
   const handleClickDialog = () => {
@@ -121,11 +122,12 @@ export default function AdminNavbarLinks() {
     };
     let res = await axios.post(`${server}/login/`, data);
     if (res.data === "密码正确") {
-      let name = await axios.post(`${server}/getusername/`, data);
-      setAccount({ email: formData.email, username: name.data });
+      let info = await axios.post(`${server}/getinfo/`, data);
+      setAccount({ email: formData.email, username: info.data.name });
       handleCloseDialog();
       cookie.save("account", formData.email);
-      cookie.save("username", name.data);
+      cookie.save("username", info.data.account);
+      cookie.save("time", info.data.time);
       cookie.remove("addressList");
       if (remember) {
         cookie.save("password", formData.password);
@@ -251,6 +253,7 @@ export default function AdminNavbarLinks() {
       setFormData({ ...formData, password: "" });
       setAccount({ ...account, email: "", username: "" });
       cookie.remove("username");
+      cookie.remove("time");
       if (cookie.load("password")) {
         cookie.remove("password");
       }
