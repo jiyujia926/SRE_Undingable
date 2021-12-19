@@ -226,6 +226,7 @@ def returnFavorchart(request):
     project = dashboard_models.Project.objects.filter(RepositoryURL=data['Repo']).first()
 
     commit_model = {'day':dashboard_models.DayCommit,'month':dashboard_models.MonthCommit,'year':dashboard_models.YearCommit}
+    issue_model = {'day':dashboard_models.DayIssue,'month':dashboard_models.MonthIssue,'year':dashboard_models.YearIssue}
     if user:
         user_chart_list = list(dashboard_models.Chart.objects.filter(User=user,Project=project).order_by('CreatedTime'))
         Chartlist={}
