@@ -15,8 +15,21 @@ import Card from "components/Card/Card.js";
 import CheckBoxSet from "../../components/CheckBoxSet/CheckBoxSet";
 import ListBox from "../../components/ListBox/ListBox";
 import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
-import { Fab } from "@material-ui/core";
+import {
+  Dialog,
+  DialogContent,
+  Fab,
+  ListItem,
+  ListItemText,
+  ListSubheader,
+} from "@material-ui/core";
 import Cardshow from "../../components/Card/Cardshow";
+import cookie from "react-cookies";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import List from "@material-ui/core/List";
+//import Cardtext from "../../components/Card/Cardtext";
 //import PieChart from "../../components/Charts/PieChart";
 //import BarChart from "../../components/Charts/BarChart";
 //import StackedBarChart from "../../components/Charts/StackedBarChart";
@@ -31,20 +44,173 @@ const useStyles = makeStyles(styles);
 export default function Dashboard() {
   const classes = useStyles();
   const [address, setAddress] = React.useState([]);
-  const [type, setType] = React.useState({
-    Contributor: true,
-    Commit: true,
-    Issue: true,
-    "Pull/Request": false,
-  });
-  const [types, setTypes] = React.useState(Object.keys(type));
+  const defaultDashboard = [
+    {
+      Position: 0,
+      DataType: "contributor",
+      ChartType: "table",
+      DataScale: "day",
+      CheckBox: "",
+      Visible: true,
+    },
+    {
+      Position: 1,
+      DataType: "contributor",
+      ChartType: "piechart",
+      DataScale: "day",
+      CheckBox: "",
+      Visible: true,
+    },
+    {
+      Position: 2,
+      DataType: "commit",
+      ChartType: "stackedbarchart",
+      DataScale: "day",
+      CheckBox: "",
+      Visible: true,
+    },
+    {
+      Position: 3,
+      DataType: "commit",
+      ChartType: "stackedbarchart",
+      DataScale: "day",
+      CheckBox: "add-change-remove",
+      Visible: true,
+    },
+    {
+      Position: 4,
+      DataType: "issue",
+      ChartType: "stackedbarchart",
+      DataScale: "day",
+      CheckBox: "open-closed",
+      Visible: true,
+    },
+    {
+      Position: 5,
+      DataType: "issue",
+      ChartType: "piechart",
+      DataScale: "day",
+      CheckBox: "",
+      Visible: true,
+    },
+    {
+      Position: 6,
+      DataType: "pullrequest",
+      ChartType: "stackedbarchart",
+      DataScale: "day",
+      CheckBox: "open-closed-merged",
+      Visible: true,
+    },
+    {
+      Position: 7,
+      DataType: "pullrequest",
+      ChartType: "piechart",
+      DataScale: "day",
+      CheckBox: "",
+      Visible: true,
+    },
+  ];
+  const [dashboard, setDashboard] = React.useState(
+    cookie.load("dashboard") ? cookie.load("dashboard") : defaultDashboard
+  );
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const initialState = {
+    name: "",
+    description: "",
+  };
+  const [formData, setFormData] = React.useState(initialState);
+  const handleFormChange = (event) => {
+    let { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
+  const [op, setOp] = React.useState("");
+  const [applyList, setApplyList] = React.useState([]);
+  function changeDashboard(position, dataScale, checkBox) {
+    let tmpDashboard = dashboard.map((current) => {
+      if (current.Position === position) {
+        return {
+          ...current,
+          DataScale: dataScale,
+          CheckBox: checkBox,
+        };
+      } else {
+        return current;
+      }
+    });
+    setDashboard(tmpDashboard);
+    cookie.save("dashboard", tmpDashboard, {
+      maxAge: 3600,
+    });
+  }
   const handleSetDataTypeSet = (data) => {
-    if (address) {
-      setType(data);
-      setTypes(Object.keys(data));
+    if (address.length > 0) {
+      let tmpDashboard = dashboard.map((current) => {
+        return {
+          ...current,
+          Visible: data[Math.floor(current.Position / 2)],
+        };
+      });
+      setDashboard(tmpDashboard);
+      cookie.save("dashboard", tmpDashboard, {
+        maxAge: 3600,
+      });
     } else {
       alert("请选择项目！");
     }
+  };
+  const handleCustomize = () => {
+    if (cookie.load("username")) {
+      setOp("customize");
+      setOpenDialog(true);
+    } else {
+      alert("Please sign in first.");
+    }
+  };
+  async function customize() {
+    let data = {
+      Email: cookie.load("account"),
+      Name: formData.name,
+      Description: formData.description,
+      Dashboard: dashboard,
+    };
+    console.log(data);
+    //let res = await axios.post(`${server}//`, data);
+    let res = { data: "定制成功" };
+    if (res.data === "定制成功") {
+      alert("定制成功");
+      handleCloseDialog();
+    } else {
+      alert("Error");
+    }
+  }
+  const handleApply = () => {
+    if (cookie.load("username")) {
+      setOp("apply");
+      setOpenDialog(true);
+      fetch();
+    } else {
+      alert("Please sign in first.");
+    }
+  };
+  async function fetch() {
+    /*let res = await axios.post(`${server}//`, {
+      Email: cookie.load("account"),
+    });*/
+    let res = { data: [{ name: "template1" }, { name: "template2" }] };
+    if (res.data.length > 0) {
+      setApplyList(res.data);
+    }
+  }
+  const apply = (i) => () => {
+    alert(applyList[i].name);
+    //setDashboard(applyList[i].dashboard);
+    setDashboard(defaultDashboard);
+    handleCloseDialog();
+  };
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setFormData(initialState);
+    setOp("");
   };
   return (
     <div>
@@ -60,149 +226,142 @@ export default function Dashboard() {
           </Card>
         </GridItem>
         <GridItem xs={12} sm={12} md={6}>
-          <CheckBoxSet setFunc={handleSetDataTypeSet} />
+          <CheckBoxSet
+            check={dashboard
+              .filter((current, i) => i % 2 === 0)
+              .map((current) => current.Visible)}
+            setFunc={handleSetDataTypeSet}
+          />
         </GridItem>
-        {address &&
-          types.map(
-            (t, i) =>
-              type[t] && (
-                <div key={i}>
-                  {/*<CardText dataType={t} address={address}/>
-                <Cardshow datatype={t} isMiddle=true address={address}/>
-                  <Cardshow datatype={t} isMiddle=true address={address}/>*/}
+        {address.length > 0 &&
+          dashboard.map(
+            (current, index) =>
+              current.Visible && (
+                <div key={index}>
+                  {current.Position % 2 === 0 && (
+                    <div onClick={changeDashboard}>1</div>
+                    //<Cardtext datatype={current.DataType} address={address} />
+                  )}
+                  {/*
+                    <Cardshow
+                      position={current.Position}
+                      datatype={current.DataType}
+                      charttype={current.ChartType}
+                      datascale={current.DataScale}
+                      checkbox={current.CheckBox}
+                      func={changeDashboard}
+                      address={address}
+                    />
+                  */}
                 </div>
               )
           )}
+        {address[0] && (
+          <GridItem xs={12} sm={12} md={12}>
+            <Cardshow
+              datatype="commit"
+              charttype="barchart"
+              address={address[0]}
+            />
+          </GridItem>
+        )}
       </GridContainer>
-      <div className={classes.fabset}>
-        <Fab variant="extended" color="secondary" className={classes.fab}>
+      <div className={classes.fabSet}>
+        <Fab
+          variant="extended"
+          color="secondary"
+          onClick={handleApply}
+          className={classes.fab}
+        >
           Apply
         </Fab>
-        <Fab variant="extended" color="secondary" className={classes.fab}>
-          Customization
+        <Fab
+          variant="extended"
+          color="secondary"
+          onClick={handleCustomize}
+          className={classes.fab}
+        >
+          Customize
         </Fab>
       </div>
-      {address[0] && (
-        <Cardshow datatype="commit" charttype="barchart" address={address[0]} />
-      )}
-      {/*
-      <GridContainer>
-        <GridItem xs={12} sm={12} md={4}>
-          <Card chart>
-            <CardBody>
-              <h4 className={classes.cardTitle}>Daily Sales</h4>
-              <p className={classes.cardCategory}>
-                <span className={classes.successText}>
-                  <ArrowUpward className={classes.upArrowCardCategory} /> 55%
-                </span>{" "}
-                increase in today sales.
-              </p>
-            </CardBody>
-            <CardFooter chart>
-              <div className={classes.stats}>
-                <AccessTime /> updated 4 minutes ago
-              </div>
-            </CardFooter>
-          </Card>
-        </GridItem>
-      </GridContainer>
-      <div style={{ width: "350px", height: "300px" }}>
-        <PieChart
-          data={[
-            { value: 300, name: "Fine" },
-            { value: 1300, name: "Goodgood" },
-            { value: 800, name: "Kathleen" },
-            { value: 300, name: "Rainy" },
-            { value: 500, name: "Kathbaby" },
-          ]}
-        />
-      </div>
-      <div style={{ width: "350px", height: "300px" }}>
-        <BarChart
-          data={{
-            categoryData: [
-              "2021-09-08",
-              "2021-10-09",
-              "2021-11-10",
-              "2021-12-11",
-              "2021-12-12",
-              "2021-12-31",
-              "2022-01-01",
-              "2021-02-02",
-              "2022-03-03",
-              "2022-04-04",
-              "2022-05-05",
-              "2022-06-06",
-              "2022-07-07",
-              "2022-08-08",
-              "2022-09-09",
-              "2022-10-10",
-              "2022-11-11",
-              "2022-12-12",
-            ],
-            valueData: [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-          }}
-        />
-      </div>
-      <div style={{ width: "350px", height: "300px" }}>
-        <LineChart
-          data={{
-            categoryData: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-            valueData: [
-              {
-                repo: "BCJ",
-                name: "commit",
-                detailData: [10, 20, 7, 9, 13, 18, 25],
-              },
-              {
-                repo: "Clouding",
-                name: "commit",
-                detailData: [9, 12, 24, 12, 8, 9, 10],
-              },
-            ],
-            smoothOrNot: true,
-          }}
-        />
-      </div>
-      <div style={{ width: "350px", height: "300px" }}>
-        <StackedBarChart
-          data={{
-            categoryData: ["Mon", "Tue", "Wed", "Thu", "Fri", 6, "Sun"],
-            valueData: [
-              {
-                repo: "BaiCaoJian",
-                name: "commit",
-                detailData: [20, 30, 4, 19, 20, 40, 25],
-              },
-              {
-                repo: "BaiCaoJian",
-                name: "issue",
-                detailData: [2, 1, 8, 5, 5, 8, 9],
-              },
-              {
-                repo: "BaiCaoJian",
-                name: "pull request",
-                detailData: [16, 10, 3, 6, 7, 9, 15],
-              },
-              {
-                repo: "Clouding",
-                name: "commit",
-                detailData: [30, 20, 17, 29, 30, 18, 35],
-              },
-              {
-                repo: "Clouding",
-                name: "issue",
-                detailData: [20, 10, 7, 9, 3, 8, 5],
-              },
-              {
-                repo: "Clouding",
-                name: "pull request",
-                detailData: [10, 20, 7, 9, 13, 18, 25],
-              },
-            ],
-          }}
-        />
-      </div> */}
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="form-dialog-title"
+      >
+        {op === "customize" && (
+          <div>
+            <DialogTitle id="form-dialog-title" className={classes.form_head}>
+              <Typography component="h1" variant="h5">
+                Customize
+              </Typography>
+            </DialogTitle>
+            <DialogContent className={classes.form_content}>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                id="name"
+                label="Name"
+                name="name"
+                autoComplete="name"
+                value={formData.name}
+                onChange={handleFormChange}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                id="description"
+                label="Description"
+                name="description"
+                autoComplete="description"
+                value={formData.description}
+                onChange={handleFormChange}
+              />
+              <Button
+                fullWidth
+                variant="contained"
+                color="secondary"
+                className={classes.form_button}
+                onClick={handleCloseDialog}
+              >
+                Cancel
+              </Button>
+              <Button
+                fullWidth
+                variant="contained"
+                color="secondary"
+                className={classes.form_button}
+                onClick={customize}
+              >
+                OK
+              </Button>
+            </DialogContent>
+          </div>
+        )}
+        {op === "apply" && (
+          <div>
+            <DialogTitle id="form-dialog-title" className={classes.form_head}>
+              <Typography component="h1" variant="h5">
+                Apply
+              </Typography>
+            </DialogTitle>
+            <DialogContent className={classes.form_content}>
+              <List className={classes.form_list} subheader={<li />}>
+                <ListSubheader className={classes.form_listHead}>
+                  Names of Templates
+                </ListSubheader>
+                {applyList.map((current, index) => (
+                  <ListItem button onClick={apply(index)} key={index}>
+                    <ListItemText primary={current.name} />
+                  </ListItem>
+                ))}
+              </List>
+            </DialogContent>
+          </div>
+        )}
+      </Dialog>
     </div>
   );
 }

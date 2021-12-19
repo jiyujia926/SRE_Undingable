@@ -41,6 +41,17 @@ def getusername(request):
         return HttpResponse(loginuser[0]['Name'])
     else:
         return HttpResponse("没这个人")
+    
+def getinfo(request):
+    data = json.loads(request.body)
+    loginuser = list(models.User.objects.values('Name','CreatedTime').filter(Email = data['Email']))
+    user={}
+    if loginuser:
+        user['account'] = loginuser[0]['Name']
+        user['time'] = loginuser[0]['CreatedTime'].strftime('%Y-%m-%d')
+        return HttpResponse(json.dumps(user))
+    else:
+        return HttpResponse("没这个人")
 
 def modifyPassword(request):
     data = json.loads(request.body)
@@ -227,6 +238,4 @@ def test(request):
     Email= "3190103367@zju.edu.cn"
     user = models.User.objects.filter(Email=Email).first()
     project = dashboard_models.Project.objects.filter(RepositoryURL=url).first()
-    value = dashboard_models.DayCommit.objects.values('Time','changedCount').filter(Project=project)
-    print(value)
-    return HttpResponse("gan")
+    
