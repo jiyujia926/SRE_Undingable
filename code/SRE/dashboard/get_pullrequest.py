@@ -99,8 +99,10 @@ def get_open_pullrequest(rawurl:str):
                     oprbag.append(combined_operations(link))
                     
 
-    # print(pullrequestlist)      
+    # print(pullrequestlist)
+    
     print(len(pullrequestlist)) 
+    print(oprbag)
     return oprbag
 
 

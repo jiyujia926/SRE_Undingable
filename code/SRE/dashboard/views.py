@@ -27,6 +27,8 @@ def checkurl(request):
         # print(list1[0]['RepositoryURL']==address)
         # spideissue(address)
         # tasks.initialcommitdata.delay(address)
+        # dotest(address)
+        importDB(address)
         return HttpResponse("true")
     else:
         # 这个链接仓库里没有
@@ -123,4 +125,6 @@ def checkstate(request):
 
 #celery tasks
 def importDB(url:str):
+    tasks.spider.delay(url)
+def dotest(url:str):
     tasks.spider.delay(url)
