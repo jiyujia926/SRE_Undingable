@@ -33,7 +33,7 @@ class Template(models.Model):
 
 
 class Contributor(models.Model):
-    Project = models.ManyToManyField(Project) #先实验一下看下该主键最终是什么样子的
+    Project = models.ManyToManyField(Project)
     Github = models.CharField(max_length=255, primary_key=True)
     #贡献量是计算还是存储？
 
