@@ -16,14 +16,12 @@ import FormControl from "@material-ui/core/FormControl";
 import styles from "assets/jss/material-dashboard-react/components/cardShowStyle.js";
 
 //图表
-//import PieChart from "../../components/Charts/PieChart";
-//import BarChart from "components/Charts/BarChart";
+import PieChart from "../../components/Charts/PieChart";
 import StackedBarChart from "../../components/Charts/StackedBarChart";
 import LineChart from "components/Charts/LineChart";
 
 //传输
 import axios from "axios";
-import PieChart from "../../components/Charts/PieChart";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 // const server = "http://122.51.228.166:8000";
@@ -38,14 +36,16 @@ const useStyles = makeStyles(styles);
 // pullrequest——bar，line，pie
 // contributor——table（另写），pie
 
+//测试checkbox
+//import res from "../Card/stackedtest.json";
+
 export default function Cardshow(props) {
   console.log(props);
   const classes = useStyles();
   const [charttype, setChart] = useState(props.charttype);
   const [loading, setloading] = useState(true);
   const [res, setChartdata] = useState({});
-  const [time, setTime] = useState(props.datatype);
-  //const ismiddle = props.ismiddle;
+  const [time, setTime] = useState(props.time);
   const datatype = props.datatype;
   const address = props.address;
 
@@ -84,7 +84,17 @@ export default function Cardshow(props) {
 
   if (charttype == "piechart") {
     if (datatype == "commit" || datatype == "subcommit") {
-      alert("错误的图表类型！");
+      return (
+        <GridContainer>
+          <GridItem xs={4} sm={10} md={4}>
+            <Card chart>
+              <CardBody>
+                <h3 className={classes.head}>错误的图表类型！</h3>
+              </CardBody>
+            </Card>
+          </GridItem>
+        </GridContainer>
+      );
     } else if (res.length == 1) {
       return (
         <GridContainer>
@@ -143,10 +153,20 @@ export default function Cardshow(props) {
         </GridContainer>
       );
     }
-  } else if (charttype == "barchart") {
+  } else if (charttype == "stackedbarchart") {
     //bar图
     if (datatype == "contributor") {
-      alert("错误的图表类型！");
+      return (
+        <GridContainer>
+          <GridItem xs={4} sm={10} md={4}>
+            <Card chart>
+              <CardBody>
+                <h3 className={classes.head}>错误的图表类型！</h3>
+              </CardBody>
+            </Card>
+          </GridItem>
+        </GridContainer>
+      );
     } else {
       return (
         <GridContainer>
@@ -186,11 +206,56 @@ export default function Cardshow(props) {
                   <></>
                 )}
                 <Grid className={classes.chart}>
-                  {loading ? (
+                  <StackedBarChart
+                    data={{
+                      categoryData: [
+                        "Mon",
+                        "Tue",
+                        "Wed",
+                        "Thu",
+                        "Fri",
+                        "Sat",
+                        "Sun",
+                      ],
+                      valueData: [
+                        {
+                          repo: "BaiCaoJian",
+                          name: "commit",
+                          detailData: [20, 30, 4, 19, 20, 40, 25],
+                        },
+                        {
+                          repo: "BaiCaoJian",
+                          name: "issue",
+                          detailData: [2, 1, 8, 5, 5, 8, 9],
+                        },
+                        {
+                          repo: "BaiCaoJian",
+                          name: "pull request",
+                          detailData: [16, 10, 3, 6, 7, 9, 15],
+                        },
+                        {
+                          repo: "Clouding",
+                          name: "commit",
+                          detailData: [30, 20, 17, 29, 30, 18, 35],
+                        },
+                        {
+                          repo: "Clouding",
+                          name: "issue",
+                          detailData: [20, 10, 7, 9, 3, 8, 5],
+                        },
+                        {
+                          repo: "Clouding",
+                          name: "pull request",
+                          detailData: [10, 20, 7, 9, 13, 18, 25],
+                        },
+                      ],
+                    }}
+                  />
+                  {/* {loading ? (
                     <CircularProgress className={classes.itemProgress} />
                   ) : (
                     <StackedBarChart data={res} />
-                  )}
+                  )} */}
                 </Grid>
               </CardBody>
             </Card>
@@ -241,14 +306,60 @@ export default function Cardshow(props) {
                   <></>
                 )}
                 <Grid className={classes.chart}>
-                  {loading ? (
+                  <LineChart
+                    data={{
+                      categoryData: [
+                        "Mon",
+                        "Tue",
+                        "Wed",
+                        "Thu",
+                        "Fri",
+                        "Sat",
+                        "Sun",
+                      ],
+                      valueData: [
+                        {
+                          repo: "BaiCaoJian",
+                          name: "commit",
+                          detailData: [20, 30, 4, 19, 20, 40, 25],
+                        },
+                        {
+                          repo: "BaiCaoJian",
+                          name: "issue",
+                          detailData: [2, 1, 8, 5, 5, 8, 9],
+                        },
+                        {
+                          repo: "BaiCaoJian",
+                          name: "pull request",
+                          detailData: [16, 10, 3, 6, 7, 9, 15],
+                        },
+                        {
+                          repo: "Clouding",
+                          name: "commit",
+                          detailData: [30, 20, 17, 29, 30, 18, 35],
+                        },
+                        {
+                          repo: "Clouding",
+                          name: "issue",
+                          detailData: [20, 10, 7, 9, 3, 8, 5],
+                        },
+                        {
+                          repo: "Clouding",
+                          name: "pull request",
+                          detailData: [10, 20, 7, 9, 13, 18, 25],
+                        },
+                      ],
+                      smoothOrNot: true,
+                    }}
+                  />
+                  {/* {loading ? (
                     <CircularProgress
                       color="primary"
                       className={classes.itemProgress}
                     />
                   ) : (
                     <LineChart data={res} />
-                  )}
+                  )} */}
                 </Grid>
               </CardBody>
             </Card>
@@ -265,4 +376,5 @@ Cardshow.propTypes = {
   cardheight: PropTypes.any,
   cardwidth: PropTypes.any,
   address: PropTypes.any,
+  time: PropTypes.any,
 };
