@@ -7,8 +7,10 @@ import CardHeader from "components/Card/CardHeader";
 import CardBody from "components/Card/CardBody";
 import { Button } from "@material-ui/core";
 import CardFooter from "components/Card/CardFooter";
+import useStyles from "./styles";
 
 const UserGuidance = () => {
+  const classes = useStyles();
   const [language, setLanguage] = useState(true);
 
   const handleClick = () => {
@@ -20,10 +22,10 @@ const UserGuidance = () => {
   if (language == true) {
     // true: chinese
     return (
-      <GridItem xs={12} sm={12} md={8}>
+      <GridItem xs={12} sm={12} md={12} className={classes.root}>
         <Card>
-          <CardHeader color="primary">
-            <h3>用户指南</h3>
+          <CardHeader color="info">
+            <h4 className={classes.cardCategoryWhite}>用户指南</h4>
           </CardHeader>
           <CardBody profile>
             <h4>{userGuidance.Chinese.welcome}</h4>
@@ -62,10 +64,10 @@ const UserGuidance = () => {
     );
   } else {
     return (
-      <GridItem xs={12} sm={12} md={8}>
+      <GridItem xs={12} sm={12} md={12} className={classes.root}>
         <Card>
           <CardHeader color="primary">
-            <h3>User Guidance</h3>
+            <h4 className={classes.cardCategoryWhite}>User Guidance</h4>
           </CardHeader>
           <CardBody profile>
             <h4>{userGuidance.English.welcome}</h4>

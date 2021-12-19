@@ -8,8 +8,12 @@ import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import UserGuidance from "components/Guidance/userGuidance";
+import Reward from "components/Guidance/rewards";
 
 const styles = {
+  root: {
+    margin: "30px 0 0 0",
+  },
   cardCategoryWhite: {
     color: "rgba(255,255,255,.62)",
     margin: "0",
@@ -26,6 +30,9 @@ const styles = {
     marginBottom: "3px",
     textDecoration: "none",
   },
+  card: {
+    maxHeight: "300px",
+  },
   cardBody: {
     padding: "0 0 30px 30px",
   },
@@ -37,10 +44,10 @@ export default function UserProfile() {
   const classes = useStyles();
   return (
     <div>
-      <GridContainer>
-        <GridItem xs={12} sm={12} md={4}>
+      <GridContainer className={classes.root}>
+        <GridItem xs={12} sm={12} md={4} className={classes.card}>
           <Card>
-            <CardHeader color="primary">
+            <CardHeader color="info">
               <h4 className={classes.cardTitleWhite}>Welcome</h4>
             </CardHeader>
             <CardBody profile className={classes.cardBody}>
@@ -52,7 +59,10 @@ export default function UserProfile() {
             </CardBody>
           </Card>
         </GridItem>
-        <UserGuidance />
+        <Reward className={classes.card} />
+        <div className={classes.root}>
+          <UserGuidance />
+        </div>
       </GridContainer>
     </div>
   );
