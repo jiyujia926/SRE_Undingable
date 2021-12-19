@@ -175,3 +175,7 @@ EMAIL_HOST_USER = '2482892055@qq.com' # 帐号
 EMAIL_HOST_PASSWORD = 'nqkaaqdqqivmeaab' 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+#时区设置
+TIME_ZONE = 'Asia/Shanghai'
+USE_TZ = False
