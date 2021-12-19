@@ -351,7 +351,7 @@ def initial_pullrequest_data(url:str):
         if merged_count<len(merged_Daylist) and time == merged_Daylist[merged_count]['Mergetime']:
             merged_sum += merged_Daylist[merged_count]['merged_pullrequest']
             merged_count += 1
-        Daylist['Merged'].append(closed_sum)
+        Daylist['Merged'].append(merged_sum)
         
         if opened_closed_count<len(opened_closed_Daylist) and time == opened_closed_Daylist[opened_closed_count]['Opentime']:
             opened_closed_sum += opened_closed_Daylist[opened_closed_count]['opened_pullrequest']
