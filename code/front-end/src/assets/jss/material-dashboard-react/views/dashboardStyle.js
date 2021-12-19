@@ -130,6 +130,29 @@ const dashboardStyle = (theme) => ({
     margin: "7px 0",
     padding: "0 22px",
   },
+  form_head: {
+    textAlign: "center",
+    padding: "20px 24px 0",
+  },
+  form_content: {
+    padding: "8px 24px 20px",
+  },
+  form_button: {
+    width: "30%",
+    margin: "15px 10% 0px",
+  },
+  form_list: {
+    width: "100%",
+    minWidth: "350px",
+    maxHeight: "288px",
+    overflowY: "auto",
+    margin: "10px 0",
+  },
+  form_listHead: {
+    backgroundColor: "#ffeeff",
+    color: "rgb(0,0,0,0.87)",
+    fontSize: "1rem",
+  },
 });
 
 export default dashboardStyle;

@@ -24,8 +24,8 @@ import LineChart from "components/Charts/LineChart";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
-// const server = "http://122.51.228.166:8000";
-const server = "http://127.0.0.1:8000";
+const server = "http://122.51.228.166:8000";
+//const server = "http://127.0.0.1:8000";
 
 const useStyles = makeStyles(styles);
 
@@ -188,7 +188,7 @@ export default function Cardshow(props) {
                     <MenuItem value={"linechart"}>line chart</MenuItem>
                   </Select>
                 </FormControl>
-                {datatype == "commit" || datatype == "subcommit" ? (
+                {datatype === "commit" || datatype === "subcommit" ? (
                   <FormControl className={classes.select}>
                     <InputLabel>时间刻度</InputLabel>
                     <Select
