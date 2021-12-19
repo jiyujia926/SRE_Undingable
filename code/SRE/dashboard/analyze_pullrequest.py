@@ -91,7 +91,7 @@ def combined_operations(url:str):
     elif pullrequest_status(url) == "closed":
         prbag={'status':'closed','opentime':closed_pullrequest_open_time(url),'closetime':closed_pullrequest_closed_time,'participator':get_participators(url)}
     else:
-        prbag={'status':'open','opentime':open_pullrequest_time,'participator':get_participators(url)}
+        prbag={'status':'open','opentime':open_pullrequest_time(url),'participator':get_participators(url)}
     return prbag
 
 
