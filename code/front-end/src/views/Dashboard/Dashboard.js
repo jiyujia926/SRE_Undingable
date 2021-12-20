@@ -33,10 +33,10 @@ import List from "@material-ui/core/List";
 //import PieChart from "../../components/Charts/PieChart";
 //import BarChart from "../../components/Charts/BarChart";
 //import StackedBarChart from "../../components/Charts/StackedBarChart";
-// import axios from "axios";
-// axios.defaults.withCredentials = true;
-// axios.defaults.headers.post["Content-Type"] = "application/json";
-// const server = "http://122.51.228.166:8000";
+import axios from "axios";
+axios.defaults.withCredentials = true;
+axios.defaults.headers.post["Content-Type"] = "application/json";
+const server = "http://122.51.228.166:8000";
 // const server = "http://127.0.0.1:8000";
 
 const useStyles = makeStyles(styles);
@@ -174,8 +174,8 @@ export default function Dashboard() {
       Dashboard: dashboard,
     };
     console.log(data);
-    //let res = await axios.post(`${server}//`, data);
-    let res = { data: "定制成功" };
+    let res = await axios.post(`${server}/customize/`, data);
+    // let res = { data: "定制成功" };
     if (res.data === "定制成功") {
       alert("定制成功");
       handleCloseDialog();
@@ -193,10 +193,11 @@ export default function Dashboard() {
     }
   };
   async function fetch() {
-    /*let res = await axios.post(`${server}//`, {
+    let res = await axios.post(`${server}/fetch/`, {
       Email: cookie.load("account"),
-    });*/
-    let res = { data: [{ name: "template1" }, { name: "template2" }] };
+    });
+    console.log(res.data);
+    // let res = { data: [{ name: "template1" }, { name: "template2" }] };
     if (res.data.length > 0) {
       setApplyList(res.data);
     }

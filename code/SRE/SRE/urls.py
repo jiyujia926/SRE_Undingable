@@ -30,10 +30,13 @@ urlpatterns = [
     path('find_pwd/', user_view.findPassword),
     path('verify_code/', user_view.Verifycode),
     path('get_data/',dash_view.get_data),
-    path('test/',user_view.test),
+    path('test/',dash_tasks.test),
     path('checkstate/',dash_view.checkstate),
     path('addfavor/',user_view.addFavor),
     path('checkfavor/',user_view.checkFavor),
     path('returnfavor/',user_view.returnFavor),
-    path('deletefavor/',user_view.deleteFavor)
+    path('deletefavor/',user_view.deleteFavor),
+    path('customize/',dash_view.customize),
+    path('fetch/',dash_view.fetchcustomize),
+    path('delete/',dash_view.deltecustomize)
 ]

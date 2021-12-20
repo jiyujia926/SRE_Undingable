@@ -440,14 +440,10 @@ def delete_pullrequest(url:str):
 
 def test(request):
     url = "https://github.com/donnemartin/system-design-primer/"
-    Email= "3190103367@zju.edu.cn"
+    Email= "3190102372@zju.edu.cn"
     user = models.User.objects.filter(Email=Email).first()
     project = models.Project.objects.filter(RepositoryURL=url).first()
 
-    # Pr = models.Project.objects.values('RepositoryURL').all()
-    # print(Pr)
-    # for item in Pr:
-    #     print(item['RepositoryURL'])
     if project:
         return HttpResponse("sss")
     else:
