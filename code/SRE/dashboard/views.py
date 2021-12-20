@@ -61,10 +61,10 @@ def get_data(request):
     print(data)
     addresslist = data['Address']
     if len(addresslist)==1:
-        return HttpResponse(get_one_address(addresslist[0],data['DataType'],data['ChartType']))
+        return HttpResponse(get_one_address(addresslist[0],data['Datatype'],data['Charttype']))
     else:
-        datatype=data['DataType']
-        charttype = data['ChartType']
+        datatype=data['Datatype']
+        charttype = data['Charttype']
         address1 = addresslist[0]
         address2 = addresslist[1]
         project1 = list(models.Project.objects.values().filter(RepositoryURL=address1))
