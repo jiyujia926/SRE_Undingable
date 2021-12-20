@@ -19,7 +19,7 @@ const UserGuidance = () => {
     console.log("test: ", curLanguage);
   };
 
-  if (language == true) {
+  if (language === true) {
     // true: chinese
     return (
       <GridItem xs={12} sm={12} md={12} className={classes.root}>
