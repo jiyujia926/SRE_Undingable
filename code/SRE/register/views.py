@@ -101,7 +101,7 @@ def Verifycode(request):
     if user:
         user_code = list(models.IdentifyingCode.objects.filter(User=user))
         if user_code:
-            now_time = datetime.datetime.now( pytz.timezone('Asia/Shanghai'))
+            now_time = datetime.datetime.now(pytz.timezone('Asia/Shanghai'))
             code = data['Checksum']                     #获取传递过来的验证码
             msg = ""
             for item in user_code:
@@ -124,60 +124,6 @@ def Verifycode(request):
     else:
         return HttpResponse("邮箱未注册")
 
-def AddCharttoFavor(request):
-    data = json.loads(request.body)
-    user = models.User.objects.filter(Email=data['Email']).first()
-    project = dashboard_models.Project.objects.filter(RepositoryURL=data['repo']).first()
-
-    if user and project:
-        #图表基本信息
-        chart_name = data['Name']
-        chart_type = data['Chart_type']
-        data_type = data['Data_type']
-        data_detail_type = data['Data_detail_type']
-        time_scale = data['Data_time_scale']
-
-        if chart_type == dashboard_models.Chart.BarChart:
-            #存储图表的基本信息
-            
-            if project == []:
-                return HttpResponse("项目不存在")
-                
-            user_chart = dashboard_models.Chart.objects.create(Name=chart_name,ChartType=chart_type,DataType=data_type,DataDetailType=data_detail_type,TimeScale=time_scale)
-            user_chart.User.add(user)
-            user_chart.project.add(project)
-            user_chart.HasProject.add(project)
-
-        elif chart_type == dashboard_models.Chart.PieChart:
-            #存储图表的基本信息
-            if project == []:
-                return HttpResponse("项目不存在")
-            user_chart = dashboard_models.Chart.objects.create(Name=chart_name,ChartType=chart_type,DataType=data_type,DataDetailType=data_detail_type,TimeScale=time_scale)
-            user_chart.User.add(user)
-            user_chart.project.add(project)
-            user_chart.HasProject.add(project)
-
-            # #存储图表的数据
-            # for xitem, yitem in categoryData, valueData:
-            #     key_value_pairs = dashboard_models.DiagramValue.objects.create(key=xitem,value=yitem)
-            #     key_value_pairs.Diagram.add(user_diagram)
-
-        
-        elif chart_type == dashboard_models.Chart.StackedBarChart or chart_type == dashboard_models.Chart.LineChart:
-            user_chart = dashboard_models.Chart.objects.create(Name=chart_name,ChartType=chart_type,DataType=data_type,DataDetailType=data_detail_type,TimeScale=time_scale)
-            user_chart.User.add(user)
-            user_chart.project.add(project)
-            user_chart.HasProject.add(project)
-            repolist = data['repo_list']
-
-            for item in repolist:
-                #图表对应多个Project
-                project_i = dashboard_models.Project.objects.filter(RepositoryURL=item).first()
-                if project_i == []:
-                    return HttpResponse("有项目不存在")
-                user_chart.HasProject.add(project_i)
-    else:
-        return HttpResponse("邮箱未注册或该项目不存在")
 
 def addFavor(request):
     data = json.loads(request.body)
@@ -226,10 +172,6 @@ def deleteFavor(request):
         return HttpResponse("删除成功")
     else:
         return HttpResponse("删除失败")
-
-def delete_template(request):
-    data = json.loads(request.body)
-    user = models.User.objects.filter(Email=data['Email']).first()
 
 
 

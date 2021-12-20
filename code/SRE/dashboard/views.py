@@ -162,6 +162,20 @@ def fetchcustomize(request):
     print(res)    
     return HttpResponse(json.dumps(res))
     
+def deltecustomize(request):
+    data = json.loads(request.body)
+    user = rUser.objects.filter(Email=data['Email']).first()
+    template = models.Template.objects.values().filter(User=user, id=data['Id']).first()
+    chartlist = models.Template.objects.values('Chart').filter(User=user, id=data['Id']).all()
+    if template:
+        template.delete()
+        for item in chartlist:
+            chart = models.Chart.objects.filter(id=item['Chart']).first()
+            chart.delete()
+        return HttpResponse("删除成功")
+    else:
+        return HttpResponse("删除失败")
+
 
 #celery tasks
 def importDB(url:str):
