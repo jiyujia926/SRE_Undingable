@@ -244,7 +244,7 @@ export default function Dashboard() {
                     <div onClick={changeDashboard}>1</div>
                     //<Cardtext datatype={current.DataType} address={address} />
                   )}
-                  {/*
+                  
                     <Cardshow
                       position={current.Position}
                       datatype={current.DataType}
@@ -254,7 +254,7 @@ export default function Dashboard() {
                       func={changeDashboard}
                       address={address}
                     />
-                  */}
+                 
                 </div>
               )
           )}
