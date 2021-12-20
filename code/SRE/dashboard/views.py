@@ -61,17 +61,18 @@ def get_data(request):
     print(data)
     addresslist = data['Address']
     if len(addresslist)==1:
-        return HttpResponse(get_one_address(addresslist[0],data['DataType']))
+        return HttpResponse(get_one_address(addresslist[0],data['DataType'],data['ChartType']))
     else:
         datatype=data['DataType']
+        charttype = data['ChartType']
         address1 = addresslist[0]
         address2 = addresslist[1]
         project1 = list(models.Project.objects.values().filter(RepositoryURL=address1))
         project2 = list(models.Project.objects.values().filter(RepositoryURL=address2))
         repo1=project1[0]['Name'][1:]
         repo2=project2[0]['Name'][1:]
-        firstbag=json.loads(get_one_address(address1,datatype))
-        secondbag=json.loads(get_one_address(address2,datatype))
+        firstbag=json.loads(get_one_address(address1,datatype,charttype))
+        secondbag=json.loads(get_one_address(address2,datatype,charttype))
         if datatype=="commit":
             timespan1 = firstbag['day']['categoryData']
             databag1 = firstbag['day']['valueData'][0]['detailData']
@@ -388,7 +389,7 @@ def get_data(request):
             pass
         return HttpResponse(json.dumps(databag))
 
-def get_one_address(address:str,datatype:str):
+def get_one_address(address:str,datatype:str,charttype:str):
 
     # address="https://github.com/Bitergia/prosoul/"
     if address[-1] == '/':
@@ -403,96 +404,99 @@ def get_one_address(address:str,datatype:str):
     proj =models.Project.objects.values('Name').filter(RepositoryURL=address)
     if proj:
         projname=proj[0]['Name'][1:]
-    if datatype == "commit":
-        daycommitlist = list(models.DayCommit.objects.values().filter(Project=project).order_by('Time'))
-        daytimelist=[]
-        daycommitcntlist=[]
-        for daycommitrecord in daycommitlist:
-            daytimelist.append(str(daycommitrecord['Time']))
-            daycommitcntlist.append(daycommitrecord['committedCount'])
-        # print(commitlist)
-        daycommit={'categoryData':daytimelist,'valueData':[{'repo':projname,'name':"commit",'detailData':daycommitcntlist}]}
-        monthcommitlist = list(models.MonthCommit.objects.values().filter(Project=project).order_by('Time'))
-        monthtimelist=[]
-        monthcommitcntlist=[]
-        for monthcommitrecord in monthcommitlist:
-            monthtimelist.append(str(monthcommitrecord['Time']))
-            monthcommitcntlist.append(monthcommitrecord['committedCount'])
-        monthcommit={'categoryData':monthtimelist,'valueData':[{'repo':projname,'name':"commit",'detailData':monthcommitcntlist}]}
-        yearcommitlist = list(models.YearCommit.objects.values().filter(Project=project).order_by('Time'))
-        yeartimelist=[]
-        yearcommitcntlist=[]
-        for yearcommitrecord in yearcommitlist:
-            yeartimelist.append(str(yearcommitrecord['Time']))
-            yearcommitcntlist.append(yearcommitrecord['committedCount'])
-        yearcommit={'categoryData':yeartimelist,'valueData':[{'repo':projname,'name':"commit",'detailData':yearcommitcntlist}]}
-        databag={'day':daycommit,'month':monthcommit,'year':yearcommit}
-        return json.dumps(databag)
-    elif datatype == "subcommit":
-        daycommitlist = list(models.DayCommit.objects.values().filter(Project=project).order_by('Time'))
-        daytimelist=[]
-        dayaddlist=[]
-        daychangelist=[]
-        dayremovelist=[]
-        for daycommitrecord in daycommitlist:
-            daytimelist.append(str(daycommitrecord['Time']))
-            dayaddlist.append(daycommitrecord['addedCount'])
-            daychangelist.append(daycommitrecord['changedCount'])
-            dayremovelist.append(daycommitrecord['deletedCount'])
-        day={'categoryData':daytimelist,'valueData':[{'repo':projname,'name':'addition','detailData':dayaddlist},{'repo':projname,'name':'changedfile','detailData':daychangelist},{'repo':projname,'name':'deletion','detailData':dayremovelist}]}
-        monthcommitlist = list(models.MonthCommit.objects.values().filter(Project=project).order_by('Time'))
-        monthtimelist=[]
-        monthaddlist=[]
-        monthchangelist=[]
-        monthremovelist=[]
-        for monthcommitrecord in monthcommitlist:
-            monthtimelist.append(str(monthcommitrecord['Time']))
-            monthaddlist.append(monthcommitrecord['addedCount'])
-            monthchangelist.append(monthcommitrecord['changedCount'])
-            monthremovelist.append(monthcommitrecord['deletedCount'])
-        month={'categoryData':monthtimelist,'valueData':[{'repo':projname,'name':'addition','detailData':monthaddlist},{'repo':projname,'name':'changedfile','detailData':monthchangelist},{'repo':projname,'name':'deletion','detailData':monthremovelist}]}
-        yearcommitlist = list(models.YearCommit.objects.values().filter(Project=project).order_by('Time'))
-        yeartimelist=[]
-        yearaddlist=[]
-        yearchangelist=[]
-        yearremovelist=[]
-        for yearcommitrecord in yearcommitlist:
-            yeartimelist.append(str(yearcommitrecord['Time']))
-            yearaddlist.append(yearcommitrecord['addedCount'])
-            yearchangelist.append(yearcommitrecord['changedCount'])
-            yearremovelist.append(yearcommitrecord['deletedCount'])
-        year={'categoryData':yeartimelist,'valueData':[{'repo':projname,'name':'addition','detailData':yearaddlist},{'repo':projname,'name':'changedfile','detailData':yearchangelist},{'repo':projname,'name':'deletion','detailData':yearremovelist}]}
-        databag={'day':day,'month':month,'year':year}
-        return json.dumps(databag)
-    elif datatype == "issue":
-        dayissuelist = list(models.DayIssue.objects.values().filter(Project=project).order_by('Time'))
-        daytimelist = []
-        dayopenlist = []
-        daycloselist = []
-        for dayissuerecord in dayissuelist:
-            daytimelist.append(str(dayissuerecord['Time']))
-            dayopenlist.append(dayissuerecord['openedCount'])
-            daycloselist.append(dayissuerecord['closedCount'])
-        day={'categoryData':daytimelist,'valueData':[{'repo':projname,'name':'open','detailData':dayopenlist},{'repo':projname,'name':'closed','detailData':daycloselist}]}
-        databag={"day":day,'month':[],'year':[]}
-        return json.dumps(databag)
-    elif datatype == "pullrequest":
-        daypullrequestlist = list(models.DayPullrequest.objects.values().filter(Project=project).order_by('Time'))
-        daytimelist = []
-        dayopenlist = []
-        daycloselist = []
-        daymergelist = []
-        for daypullrequestrecord in daypullrequestlist:
-            daytimelist.append(str(daypullrequestrecord['Time']))
-            dayopenlist.append(daypullrequestrecord['openedCount'])
-            daycloselist.append(daypullrequestrecord['closedCount'])
-            daymergelist.append(daypullrequestrecord['mergedCount'])
-        day={'categoryData':daytimelist,'valueData':[{'repo':projname,'name':'open','detailData':dayopenlist},{'repo':projname,'name':'closed','detailData':daycloselist},{'repo':projname,'name':'merged','detailData':daymergelist}]}
-        databag={"day":day,'month':[],'year':[]}
-        return json.dumps(databag)
-    elif datatype == "contributor":
-        pass
-        return HttpResponse()
+    if charttype == "piechart":
+        return {}
+    else:
+        if datatype == "commit":
+            daycommitlist = list(models.DayCommit.objects.values().filter(Project=project).order_by('Time'))
+            daytimelist=[]
+            daycommitcntlist=[]
+            for daycommitrecord in daycommitlist:
+                daytimelist.append(str(daycommitrecord['Time']))
+                daycommitcntlist.append(daycommitrecord['committedCount'])
+            # print(commitlist)
+            daycommit={'categoryData':daytimelist,'valueData':[{'repo':projname,'name':"commit",'detailData':daycommitcntlist}]}
+            monthcommitlist = list(models.MonthCommit.objects.values().filter(Project=project).order_by('Time'))
+            monthtimelist=[]
+            monthcommitcntlist=[]
+            for monthcommitrecord in monthcommitlist:
+                monthtimelist.append(str(monthcommitrecord['Time']))
+                monthcommitcntlist.append(monthcommitrecord['committedCount'])
+            monthcommit={'categoryData':monthtimelist,'valueData':[{'repo':projname,'name':"commit",'detailData':monthcommitcntlist}]}
+            yearcommitlist = list(models.YearCommit.objects.values().filter(Project=project).order_by('Time'))
+            yeartimelist=[]
+            yearcommitcntlist=[]
+            for yearcommitrecord in yearcommitlist:
+                yeartimelist.append(str(yearcommitrecord['Time']))
+                yearcommitcntlist.append(yearcommitrecord['committedCount'])
+            yearcommit={'categoryData':yeartimelist,'valueData':[{'repo':projname,'name':"commit",'detailData':yearcommitcntlist}]}
+            databag={'day':daycommit,'month':monthcommit,'year':yearcommit}
+            return json.dumps(databag)
+        elif datatype == "subcommit":
+            daycommitlist = list(models.DayCommit.objects.values().filter(Project=project).order_by('Time'))
+            daytimelist=[]
+            dayaddlist=[]
+            daychangelist=[]
+            dayremovelist=[]
+            for daycommitrecord in daycommitlist:
+                daytimelist.append(str(daycommitrecord['Time']))
+                dayaddlist.append(daycommitrecord['addedCount'])
+                daychangelist.append(daycommitrecord['changedCount'])
+                dayremovelist.append(daycommitrecord['deletedCount'])
+            day={'categoryData':daytimelist,'valueData':[{'repo':projname,'name':'addition','detailData':dayaddlist},{'repo':projname,'name':'changedfile','detailData':daychangelist},{'repo':projname,'name':'deletion','detailData':dayremovelist}]}
+            monthcommitlist = list(models.MonthCommit.objects.values().filter(Project=project).order_by('Time'))
+            monthtimelist=[]
+            monthaddlist=[]
+            monthchangelist=[]
+            monthremovelist=[]
+            for monthcommitrecord in monthcommitlist:
+                monthtimelist.append(str(monthcommitrecord['Time']))
+                monthaddlist.append(monthcommitrecord['addedCount'])
+                monthchangelist.append(monthcommitrecord['changedCount'])
+                monthremovelist.append(monthcommitrecord['deletedCount'])
+            month={'categoryData':monthtimelist,'valueData':[{'repo':projname,'name':'addition','detailData':monthaddlist},{'repo':projname,'name':'changedfile','detailData':monthchangelist},{'repo':projname,'name':'deletion','detailData':monthremovelist}]}
+            yearcommitlist = list(models.YearCommit.objects.values().filter(Project=project).order_by('Time'))
+            yeartimelist=[]
+            yearaddlist=[]
+            yearchangelist=[]
+            yearremovelist=[]
+            for yearcommitrecord in yearcommitlist:
+                yeartimelist.append(str(yearcommitrecord['Time']))
+                yearaddlist.append(yearcommitrecord['addedCount'])
+                yearchangelist.append(yearcommitrecord['changedCount'])
+                yearremovelist.append(yearcommitrecord['deletedCount'])
+            year={'categoryData':yeartimelist,'valueData':[{'repo':projname,'name':'addition','detailData':yearaddlist},{'repo':projname,'name':'changedfile','detailData':yearchangelist},{'repo':projname,'name':'deletion','detailData':yearremovelist}]}
+            databag={'day':day,'month':month,'year':year}
+            return json.dumps(databag)
+        elif datatype == "issue":
+            dayissuelist = list(models.DayIssue.objects.values().filter(Project=project).order_by('Time'))
+            daytimelist = []
+            dayopenlist = []
+            daycloselist = []
+            for dayissuerecord in dayissuelist:
+                daytimelist.append(str(dayissuerecord['Time']))
+                dayopenlist.append(dayissuerecord['openedCount'])
+                daycloselist.append(dayissuerecord['closedCount'])
+            day={'categoryData':daytimelist,'valueData':[{'repo':projname,'name':'open','detailData':dayopenlist},{'repo':projname,'name':'closed','detailData':daycloselist}]}
+            databag={"day":day,'month':[],'year':[]}
+            return json.dumps(databag)
+        elif datatype == "pullrequest":
+            daypullrequestlist = list(models.DayPullrequest.objects.values().filter(Project=project).order_by('Time'))
+            daytimelist = []
+            dayopenlist = []
+            daycloselist = []
+            daymergelist = []
+            for daypullrequestrecord in daypullrequestlist:
+                daytimelist.append(str(daypullrequestrecord['Time']))
+                dayopenlist.append(daypullrequestrecord['openedCount'])
+                daycloselist.append(daypullrequestrecord['closedCount'])
+                daymergelist.append(daypullrequestrecord['mergedCount'])
+            day={'categoryData':daytimelist,'valueData':[{'repo':projname,'name':'open','detailData':dayopenlist},{'repo':projname,'name':'closed','detailData':daycloselist},{'repo':projname,'name':'merged','detailData':daymergelist}]}
+            databag={"day":day,'month':[],'year':[]}
+            return json.dumps(databag)
+        elif datatype == "contributor":
+            pass
+            return 
     
     # databag = {'categoryData':timelist,'valueData':commitcountlist}
     # return HttpResponse(json.dumps(databag))
