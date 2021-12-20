@@ -74,7 +74,7 @@ export default function Cardshow(props) {
   }
 
   function changechart(event) {
-    setChart(event.target.value); 
+    setChart(event.target.value);
   }
 
   function changetime(event) {
