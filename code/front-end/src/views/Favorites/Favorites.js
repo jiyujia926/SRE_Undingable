@@ -56,16 +56,12 @@ export default function Favorites() {
     });
   }
   async function remove(index) {
-    let tmpList = addressList.filter((current, i) => {
-      return index !== i;
-    });
     let data = {
       Email: cookie.load("account"),
       Repo: addressList[index]["Repo Address"],
     };
     let res = await axios.post(`${server}/deletefavor/`, data);
-    setAddressList(tmpList);
-    tmpList = cookie.load("addressList") ? cookie.load("addressList") : [];
+    let tmpList = cookie.load("addressList") ? cookie.load("addressList") : [];
     let isExisted = tmpList.some((current) => {
       return current.address === addressList[index]["Repo Address"];
     });
@@ -113,7 +109,7 @@ export default function Favorites() {
         );
       }
     }
-  }, []);
+  }, [remove]);
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>

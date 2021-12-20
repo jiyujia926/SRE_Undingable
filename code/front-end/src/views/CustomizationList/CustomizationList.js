@@ -19,11 +19,11 @@ import {
   ListItemText,
 } from "@material-ui/core";
 import List from "@material-ui/core/List";
-/*import axios from "axios";
+import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
-//const server = "http://122.51.228.166:8000";
-const server = "http://127.0.0.1:8000";*/
+const server = "http://122.51.228.166:8000";
+//const server = "http://127.0.0.1:8000";
 
 const useStyles = makeStyles(styles);
 
@@ -40,24 +40,19 @@ export default function CustomizationList() {
     });
     if (isExisted) {
       history.push("/admin/dashboard");
-      alert(templateList[index].hash);
-      //cookie.save("dashboard", templateList[index].dashboard);
+      //alert(templateList[index].hash);
+      cookie.save("dashboard", templateList[index].dashboard);
     } else {
       alert("You have no project to apply now.");
     }
   }
   async function remove(index) {
-    let tmpList = templateList.filter((current, i) => {
-      return index !== i;
-    });
     let data = {
       Email: cookie.load("account"),
       Id: templateList[index].hash,
     };
     console.log(data);
-    //let res = await axios.post(`${server}//`, data);
-    let res = { data: "删除成功" };
-    setTemplateList(tmpList);
+    let res = await axios.post(`${server}/delete/`, data);
     if (res.data === "删除成功") {
       alert("Success");
     } else {
@@ -76,83 +71,7 @@ export default function CustomizationList() {
         Email: cookie.load("account"),
       };
       console.log(data);
-      //let res = await axios.post(`${server}//`, data);
-      let res = {
-        data: [
-          {
-            Id: "a2s8d9h6s7",
-            Name: "haha",
-            Time: "12.20",
-            Description: "none",
-            Dashboard: [
-              {
-                Position: 0,
-                DataType: "contributor",
-                ChartType: "table",
-                TimeScale: "day",
-                CheckBox: "",
-                Visible: true,
-              },
-              {
-                Position: 1,
-                DataType: "contributor",
-                ChartType: "piechart",
-                TimeScale: "day",
-                CheckBox: "",
-                Visible: true,
-              },
-              {
-                Position: 2,
-                DataType: "commit",
-                ChartType: "stackedbarchart",
-                TimeScale: "day",
-                CheckBox: "",
-                Visible: true,
-              },
-              {
-                Position: 3,
-                DataType: "commit",
-                ChartType: "stackedbarchart",
-                TimeScale: "day",
-                CheckBox: "add-change-remove",
-                Visible: true,
-              },
-              {
-                Position: 4,
-                DataType: "issue",
-                ChartType: "stackedbarchart",
-                TimeScale: "day",
-                CheckBox: "open-closed",
-                Visible: true,
-              },
-              {
-                Position: 5,
-                DataType: "issue",
-                ChartType: "piechart",
-                TimeScale: "day",
-                CheckBox: "",
-                Visible: true,
-              },
-              {
-                Position: 6,
-                DataType: "pullrequest",
-                ChartType: "stackedbarchart",
-                TimeScale: "day",
-                CheckBox: "open-closed-merged",
-                Visible: false,
-              },
-              {
-                Position: 7,
-                DataType: "pullrequest",
-                ChartType: "piechart",
-                TimeScale: "day",
-                CheckBox: "",
-                Visible: false,
-              },
-            ],
-          },
-        ],
-      };
+      let res = await axios.post(`${server}/fetch/`, data);
       let list = res.data;
       if (list.length > 0) {
         //alert("show");
@@ -170,7 +89,7 @@ export default function CustomizationList() {
         );
       }
     }
-  }, []);
+  }, [remove]);
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
@@ -197,7 +116,7 @@ export default function CustomizationList() {
           <div>
             <DialogTitle id="form-dialog-title" className={classes.form_head}>
               <Typography component="h1" variant="h5">
-                Detail of Template {templateList[openIndex].ID}
+                Detail of Template {templateList[openIndex]["Template Name"]}
               </Typography>
             </DialogTitle>
             <DialogContent className={classes.form_content}>

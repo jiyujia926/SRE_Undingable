@@ -175,7 +175,6 @@ export default function Dashboard() {
     };
     console.log(data);
     let res = await axios.post(`${server}/customize/`, data);
-    // let res = { data: "定制成功" };
     if (res.data === "定制成功") {
       alert("定制成功");
       handleCloseDialog();
@@ -203,9 +202,11 @@ export default function Dashboard() {
     }
   }
   const apply = (i) => () => {
-    alert(applyList[i].name);
-    //setDashboard(applyList[i].dashboard);
-    setDashboard(defaultDashboard);
+    //alert(applyList[i].Name);
+    setDashboard(applyList[i].Dashboard);
+    cookie.save("dashboard", applyList[i].Dashboard, {
+      maxAge: 3600,
+    });
     handleCloseDialog();
   };
   const handleCloseDialog = () => {
@@ -355,7 +356,7 @@ export default function Dashboard() {
                 </ListSubheader>
                 {applyList.map((current, index) => (
                   <ListItem button onClick={apply(index)} key={index}>
-                    <ListItemText primary={current.name} />
+                    <ListItemText primary={current.Name} />
                   </ListItem>
                 ))}
               </List>
