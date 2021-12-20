@@ -6,6 +6,7 @@ from django.http import JsonResponse
 import json
 import uuid
 from . import models
+from register.models import User as rUser
 from .tryvisit import tryvisit
 from .get_commit import getcommit
 from .get_issue import get_open_issue,get_closed_issue
@@ -121,6 +122,45 @@ def checkstate(request):
         return HttpResponse("爬好了")
     else:
         return HttpResponse("还在爬")
+    
+
+def customize(request):
+    data = json.loads(request.body)
+    # print(data)
+    template = models.Template.objects.create(Name=data['Name'],Info=data['Description'])
+    template.save()
+    user = rUser.objects.filter(Email=data['Email']).first()
+    template.User.add(user)
+    for chartitem in data['Dashboard']:
+        chart = models.Chart.objects.create(ChartType=chartitem['ChartType'],
+                                            DataType=chartitem['DataType'],
+                                            Position=chartitem['Position'],
+                                            TimeScale=chartitem['TimeScale'],
+                                            CheckBox=chartitem['CheckBox'],
+                                            Visible=chartitem['Visible'])
+        chart.save()
+        template.Chart.add(chart)
+    return HttpResponse("定制成功")
+
+def fetchcustomize(request):
+    data = json.loads(request.body)
+    user = rUser.objects.filter(Email=data['Email']).first()
+    res=[]
+    templatelist = models.Template.objects.values().filter(User=user)
+    # print(templatelist)
+    for template in templatelist:
+        templatedict={'Name':template['Name'],'Id':template['id'],'Time':str(template['CreatedTime']),'Description':template['Info']}
+        chartall=[]
+        templateob = models.Template.objects.get(id=template['id'])
+        chartlist = list(templateob.Chart.values().all())
+        for chart in chartlist:
+            # print(chart)
+            chartall.append({'Position':chart['Position'],'DataType':chart['DataType'],'ChartType':chart['ChartType'],
+                             'TimeScale':chart['TimeScale'],'CheckBox':chart['CheckBox'],'Visible':chart['Visible']})
+        templatedict['Dashboard']=chartall
+        res.append(templatedict)    
+    print(res)    
+    return HttpResponse(json.dumps(res))
     
 
 #celery tasks
