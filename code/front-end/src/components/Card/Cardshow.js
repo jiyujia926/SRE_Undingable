@@ -60,12 +60,15 @@ export default function Cardshow(props) {
     let data = {
       Datatype: datatype,
       Charttype: charttype,
-      Address: address,
+      Address: [
+        address,
+        "https://github.com/donnemartin/system-design-primer/",
+      ],
       Time: time,
     };
     let res1 = await axios.post(`${server}/get_data/`, data);
     console.log(res1.data);
-    setChartdata(res1.data);
+    setChartdata(res1.data.day);
     setloading(false);
     //空数据判断
     if (res.length === 0) {
@@ -206,56 +209,12 @@ export default function Cardshow(props) {
                   <></>
                 )}
                 <Grid className={classes.chart}>
-                  <StackedBarChart
-                    data={{
-                      categoryData: [
-                        "Mon",
-                        "Tue",
-                        "Wed",
-                        "Thu",
-                        "Fri",
-                        "Sat",
-                        "Sun",
-                      ],
-                      valueData: [
-                        {
-                          repo: "BaiCaoJian",
-                          name: "commit",
-                          detailData: [20, 30, 4, 19, 20, 40, 25],
-                        },
-                        {
-                          repo: "BaiCaoJian",
-                          name: "issue",
-                          detailData: [2, 1, 8, 5, 5, 8, 9],
-                        },
-                        {
-                          repo: "BaiCaoJian",
-                          name: "pull request",
-                          detailData: [16, 10, 3, 6, 7, 9, 15],
-                        },
-                        {
-                          repo: "Clouding",
-                          name: "commit",
-                          detailData: [30, 20, 17, 29, 30, 18, 35],
-                        },
-                        {
-                          repo: "Clouding",
-                          name: "issue",
-                          detailData: [20, 10, 7, 9, 3, 8, 5],
-                        },
-                        {
-                          repo: "Clouding",
-                          name: "pull request",
-                          detailData: [10, 20, 7, 9, 13, 18, 25],
-                        },
-                      ],
-                    }}
-                  />
-                  {/* {loading ? (
+                  {/* <StackedBarChart data={res} /> */}
+                  {loading ? (
                     <CircularProgress className={classes.itemProgress} />
                   ) : (
                     <StackedBarChart data={res} />
-                  )} */}
+                  )}
                 </Grid>
               </CardBody>
             </Card>

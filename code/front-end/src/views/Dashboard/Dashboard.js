@@ -244,25 +244,23 @@ export default function Dashboard() {
                     <div onClick={changeDashboard}>1</div>
                     //<Cardtext datatype={current.DataType} address={address} />
                   )}
-                  
-                    <Cardshow
-                      position={current.Position}
-                      datatype={current.DataType}
-                      charttype={current.ChartType}
-                      timescale={current.TimeScale}
-                      checkbox={current.CheckBox}
-                      func={changeDashboard}
-                      address={address}
-                    />
-                 
+                  {/* <Cardshow
+                    position={current.Position}
+                    datatype={current.DataType}
+                    charttype={current.ChartType}
+                    timescale={current.TimeScale}
+                    checkbox={current.CheckBox}
+                    func={changeDashboard}
+                    address={address}
+                  /> */}
                 </div>
               )
           )}
         {address[0] && (
           <GridItem xs={12} sm={12} md={12}>
             <Cardshow
-              datatype="commit"
-              charttype="barchart"
+              datatype="pullrequest"
+              charttype="stackedbarchart"
               address={address[0]}
             />
           </GridItem>
