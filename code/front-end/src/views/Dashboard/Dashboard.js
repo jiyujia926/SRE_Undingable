@@ -71,7 +71,7 @@ export default function Dashboard() {
     },
     {
       Position: 3,
-      DataType: "commit",
+      DataType: "subcommit",
       ChartType: "stackedbarchart",
       TimeScale: "day",
       CheckBox: "add-change-remove",
