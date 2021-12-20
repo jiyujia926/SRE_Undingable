@@ -416,7 +416,7 @@ def delete_issue(url:str):
     project = models.Project.objects.filter(RepositoryURL=url).first()
     check_open = models.OpenIssueRecord.objects.filter(Project=project).all()
     check_closed = models.ClosedIssueRecord.objects.filter(Project=project).all() 
-    if check_open and check_closed:
+    if check_open or check_closed:
         check_open.delete()
         check_closed.delete()
         models.DayIssue.objects.filter(Project=project).all().delete()
@@ -429,7 +429,7 @@ def delete_pullrequest(url:str):
     check_open = models.OpenPullrequestRecord.objects.filter(Project=project).all()
     check_closed = models.ClosedPullrequestRecord.objects.filter(Project=project).all()
     check_merged = models.MergedPullrequestRecord.objects.filter(Project=project).all()
-    if check_open and check_closed and check_merged:
+    if check_open or check_closed or check_merged:
         check_open.delete()
         check_closed.delete()
         check_merged.delete()

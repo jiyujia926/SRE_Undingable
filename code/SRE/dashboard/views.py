@@ -162,10 +162,10 @@ def fetchcustomize(request):
     print(res)    
     return HttpResponse(json.dumps(res))
     
-def deltecustomize(request):
+def deletecustomize(request):
     data = json.loads(request.body)
     user = rUser.objects.filter(Email=data['Email']).first()
-    template = models.Template.objects.values().filter(User=user, id=data['Id']).first()
+    template = models.Template.objects.filter(User=user, id=data['Id']).first()
     chartlist = models.Template.objects.values('Chart').filter(User=user, id=data['Id']).all()
     if template:
         template.delete()
