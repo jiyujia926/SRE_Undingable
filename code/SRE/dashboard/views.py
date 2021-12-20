@@ -57,329 +57,336 @@ def spideissue(url:str):
 
 
 def get_data(request):
-    # data = json.loads(request.body)
-    # print(data)
-    # address = data['Address']
-    datatype="pullrequest"
-    repo1="Bitergia/prosoul"
-    repo2="donnemartin/system-design-primer"
-    firstbag=json.loads(get_one_address("https://github.com/Bitergia/prosoul/",datatype))
-    secondbag=json.loads(get_one_address("https://github.com/donnemartin/system-design-primer/",datatype))
-    if datatype=="commit":
-        timespan1 = firstbag['day']['categoryData']
-        databag1 = firstbag['day']['valueData'][0]['detailData']
-        timespan2 = secondbag['day']['categoryData']
-        databag2 = secondbag['day']['valueData'][0]['detailData']
-        timespan3 = timespan1+timespan2
-        newtimespan = []
-        for time in timespan3:
-            if time not in newtimespan:
-                newtimespan.append(time)
-        newtimespan.sort()
-        # print(newtimespan)
-        # print(databag1)
-        # print(databag2)
-        newdatabag1=[]
-        newdatabag2=[]
-        for time in newtimespan:
-            if time in timespan1:
-                newdatabag1.append(databag1[timespan1.index(time)])
-            else:
-                newdatabag1.append(0)
-            if time in timespan2:
-                newdatabag2.append(databag2[timespan2.index(time)])
-            else:
-                newdatabag2.append(0)
-        # print(newdatabag1)
-        # print(newdatabag2)
-        day={'categoryData':newtimespan,'valueData':[{'repo':repo1,'name':'commit','detailData':newdatabag1},{'repo':repo2,'name':"commit",'detailData':newdatabag2}]}
-        timespan1 = firstbag['month']['categoryData']
-        databag1 = firstbag['month']['valueData'][0]['detailData']
-        timespan2 = secondbag['month']['categoryData']
-        databag2 = secondbag['month']['valueData'][0]['detailData']
-        timespan3 = timespan1+timespan2
-        newtimespan = []
-        for time in timespan3:
-            if time not in newtimespan:
-                newtimespan.append(time)
-        newtimespan.sort()
-        # print(newtimespan)
-        # print(databag1)
-        # print(databag2)
-        newdatabag1=[]
-        newdatabag2=[]
-        for time in newtimespan:
-            if time in timespan1:
-                newdatabag1.append(databag1[timespan1.index(time)])
-            else:
-                newdatabag1.append(0)
-            if time in timespan2:
-                newdatabag2.append(databag2[timespan2.index(time)])
-            else:
-                newdatabag2.append(0)
-        # print(newdatabag1)
-        # print(newdatabag2)
-        month={'categoryData':newtimespan,'valueData':[{'repo':repo1,'name':'commit','detailData':newdatabag1},{'repo':repo2,'name':"commit",'detailData':newdatabag2}]}
-        timespan1 = firstbag['year']['categoryData']
-        databag1 = firstbag['year']['valueData'][0]['detailData']
-        timespan2 = secondbag['year']['categoryData']
-        databag2 = secondbag['year']['valueData'][0]['detailData']
-        timespan3 = timespan1+timespan2
-        newtimespan = []
-        for time in timespan3:
-            if time not in newtimespan:
-                newtimespan.append(time)
-        newtimespan.sort()
-        # print(newtimespan)
-        # print(databag1)
-        # print(databag2)
-        newdatabag1=[]
-        newdatabag2=[]
-        for time in newtimespan:
-            if time in timespan1:
-                newdatabag1.append(databag1[timespan1.index(time)])
-            else:
-                newdatabag1.append(0)
-            if time in timespan2:
-                newdatabag2.append(databag2[timespan2.index(time)])
-            else:
-                newdatabag2.append(0)
-        # print(newdatabag1)
-        # print(newdatabag2)
-        year={'categoryData':newtimespan,'valueData':[{'repo':repo1,'name':'commit','detailData':newdatabag1},{'repo':repo2,'name':"commit",'detailData':newdatabag2}]}
-        databag={'day':day,'month':month,'year':year}
-    elif datatype=="issue":
-        timespan1 = firstbag['day']['categoryData']
-        opendatabag1 = firstbag['day']['valueData'][0]['detailData']
-        closedatabag1 = firstbag['day']['valueData'][1]['detailData']
-        timespan2 = secondbag['day']['categoryData']
-        opendatabag2 = secondbag['day']['valueData'][0]['detailData']
-        closedatabag2 = secondbag['day']['valueData'][1]['detailData']
-        timespan3 = timespan1+timespan2
-        newtimespan = []
-        for time in timespan3:
-            if time not in newtimespan:
-                newtimespan.append(time)
-        newtimespan.sort()
-        newopendatabag1 = []
-        newclosedatabag1 = []
-        newopendatabag2 = []
-        newclosedatabag2 = []
-        for time in newtimespan:
-            if time in timespan1:
-                newopendatabag1.append(opendatabag1[timespan1.index(time)])
-                newclosedatabag1.append(closedatabag1[timespan1.index(time)])
-            else:
-                if time < timespan1[0]:
-                    newopendatabag1.append(0)
-                    newclosedatabag1.append(0)
-                elif time > timespan1[-1]:
-                    newopendatabag1.append(opendatabag1[-1])
-                    newclosedatabag1.append(closedatabag1[-1])
-            if time in timespan2:
-                newopendatabag2.append(opendatabag2[timespan2.index(time)])
-                newclosedatabag2.append(closedatabag2[timespan2.index(time)])
-            else:
-                if time < timespan2[0]:
-                    newopendatabag2.append(0)
-                    newclosedatabag2.append(0)
-                elif time > timespan2[-1]:
-                    newopendatabag2.append(opendatabag2[-1])
-                    newclosedatabag2.append(closedatabag2[-1])
-        day={'categoryData':newtimespan,'valueData':[{'repo':repo1,'name':'open','detailData':newopendatabag1},
-                                                     {'repo':repo1,'name':'closed','detailData':newclosedatabag1},
-                                                     {'repo':repo2,'name':'open','detailData':newopendatabag2},
-                                                     {'repo':repo2,'name':'closed','detailData':newclosedatabag2}]}
-        databag={'day':day,'month':[],'year':[]}
-    elif datatype=="subcommit":
-        timespan1 = firstbag['day']['categoryData']
-        adddatabag1 = firstbag['day']['valueData'][0]['detailData']
-        changedatabag1 = firstbag['day']['valueData'][1]['detailData']
-        removedatabag1 = firstbag['day']['valueData'][2]['detailData']
-        timespan2 = secondbag['day']['categoryData']
-        adddatabag2 = secondbag['day']['valueData'][0]['detailData']
-        changedatabag2 = secondbag['day']['valueData'][1]['detailData']
-        removedatabag2 = secondbag['day']['valueData'][2]['detailData']
-        timespan3 = timespan1+timespan2
-        newtimespan = []
-        for time in timespan3:
-            if time not in newtimespan:
-                newtimespan.append(time)
-        newtimespan.sort()
-        newadddatabag1=[]
-        newchangedatabag1=[]
-        newremovedatabag1=[]
-        newadddatabag2=[]
-        newchangedatabag2=[]
-        newremovedatabag2=[]
-        for time in newtimespan:
-            if time in timespan1:
-                newadddatabag1.append(adddatabag1[timespan1.index(time)])
-                newchangedatabag1.append(changedatabag1[timespan1.index(time)])
-                newremovedatabag1.append(removedatabag1[timespan1.index(time)])
-            else:
-                newadddatabag1.append(0)
-                newchangedatabag1.append(0)
-                newremovedatabag1.append(0)
-            if time in timespan2:
-                newadddatabag2.append(adddatabag2[timespan2.index(time)])
-                newchangedatabag2.append(changedatabag2[timespan2.index(time)])
-                newremovedatabag2.append(removedatabag2[timespan2.index(time)])
-            else:
-                newadddatabag2.append(0)
-                newchangedatabag2.append(0)
-                newremovedatabag2.append(0)
-        day={'categoryData':newtimespan,'valueData':[{'repo':repo1,'name':"addition",'detailData':newadddatabag1},
-                                                     {'repo':repo1,'name':'changedfile','detailData':newchangedatabag1},
-                                                     {'repo':repo1,'name':'deletion','detailData':newremovedatabag1},
-                                                     {'repo':repo2,'name':"addition",'detailData':newadddatabag2},
-                                                     {'repo':repo2,'name':'changedfile','detailData':newchangedatabag2},
-                                                     {'repo':repo2,'name':'deletion','detailData':newremovedatabag2}]}
-        timespan1 = firstbag['month']['categoryData']
-        adddatabag1 = firstbag['month']['valueData'][0]['detailData']
-        changedatabag1 = firstbag['month']['valueData'][1]['detailData']
-        removedatabag1 = firstbag['month']['valueData'][2]['detailData']
-        timespan2 = secondbag['month']['categoryData']
-        adddatabag2 = secondbag['month']['valueData'][0]['detailData']
-        changedatabag2 = secondbag['month']['valueData'][1]['detailData']
-        removedatabag2 = secondbag['month']['valueData'][2]['detailData']
-        timespan3 = timespan1+timespan2
-        newtimespan = []
-        for time in timespan3:
-            if time not in newtimespan:
-                newtimespan.append(time)
-        newtimespan.sort()
-        newadddatabag1=[]
-        newchangedatabag1=[]
-        newremovedatabag1=[]
-        newadddatabag2=[]
-        newchangedatabag2=[]
-        newremovedatabag2=[]
-        for time in newtimespan:
-            if time in timespan1:
-                newadddatabag1.append(adddatabag1[timespan1.index(time)])
-                newchangedatabag1.append(changedatabag1[timespan1.index(time)])
-                newremovedatabag1.append(removedatabag1[timespan1.index(time)])
-            else:
-                newadddatabag1.append(0)
-                newchangedatabag1.append(0)
-                newremovedatabag1.append(0)
-            if time in timespan2:
-                newadddatabag2.append(adddatabag2[timespan2.index(time)])
-                newchangedatabag2.append(changedatabag2[timespan2.index(time)])
-                newremovedatabag2.append(removedatabag2[timespan2.index(time)])
-            else:
-                newadddatabag2.append(0)
-                newchangedatabag2.append(0)
-                newremovedatabag2.append(0)
-        month={'categoryData':newtimespan,'valueData':[{'repo':repo1,'name':"addition",'detailData':newadddatabag1},
-                                                     {'repo':repo1,'name':'changedfile','detailData':newchangedatabag1},
-                                                     {'repo':repo1,'name':'deletion','detailData':newremovedatabag1},
-                                                     {'repo':repo2,'name':"addition",'detailData':newadddatabag2},
-                                                     {'repo':repo2,'name':'changedfile','detailData':newchangedatabag2},
-                                                     {'repo':repo2,'name':'deletion','detailData':newremovedatabag2}]}    
-        timespan1 = firstbag['year']['categoryData']
-        adddatabag1 = firstbag['year']['valueData'][0]['detailData']
-        changedatabag1 = firstbag['year']['valueData'][1]['detailData']
-        removedatabag1 = firstbag['year']['valueData'][2]['detailData']
-        timespan2 = secondbag['year']['categoryData']
-        adddatabag2 = secondbag['year']['valueData'][0]['detailData']
-        changedatabag2 = secondbag['year']['valueData'][1]['detailData']
-        removedatabag2 = secondbag['year']['valueData'][2]['detailData']
-        timespan3 = timespan1+timespan2
-        newtimespan = []
-        for time in timespan3:
-            if time not in newtimespan:
-                newtimespan.append(time)
-        newtimespan.sort()
-        newadddatabag1=[]
-        newchangedatabag1=[]
-        newremovedatabag1=[]
-        newadddatabag2=[]
-        newchangedatabag2=[]
-        newremovedatabag2=[]
-        for time in newtimespan:
-            if time in timespan1:
-                newadddatabag1.append(adddatabag1[timespan1.index(time)])
-                newchangedatabag1.append(changedatabag1[timespan1.index(time)])
-                newremovedatabag1.append(removedatabag1[timespan1.index(time)])
-            else:
-                newadddatabag1.append(0)
-                newchangedatabag1.append(0)
-                newremovedatabag1.append(0)
-            if time in timespan2:
-                newadddatabag2.append(adddatabag2[timespan2.index(time)])
-                newchangedatabag2.append(changedatabag2[timespan2.index(time)])
-                newremovedatabag2.append(removedatabag2[timespan2.index(time)])
-            else:
-                newadddatabag2.append(0)
-                newchangedatabag2.append(0)
-                newremovedatabag2.append(0)
-        year={'categoryData':newtimespan,'valueData':[{'repo':repo1,'name':"addition",'detailData':newadddatabag1},
-                                                     {'repo':repo1,'name':'changedfile','detailData':newchangedatabag1},
-                                                     {'repo':repo1,'name':'deletion','detailData':newremovedatabag1},
-                                                     {'repo':repo2,'name':"addition",'detailData':newadddatabag2},
-                                                     {'repo':repo2,'name':'changedfile','detailData':newchangedatabag2},
-                                                     {'repo':repo2,'name':'deletion','detailData':newremovedatabag2}]}
-        databag={'day':day,'month':month,'year':year}
-    elif datatype=="pullrequest":
-        timespan1 = firstbag['day']['categoryData']
-        opendatabag1 = firstbag['day']['valueData'][0]['detailData']
-        closedatabag1 = firstbag['day']['valueData'][1]['detailData']
-        mergedatabag1 = firstbag['day']['valueData'][2]['detailData']
-        timespan2 = secondbag['day']['categoryData']
-        opendatabag2 = secondbag['day']['valueData'][0]['detailData']
-        closedatabag2 = secondbag['day']['valueData'][1]['detailData']
-        mergedatabag2 = secondbag['day']['valueData'][2]['detailData']
-        timespan3 = timespan1+timespan2
-        newtimespan = []
-        for time in timespan3:
-            if time not in newtimespan:
-                newtimespan.append(time)
-        newtimespan.sort()
-        newopendatabag1 = []
-        newclosedatabag1 = []
-        newmergedatabag1 = []
-        newopendatabag2 = []
-        newclosedatabag2 = []
-        newmergedatabag2 = []
-        for time in newtimespan:
-            if time in timespan1:
-                newopendatabag1.append(opendatabag1[timespan1.index(time)])
-                newclosedatabag1.append(closedatabag1[timespan1.index(time)])
-                newmergedatabag1.append(mergedatabag1[timespan1.index(time)])
-            else:
-                if time < timespan1[0]:
-                    newopendatabag1.append(0)
-                    newclosedatabag1.append(0)
-                    newmergedatabag1.append(0)
-                elif time > timespan1[-1]:
-                    newopendatabag1.append(opendatabag1[-1])
-                    newclosedatabag1.append(closedatabag1[-1])
-                    newmergedatabag1.append(mergedatabag1[-1])
-            if time in timespan2:
-                newopendatabag2.append(opendatabag2[timespan2.index(time)])
-                newclosedatabag2.append(closedatabag2[timespan2.index(time)])
-                newmergedatabag2.append(mergedatabag2[timespan2.index(time)])
-            else:
-                if time < timespan2[0]:
-                    newopendatabag2.append(0)
-                    newclosedatabag2.append(0)
-                    newmergedatabag2.append(0)
-                elif time > timespan2[-1]:
-                    newopendatabag2.append(opendatabag2[-1])
-                    newclosedatabag2.append(closedatabag2[-1])
-                    newmergedatabag2.append(mergedatabag2[-1])
-        day={'categoryData':newtimespan,'valueData':[{'repo':repo1,'name':'open','detailData':newopendatabag1},
-                                                     {'repo':repo1,'name':'closed','detailData':newclosedatabag1},
-                                                     {'repo':repo1,'name':'merged','detailData':newmergedatabag1},
-                                                     {'repo':repo2,'name':'open','detailData':newopendatabag2},
-                                                     {'repo':repo2,'name':'closed','detailData':newclosedatabag2},
-                                                     {'repo':repo2,'name':'merged','detailData':newmergedatabag2}]}
-        databag={'day':day,'month':[],'year':[]}
-    elif datatype=="contributor":
-        pass
-    return HttpResponse(json.dumps(databag))
+    data = json.loads(request.body)
+    print(data)
+    addresslist = data['Address']
+    if len(addresslist)==1:
+        return HttpResponse(get_one_address(addresslist[0],data['DataType']))
+    else:
+        datatype=data['DataType']
+        address1 = addresslist[0]
+        address2 = addresslist[1]
+        project1 = list(models.Project.objects.values().filter(RepositoryURL=address1))
+        project2 = list(models.Project.objects.values().filter(RepositoryURL=address2))
+        repo1=project1[0]['Name'][1:]
+        repo2=project2[0]['Name'][1:]
+        firstbag=json.loads(get_one_address(address1,datatype))
+        secondbag=json.loads(get_one_address(address2,datatype))
+        if datatype=="commit":
+            timespan1 = firstbag['day']['categoryData']
+            databag1 = firstbag['day']['valueData'][0]['detailData']
+            timespan2 = secondbag['day']['categoryData']
+            databag2 = secondbag['day']['valueData'][0]['detailData']
+            timespan3 = timespan1+timespan2
+            newtimespan = []
+            for time in timespan3:
+                if time not in newtimespan:
+                    newtimespan.append(time)
+            newtimespan.sort()
+            # print(newtimespan)
+            # print(databag1)
+            # print(databag2)
+            newdatabag1=[]
+            newdatabag2=[]
+            for time in newtimespan:
+                if time in timespan1:
+                    newdatabag1.append(databag1[timespan1.index(time)])
+                else:
+                    newdatabag1.append(0)
+                if time in timespan2:
+                    newdatabag2.append(databag2[timespan2.index(time)])
+                else:
+                    newdatabag2.append(0)
+            # print(newdatabag1)
+            # print(newdatabag2)
+            day={'categoryData':newtimespan,'valueData':[{'repo':repo1,'name':'commit','detailData':newdatabag1},{'repo':repo2,'name':"commit",'detailData':newdatabag2}]}
+            timespan1 = firstbag['month']['categoryData']
+            databag1 = firstbag['month']['valueData'][0]['detailData']
+            timespan2 = secondbag['month']['categoryData']
+            databag2 = secondbag['month']['valueData'][0]['detailData']
+            timespan3 = timespan1+timespan2
+            newtimespan = []
+            for time in timespan3:
+                if time not in newtimespan:
+                    newtimespan.append(time)
+            newtimespan.sort()
+            # print(newtimespan)
+            # print(databag1)
+            # print(databag2)
+            newdatabag1=[]
+            newdatabag2=[]
+            for time in newtimespan:
+                if time in timespan1:
+                    newdatabag1.append(databag1[timespan1.index(time)])
+                else:
+                    newdatabag1.append(0)
+                if time in timespan2:
+                    newdatabag2.append(databag2[timespan2.index(time)])
+                else:
+                    newdatabag2.append(0)
+            # print(newdatabag1)
+            # print(newdatabag2)
+            month={'categoryData':newtimespan,'valueData':[{'repo':repo1,'name':'commit','detailData':newdatabag1},{'repo':repo2,'name':"commit",'detailData':newdatabag2}]}
+            timespan1 = firstbag['year']['categoryData']
+            databag1 = firstbag['year']['valueData'][0]['detailData']
+            timespan2 = secondbag['year']['categoryData']
+            databag2 = secondbag['year']['valueData'][0]['detailData']
+            timespan3 = timespan1+timespan2
+            newtimespan = []
+            for time in timespan3:
+                if time not in newtimespan:
+                    newtimespan.append(time)
+            newtimespan.sort()
+            # print(newtimespan)
+            # print(databag1)
+            # print(databag2)
+            newdatabag1=[]
+            newdatabag2=[]
+            for time in newtimespan:
+                if time in timespan1:
+                    newdatabag1.append(databag1[timespan1.index(time)])
+                else:
+                    newdatabag1.append(0)
+                if time in timespan2:
+                    newdatabag2.append(databag2[timespan2.index(time)])
+                else:
+                    newdatabag2.append(0)
+            # print(newdatabag1)
+            # print(newdatabag2)
+            year={'categoryData':newtimespan,'valueData':[{'repo':repo1,'name':'commit','detailData':newdatabag1},{'repo':repo2,'name':"commit",'detailData':newdatabag2}]}
+            databag={'day':day,'month':month,'year':year}
+        elif datatype=="issue":
+            timespan1 = firstbag['day']['categoryData']
+            opendatabag1 = firstbag['day']['valueData'][0]['detailData']
+            closedatabag1 = firstbag['day']['valueData'][1]['detailData']
+            timespan2 = secondbag['day']['categoryData']
+            opendatabag2 = secondbag['day']['valueData'][0]['detailData']
+            closedatabag2 = secondbag['day']['valueData'][1]['detailData']
+            timespan3 = timespan1+timespan2
+            newtimespan = []
+            for time in timespan3:
+                if time not in newtimespan:
+                    newtimespan.append(time)
+            newtimespan.sort()
+            newopendatabag1 = []
+            newclosedatabag1 = []
+            newopendatabag2 = []
+            newclosedatabag2 = []
+            for time in newtimespan:
+                if time in timespan1:
+                    newopendatabag1.append(opendatabag1[timespan1.index(time)])
+                    newclosedatabag1.append(closedatabag1[timespan1.index(time)])
+                else:
+                    if time < timespan1[0]:
+                        newopendatabag1.append(0)
+                        newclosedatabag1.append(0)
+                    elif time > timespan1[-1]:
+                        newopendatabag1.append(opendatabag1[-1])
+                        newclosedatabag1.append(closedatabag1[-1])
+                if time in timespan2:
+                    newopendatabag2.append(opendatabag2[timespan2.index(time)])
+                    newclosedatabag2.append(closedatabag2[timespan2.index(time)])
+                else:
+                    if time < timespan2[0]:
+                        newopendatabag2.append(0)
+                        newclosedatabag2.append(0)
+                    elif time > timespan2[-1]:
+                        newopendatabag2.append(opendatabag2[-1])
+                        newclosedatabag2.append(closedatabag2[-1])
+            day={'categoryData':newtimespan,'valueData':[{'repo':repo1,'name':'open','detailData':newopendatabag1},
+                                                        {'repo':repo1,'name':'closed','detailData':newclosedatabag1},
+                                                        {'repo':repo2,'name':'open','detailData':newopendatabag2},
+                                                        {'repo':repo2,'name':'closed','detailData':newclosedatabag2}]}
+            databag={'day':day,'month':[],'year':[]}
+        elif datatype=="subcommit":
+            timespan1 = firstbag['day']['categoryData']
+            adddatabag1 = firstbag['day']['valueData'][0]['detailData']
+            changedatabag1 = firstbag['day']['valueData'][1]['detailData']
+            removedatabag1 = firstbag['day']['valueData'][2]['detailData']
+            timespan2 = secondbag['day']['categoryData']
+            adddatabag2 = secondbag['day']['valueData'][0]['detailData']
+            changedatabag2 = secondbag['day']['valueData'][1]['detailData']
+            removedatabag2 = secondbag['day']['valueData'][2]['detailData']
+            timespan3 = timespan1+timespan2
+            newtimespan = []
+            for time in timespan3:
+                if time not in newtimespan:
+                    newtimespan.append(time)
+            newtimespan.sort()
+            newadddatabag1=[]
+            newchangedatabag1=[]
+            newremovedatabag1=[]
+            newadddatabag2=[]
+            newchangedatabag2=[]
+            newremovedatabag2=[]
+            for time in newtimespan:
+                if time in timespan1:
+                    newadddatabag1.append(adddatabag1[timespan1.index(time)])
+                    newchangedatabag1.append(changedatabag1[timespan1.index(time)])
+                    newremovedatabag1.append(removedatabag1[timespan1.index(time)])
+                else:
+                    newadddatabag1.append(0)
+                    newchangedatabag1.append(0)
+                    newremovedatabag1.append(0)
+                if time in timespan2:
+                    newadddatabag2.append(adddatabag2[timespan2.index(time)])
+                    newchangedatabag2.append(changedatabag2[timespan2.index(time)])
+                    newremovedatabag2.append(removedatabag2[timespan2.index(time)])
+                else:
+                    newadddatabag2.append(0)
+                    newchangedatabag2.append(0)
+                    newremovedatabag2.append(0)
+            day={'categoryData':newtimespan,'valueData':[{'repo':repo1,'name':"addition",'detailData':newadddatabag1},
+                                                        {'repo':repo1,'name':'changedfile','detailData':newchangedatabag1},
+                                                        {'repo':repo1,'name':'deletion','detailData':newremovedatabag1},
+                                                        {'repo':repo2,'name':"addition",'detailData':newadddatabag2},
+                                                        {'repo':repo2,'name':'changedfile','detailData':newchangedatabag2},
+                                                        {'repo':repo2,'name':'deletion','detailData':newremovedatabag2}]}
+            timespan1 = firstbag['month']['categoryData']
+            adddatabag1 = firstbag['month']['valueData'][0]['detailData']
+            changedatabag1 = firstbag['month']['valueData'][1]['detailData']
+            removedatabag1 = firstbag['month']['valueData'][2]['detailData']
+            timespan2 = secondbag['month']['categoryData']
+            adddatabag2 = secondbag['month']['valueData'][0]['detailData']
+            changedatabag2 = secondbag['month']['valueData'][1]['detailData']
+            removedatabag2 = secondbag['month']['valueData'][2]['detailData']
+            timespan3 = timespan1+timespan2
+            newtimespan = []
+            for time in timespan3:
+                if time not in newtimespan:
+                    newtimespan.append(time)
+            newtimespan.sort()
+            newadddatabag1=[]
+            newchangedatabag1=[]
+            newremovedatabag1=[]
+            newadddatabag2=[]
+            newchangedatabag2=[]
+            newremovedatabag2=[]
+            for time in newtimespan:
+                if time in timespan1:
+                    newadddatabag1.append(adddatabag1[timespan1.index(time)])
+                    newchangedatabag1.append(changedatabag1[timespan1.index(time)])
+                    newremovedatabag1.append(removedatabag1[timespan1.index(time)])
+                else:
+                    newadddatabag1.append(0)
+                    newchangedatabag1.append(0)
+                    newremovedatabag1.append(0)
+                if time in timespan2:
+                    newadddatabag2.append(adddatabag2[timespan2.index(time)])
+                    newchangedatabag2.append(changedatabag2[timespan2.index(time)])
+                    newremovedatabag2.append(removedatabag2[timespan2.index(time)])
+                else:
+                    newadddatabag2.append(0)
+                    newchangedatabag2.append(0)
+                    newremovedatabag2.append(0)
+            month={'categoryData':newtimespan,'valueData':[{'repo':repo1,'name':"addition",'detailData':newadddatabag1},
+                                                        {'repo':repo1,'name':'changedfile','detailData':newchangedatabag1},
+                                                        {'repo':repo1,'name':'deletion','detailData':newremovedatabag1},
+                                                        {'repo':repo2,'name':"addition",'detailData':newadddatabag2},
+                                                        {'repo':repo2,'name':'changedfile','detailData':newchangedatabag2},
+                                                        {'repo':repo2,'name':'deletion','detailData':newremovedatabag2}]}    
+            timespan1 = firstbag['year']['categoryData']
+            adddatabag1 = firstbag['year']['valueData'][0]['detailData']
+            changedatabag1 = firstbag['year']['valueData'][1]['detailData']
+            removedatabag1 = firstbag['year']['valueData'][2]['detailData']
+            timespan2 = secondbag['year']['categoryData']
+            adddatabag2 = secondbag['year']['valueData'][0]['detailData']
+            changedatabag2 = secondbag['year']['valueData'][1]['detailData']
+            removedatabag2 = secondbag['year']['valueData'][2]['detailData']
+            timespan3 = timespan1+timespan2
+            newtimespan = []
+            for time in timespan3:
+                if time not in newtimespan:
+                    newtimespan.append(time)
+            newtimespan.sort()
+            newadddatabag1=[]
+            newchangedatabag1=[]
+            newremovedatabag1=[]
+            newadddatabag2=[]
+            newchangedatabag2=[]
+            newremovedatabag2=[]
+            for time in newtimespan:
+                if time in timespan1:
+                    newadddatabag1.append(adddatabag1[timespan1.index(time)])
+                    newchangedatabag1.append(changedatabag1[timespan1.index(time)])
+                    newremovedatabag1.append(removedatabag1[timespan1.index(time)])
+                else:
+                    newadddatabag1.append(0)
+                    newchangedatabag1.append(0)
+                    newremovedatabag1.append(0)
+                if time in timespan2:
+                    newadddatabag2.append(adddatabag2[timespan2.index(time)])
+                    newchangedatabag2.append(changedatabag2[timespan2.index(time)])
+                    newremovedatabag2.append(removedatabag2[timespan2.index(time)])
+                else:
+                    newadddatabag2.append(0)
+                    newchangedatabag2.append(0)
+                    newremovedatabag2.append(0)
+            year={'categoryData':newtimespan,'valueData':[{'repo':repo1,'name':"addition",'detailData':newadddatabag1},
+                                                        {'repo':repo1,'name':'changedfile','detailData':newchangedatabag1},
+                                                        {'repo':repo1,'name':'deletion','detailData':newremovedatabag1},
+                                                        {'repo':repo2,'name':"addition",'detailData':newadddatabag2},
+                                                        {'repo':repo2,'name':'changedfile','detailData':newchangedatabag2},
+                                                        {'repo':repo2,'name':'deletion','detailData':newremovedatabag2}]}
+            databag={'day':day,'month':month,'year':year}
+        elif datatype=="pullrequest":
+            timespan1 = firstbag['day']['categoryData']
+            opendatabag1 = firstbag['day']['valueData'][0]['detailData']
+            closedatabag1 = firstbag['day']['valueData'][1]['detailData']
+            mergedatabag1 = firstbag['day']['valueData'][2]['detailData']
+            timespan2 = secondbag['day']['categoryData']
+            opendatabag2 = secondbag['day']['valueData'][0]['detailData']
+            closedatabag2 = secondbag['day']['valueData'][1]['detailData']
+            mergedatabag2 = secondbag['day']['valueData'][2]['detailData']
+            timespan3 = timespan1+timespan2
+            newtimespan = []
+            for time in timespan3:
+                if time not in newtimespan:
+                    newtimespan.append(time)
+            newtimespan.sort()
+            newopendatabag1 = []
+            newclosedatabag1 = []
+            newmergedatabag1 = []
+            newopendatabag2 = []
+            newclosedatabag2 = []
+            newmergedatabag2 = []
+            for time in newtimespan:
+                if time in timespan1:
+                    newopendatabag1.append(opendatabag1[timespan1.index(time)])
+                    newclosedatabag1.append(closedatabag1[timespan1.index(time)])
+                    newmergedatabag1.append(mergedatabag1[timespan1.index(time)])
+                else:
+                    if time < timespan1[0]:
+                        newopendatabag1.append(0)
+                        newclosedatabag1.append(0)
+                        newmergedatabag1.append(0)
+                    elif time > timespan1[-1]:
+                        newopendatabag1.append(opendatabag1[-1])
+                        newclosedatabag1.append(closedatabag1[-1])
+                        newmergedatabag1.append(mergedatabag1[-1])
+                if time in timespan2:
+                    newopendatabag2.append(opendatabag2[timespan2.index(time)])
+                    newclosedatabag2.append(closedatabag2[timespan2.index(time)])
+                    newmergedatabag2.append(mergedatabag2[timespan2.index(time)])
+                else:
+                    if time < timespan2[0]:
+                        newopendatabag2.append(0)
+                        newclosedatabag2.append(0)
+                        newmergedatabag2.append(0)
+                    elif time > timespan2[-1]:
+                        newopendatabag2.append(opendatabag2[-1])
+                        newclosedatabag2.append(closedatabag2[-1])
+                        newmergedatabag2.append(mergedatabag2[-1])
+            day={'categoryData':newtimespan,'valueData':[{'repo':repo1,'name':'open','detailData':newopendatabag1},
+                                                        {'repo':repo1,'name':'closed','detailData':newclosedatabag1},
+                                                        {'repo':repo1,'name':'merged','detailData':newmergedatabag1},
+                                                        {'repo':repo2,'name':'open','detailData':newopendatabag2},
+                                                        {'repo':repo2,'name':'closed','detailData':newclosedatabag2},
+                                                        {'repo':repo2,'name':'merged','detailData':newmergedatabag2}]}
+            databag={'day':day,'month':[],'year':[]}
+        elif datatype=="contributor":
+            pass
+        return HttpResponse(json.dumps(databag))
 
 def get_one_address(address:str,datatype:str):
 
