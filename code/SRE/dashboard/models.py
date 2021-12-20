@@ -19,6 +19,7 @@ class Chart(models.Model):
     Position = models.IntegerField()
     TimeScale = models.CharField(max_length=20,default="day", blank=True)
     CheckBox = models.CharField(max_length=50)
+    Visible = models.BooleanField(default=True)
     # "open-close" "open" "close" "open-close-merge" "open-merge" "close-merge" "changed-addition-deletion"
 
 
