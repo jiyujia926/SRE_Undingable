@@ -173,7 +173,7 @@ export default function Cardshow(props) {
     } else {
       return (
         <GridContainer>
-          <GridItem xs={4} sm={10} md={4}>
+          <GridItem xs={12} sm={12} md={12}>
             <Card chart>
               <CardBody>
                 <h3 className={classes.head}>{datatype}</h3>
