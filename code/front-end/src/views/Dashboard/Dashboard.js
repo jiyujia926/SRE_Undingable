@@ -49,7 +49,7 @@ export default function Dashboard() {
       Position: 0,
       DataType: "contributor",
       ChartType: "table",
-      DataScale: "day",
+      TimeScale: "day",
       CheckBox: "",
       Visible: true,
     },
@@ -57,7 +57,7 @@ export default function Dashboard() {
       Position: 1,
       DataType: "contributor",
       ChartType: "piechart",
-      DataScale: "day",
+      TimeScale: "day",
       CheckBox: "",
       Visible: true,
     },
@@ -65,7 +65,7 @@ export default function Dashboard() {
       Position: 2,
       DataType: "commit",
       ChartType: "stackedbarchart",
-      DataScale: "day",
+      TimeScale: "day",
       CheckBox: "",
       Visible: true,
     },
@@ -73,7 +73,7 @@ export default function Dashboard() {
       Position: 3,
       DataType: "commit",
       ChartType: "stackedbarchart",
-      DataScale: "day",
+      TimeScale: "day",
       CheckBox: "add-change-remove",
       Visible: true,
     },
@@ -81,7 +81,7 @@ export default function Dashboard() {
       Position: 4,
       DataType: "issue",
       ChartType: "stackedbarchart",
-      DataScale: "day",
+      TimeScale: "day",
       CheckBox: "open-closed",
       Visible: true,
     },
@@ -89,7 +89,7 @@ export default function Dashboard() {
       Position: 5,
       DataType: "issue",
       ChartType: "piechart",
-      DataScale: "day",
+      TimeScale: "day",
       CheckBox: "",
       Visible: true,
     },
@@ -97,7 +97,7 @@ export default function Dashboard() {
       Position: 6,
       DataType: "pullrequest",
       ChartType: "stackedbarchart",
-      DataScale: "day",
+      TimeScale: "day",
       CheckBox: "open-closed-merged",
       Visible: true,
     },
@@ -105,7 +105,7 @@ export default function Dashboard() {
       Position: 7,
       DataType: "pullrequest",
       ChartType: "piechart",
-      DataScale: "day",
+      TimeScale: "day",
       CheckBox: "",
       Visible: true,
     },
@@ -125,12 +125,12 @@ export default function Dashboard() {
   };
   const [op, setOp] = React.useState("");
   const [applyList, setApplyList] = React.useState([]);
-  function changeDashboard(position, dataScale, checkBox) {
+  function changeDashboard(position, timeScale, checkBox) {
     let tmpDashboard = dashboard.map((current) => {
       if (current.Position === position) {
         return {
           ...current,
-          DataScale: dataScale,
+          TimeScale: timeScale,
           CheckBox: checkBox,
         };
       } else {
@@ -247,7 +247,7 @@ export default function Dashboard() {
                       position={current.Position}
                       datatype={current.DataType}
                       charttype={current.ChartType}
-                      datascale={current.DataScale}
+                      timescale={current.TimeScale}
                       checkbox={current.CheckBox}
                       func={changeDashboard}
                       address={address}

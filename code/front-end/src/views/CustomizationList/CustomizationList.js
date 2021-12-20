@@ -89,7 +89,7 @@ export default function CustomizationList() {
                 Position: 0,
                 DataType: "contributor",
                 ChartType: "table",
-                DataScale: "day",
+                TimeScale: "day",
                 CheckBox: "",
                 Visible: true,
               },
@@ -97,7 +97,7 @@ export default function CustomizationList() {
                 Position: 1,
                 DataType: "contributor",
                 ChartType: "piechart",
-                DataScale: "day",
+                TimeScale: "day",
                 CheckBox: "",
                 Visible: true,
               },
@@ -105,7 +105,7 @@ export default function CustomizationList() {
                 Position: 2,
                 DataType: "commit",
                 ChartType: "stackedbarchart",
-                DataScale: "day",
+                TimeScale: "day",
                 CheckBox: "",
                 Visible: true,
               },
@@ -113,7 +113,7 @@ export default function CustomizationList() {
                 Position: 3,
                 DataType: "commit",
                 ChartType: "stackedbarchart",
-                DataScale: "day",
+                TimeScale: "day",
                 CheckBox: "add-change-remove",
                 Visible: true,
               },
@@ -121,7 +121,7 @@ export default function CustomizationList() {
                 Position: 4,
                 DataType: "issue",
                 ChartType: "stackedbarchart",
-                DataScale: "day",
+                TimeScale: "day",
                 CheckBox: "open-closed",
                 Visible: true,
               },
@@ -129,7 +129,7 @@ export default function CustomizationList() {
                 Position: 5,
                 DataType: "issue",
                 ChartType: "piechart",
-                DataScale: "day",
+                TimeScale: "day",
                 CheckBox: "",
                 Visible: true,
               },
@@ -137,7 +137,7 @@ export default function CustomizationList() {
                 Position: 6,
                 DataType: "pullrequest",
                 ChartType: "stackedbarchart",
-                DataScale: "day",
+                TimeScale: "day",
                 CheckBox: "open-closed-merged",
                 Visible: false,
               },
@@ -145,7 +145,7 @@ export default function CustomizationList() {
                 Position: 7,
                 DataType: "pullrequest",
                 ChartType: "piechart",
-                DataScale: "day",
+                TimeScale: "day",
                 CheckBox: "",
                 Visible: false,
               },
@@ -212,7 +212,7 @@ export default function CustomizationList() {
                     className={classes.form_listText2}
                   />
                   <ListItemText
-                    primary="DataScale"
+                    primary="TimeScale"
                     className={classes.form_listText3}
                   />
                   <ListItemText
@@ -233,7 +233,7 @@ export default function CustomizationList() {
                         className={classes.form_listText2}
                       />
                       <ListItemText
-                        primary={current.DataScale}
+                        primary={current.TimeScale}
                         className={classes.form_listText3}
                       />
                       <ListItemText
