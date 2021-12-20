@@ -66,7 +66,7 @@ const UserGuidance = () => {
     return (
       <GridItem xs={12} sm={12} md={12} className={classes.root}>
         <Card>
-          <CardHeader color="primary">
+          <CardHeader color="info">
             <h4 className={classes.cardCategoryWhite}>User Guidance</h4>
           </CardHeader>
           <CardBody profile>

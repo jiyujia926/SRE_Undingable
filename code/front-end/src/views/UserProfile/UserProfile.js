@@ -1,4 +1,5 @@
 import React from "react";
+import cookie from "react-cookies";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -42,6 +43,9 @@ const useStyles = makeStyles(styles);
 
 export default function UserProfile() {
   const classes = useStyles();
+  const userName = cookie.load("username");
+  const email = cookie.load("account");
+  const createDate = cookie.load("time");
   return (
     <div>
       <GridContainer className={classes.root}>
@@ -51,11 +55,9 @@ export default function UserProfile() {
               <h4 className={classes.cardTitleWhite}>Welcome</h4>
             </CardHeader>
             <CardBody profile className={classes.cardBody}>
-              <h4 className={classes.cardCategory}>👽User Name: Fine</h4>
-              <h4 className={classes.cardTitle}>
-                📧Email: 3190103044@zju.edu.cn
-              </h4>
-              <h4>📅Login Date: 2021.12.10.</h4>
+              <h4 className={classes.cardCategory}>👽User Name: {userName}</h4>
+              <h4 className={classes.cardTitle}>📧Email: {email}</h4>
+              <h4>📅Login Date: {createDate}</h4>
             </CardBody>
           </Card>
         </GridItem>
