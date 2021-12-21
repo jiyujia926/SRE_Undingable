@@ -61,7 +61,7 @@ const useStyles = makeStyles(styles);
 //不同类型的check，固定不变
 const c = {
   commit: "",
-  subcommit: "add-change-remove",
+  subcommit: "addition-changedfile-deletion",
   issue: "open-closed",
   pullrequest: "open-closed-merged",
   contributor: "",
@@ -148,11 +148,11 @@ export default function Cardshow(props) {
     console.log(c1);
     console.log(c2);
     console.log(c3);
-    console.log(
-      res[time].valueData.filter(
-        (current) => checkbox.search(current.name) != -1
-      )
-    );
+    // console.log(
+    //   res[time].valueData.filter(
+    //     (current) => checkbox.search(current.name) != -1
+    //   )
+    // );
   }, []);
 
   //传输
@@ -228,7 +228,7 @@ export default function Cardshow(props) {
     if (datatype === "commit" || datatype === "subcommit") {
       return (
         <GridContainer>
-          <GridItem xs={4} sm={10} md={4}>
+          <GridItem xs={12} sm={12} md={12}>
             <Card chart>
               <CardBody>
                 <h3 className={classes.head}>错误的图表类型！</h3>
@@ -240,7 +240,7 @@ export default function Cardshow(props) {
     } else if (res.length === 1) {
       return (
         <GridContainer>
-          <GridItem xs={4} sm={10} md={4}>
+          <GridItem xs={12} sm={12} md={12}>
             <Card chart>
               <CardBody>
                 <h3 className={classes.head}>{datatype}</h3>
@@ -260,7 +260,7 @@ export default function Cardshow(props) {
     } else {
       return (
         <GridContainer>
-          <GridItem xs={6} sm={13} md={6}>
+          <GridItem xs={12} sm={12} md={12}>
             <Card chart>
               <CardBody>
                 <h3 className={classes.head}>{datatype}</h3>
@@ -300,7 +300,7 @@ export default function Cardshow(props) {
     if (datatype === "contributor") {
       return (
         <GridContainer>
-          <GridItem xs={4} sm={10} md={4}>
+          <GridItem xs={12} sm={12} md={12}>
             <Card chart>
               <CardBody>
                 <h3 className={classes.head}>错误的图表类型！</h3>
@@ -312,7 +312,7 @@ export default function Cardshow(props) {
     } else {
       return (
         <GridContainer>
-          <GridItem xs={4} sm={10} md={4}>
+          <GridItem xs={12} sm={12} md={12}>
             <Card chart>
               <CardBody>
                 <h3 className={classes.head}>{datatype}</h3>
@@ -416,7 +416,7 @@ export default function Cardshow(props) {
     } else {
       return (
         <GridContainer>
-          <GridItem xs={4} sm={10} md={4}>
+          <GridItem xs={12} sm={12} md={12}>
             <Card chart>
               <CardBody>
                 <h3 className={classes.head}>{datatype}</h3>
@@ -438,7 +438,7 @@ export default function Cardshow(props) {
                   <FormControl className={classes.select}>
                     <InputLabel>时间刻度</InputLabel>
                     <Select
-                      onChange={() => changetime()}
+                      onChange={(e) => changetime(e)}
                       input={<Input />}
                       label="时间刻度"
                       defaultValue={time}

@@ -51,7 +51,7 @@ export default function Dashboard() {
       ChartType: "table",
       TimeScale: "day",
       CheckBox: "",
-      Visible: true,
+      Visible: false,
     },
     {
       Position: 1,
@@ -59,7 +59,7 @@ export default function Dashboard() {
       ChartType: "piechart",
       TimeScale: "day",
       CheckBox: "",
-      Visible: true,
+      Visible: false,
     },
     {
       Position: 2,
@@ -67,14 +67,14 @@ export default function Dashboard() {
       ChartType: "stackedbarchart",
       TimeScale: "day",
       CheckBox: "",
-      Visible: true,
+      Visible: false,
     },
     {
       Position: 3,
       DataType: "subcommit",
       ChartType: "stackedbarchart",
       TimeScale: "day",
-      CheckBox: "add-change-remove",
+      CheckBox: "addition-changedfile-deletion",
       Visible: true,
     },
     {
@@ -83,7 +83,7 @@ export default function Dashboard() {
       ChartType: "stackedbarchart",
       TimeScale: "day",
       CheckBox: "open-closed",
-      Visible: true,
+      Visible: false,
     },
     {
       Position: 5,
@@ -91,7 +91,7 @@ export default function Dashboard() {
       ChartType: "piechart",
       TimeScale: "day",
       CheckBox: "",
-      Visible: true,
+      Visible: false,
     },
     {
       Position: 6,
@@ -99,7 +99,7 @@ export default function Dashboard() {
       ChartType: "stackedbarchart",
       TimeScale: "day",
       CheckBox: "open-closed-merged",
-      Visible: true,
+      Visible: false,
     },
     {
       Position: 7,
@@ -107,7 +107,7 @@ export default function Dashboard() {
       ChartType: "piechart",
       TimeScale: "day",
       CheckBox: "",
-      Visible: true,
+      Visible: false,
     },
   ];
   const [dashboard, setDashboard] = React.useState(
@@ -239,28 +239,30 @@ export default function Dashboard() {
             setFunc={handleSetDataTypeSet}
           />
         </GridItem>
-        {address.length > 0 &&
-          dashboard.map(
-            (current, index) =>
-              current.Visible && (
-                <div key={index}>
-                  {current.Position % 2 === 0 && (
-                    <div onClick={changeDashboard}>1</div>
-                    //<Cardtext datatype={current.DataType} address={address} />
-                  )}
-                  <Cardshow
-                    position={current.Position}
-                    datatype={current.DataType}
-                    charttype={current.ChartType}
-                    time={current.TimeScale}
-                    checkbox={current.CheckBox}
-                    func={changeDashboard}
-                    address={address}
-                  />
-                </div>
-              )
-          )}
-        {address[0] && (
+        <GridItem xs={12} sm={12} md={12}>
+          {address.length > 0 &&
+            dashboard.map(
+              (current, index) =>
+                current.Visible && (
+                  <div key={index}>
+                    {current.Position % 2 === 0 && (
+                      <div onClick={changeDashboard}>1</div>
+                      //<Cardtext datatype={current.DataType} address={address} />
+                    )}
+                    <Cardshow
+                      position={current.Position}
+                      datatype={current.DataType}
+                      charttype={current.ChartType}
+                      time={current.TimeScale}
+                      checkbox={current.CheckBox}
+                      func={changeDashboard}
+                      address={address}
+                    />
+                  </div>
+                )
+            )}
+        </GridItem>
+        {/* {address[0] && (
           <GridItem xs={12} sm={12} md={12}>
             <Cardshow
               datatype="pullrequest"
@@ -268,7 +270,7 @@ export default function Dashboard() {
               address={address[0]}
             />
           </GridItem>
-        )}
+        )} */}
       </GridContainer>
       <div className={classes.fabSet}>
         <Fab
