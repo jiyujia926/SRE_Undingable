@@ -125,18 +125,22 @@ export default function Dashboard() {
   };
   const [op, setOp] = React.useState("");
   const [applyList, setApplyList] = React.useState([]);
-  function changeDashboard(position, timeScale, checkBox) {
+  function changeDashboard(chartType, position, dataScale, checkBox) {
+    console.log("ppp" + position);
     let tmpDashboard = dashboard.map((current) => {
       if (current.Position === position) {
         return {
           ...current,
-          TimeScale: timeScale,
+          ChartType: chartType,
+          DataScale: dataScale,
           CheckBox: checkBox,
         };
       } else {
         return current;
       }
     });
+    console.log("pppp" + tmpDashboard[3].CheckBox);
+    console.log("ppppp" + dashboard[3].CheckBox);
     setDashboard(tmpDashboard);
     cookie.save("dashboard", tmpDashboard, {
       maxAge: 3600,
@@ -244,15 +248,15 @@ export default function Dashboard() {
                     <div onClick={changeDashboard}>1</div>
                     //<Cardtext datatype={current.DataType} address={address} />
                   )}
-                  {/* <Cardshow
+                  <Cardshow
                     position={current.Position}
                     datatype={current.DataType}
                     charttype={current.ChartType}
-                    timescale={current.TimeScale}
+                    time={current.TimeScale}
                     checkbox={current.CheckBox}
                     func={changeDashboard}
                     address={address}
-                  /> */}
+                  />
                 </div>
               )
           )}
