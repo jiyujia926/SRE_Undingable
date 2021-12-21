@@ -67,7 +67,7 @@ export default function Dashboard() {
       ChartType: "stackedbarchart",
       TimeScale: "day",
       CheckBox: "",
-      Visible: false,
+      Visible: true,
     },
     {
       Position: 3,
@@ -83,7 +83,7 @@ export default function Dashboard() {
       ChartType: "stackedbarchart",
       TimeScale: "day",
       CheckBox: "open-closed",
-      Visible: false,
+      Visible: true,
     },
     {
       Position: 5,
@@ -99,7 +99,7 @@ export default function Dashboard() {
       ChartType: "stackedbarchart",
       TimeScale: "day",
       CheckBox: "open-closed-merged",
-      Visible: false,
+      Visible: true,
     },
     {
       Position: 7,
