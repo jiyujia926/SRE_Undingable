@@ -26,8 +26,8 @@ const LineChart = (props) => {
     let myChart = eCharts.init(element);
     const option = {
       legend: {
-        orient: "vertical",
-        x: "left", // right center left
+        orient: "horizontal",
+        x: "center", // right center left
         y: "top", // top center down
         padding: [10, 0, 0, 0],
         data: data.name,
