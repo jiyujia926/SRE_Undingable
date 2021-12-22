@@ -8,7 +8,7 @@ const cardShowStyle = {
     marginLeft: "7%",
     marginRight: "7%",
     width: "86%",
-    height: "300px",
+    height: "600px",
   },
   piegrid: {
     display: "flex",
@@ -22,7 +22,7 @@ const cardShowStyle = {
     marginBottom: "15%",
     marginLeft: "4%",
     width: "46%",
-    height: "300px",
+    height: "600px",
   },
   select: {
     textAlign: "left",
