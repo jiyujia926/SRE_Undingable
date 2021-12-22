@@ -1,4 +1,5 @@
 from django.db.models.aggregates import Count,Sum
+from django.db.models import F
 from django.http.response import ResponseHeaders
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -506,73 +507,64 @@ def get_one_address(address:str,datatype:str,charttype:str):
 def get_contributor_commit(url:str, checkbox:str):
     project = models.Project.objects.filter(RepositoryURL=url).first()
     if checkbox=="commit":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(commitcount=Count(id)))
+        list1 = list(models.CommitRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
     elif checkbox=="changed":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(changedcount=Sum('ChangedFileCount')))
+        list1 = list(models.CommitRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Sum('ChangedFileCount')))
     elif checkbox=="addition":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(additioncount=Sum('AdditionCount')))
+        list1 = list(models.CommitRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Sum('AdditionCount')))
     elif checkbox=="deletion":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(deletioncount=Sum('DeletionCount')))
+        list1 = list(models.CommitRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Sum('DeletionCount')))
     
     #从大到小排序
-    list1=sorted(list1, key=lambda item:item[checkbox+'count'], reverse=True)
-    contributor = []
-    contribution = []
-    for item in list1:
-        contributor.append(item['Contributor'])
-        contribution.append(item[checkbox+'count'])
-    return contribution, contributor
+    list1=sorted(list1, key=lambda item:item['value'], reverse=True)
+    return list1
 
 def get_contributor_issue(url:str, checkbox:str):
     project = models.Project.objects.filter(RepositoryURL=url).first()
     if checkbox=="open":
-        list1 = list(models.OpenIssueRecord.objects.values('Contributor').filter(Project=project).annotate(opencount=Count(id)))
+        list1 = list(models.OpenIssueRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
     elif checkbox=="close":
-        list1 = list(models.ClosedIssueRecord.objects.values('Contributor').filter(Project=project).annotate(closecount=Count(id)))
+        list1 = list(models.ClosedIssueRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
     
     #从大到小排序
-    list1=sorted(list1.items(), key=lambda item:item[checkbox+'count'], reverse=True)
-    contributor = []
-    contribution = []
-    for item in list1:
-        contributor.append(item['Contributor'])
-        contribution.append(item[checkbox+'count'])
-    return contribution, contributor
+    list1=sorted(list1, key=lambda item:item['value'], reverse=True)
+    return list1
 
 def get_contributor_pullrequest(url:str, checkbox:str):
     project = models.Project.objects.filter(RepositoryURL=url).first()
     if checkbox=="open":
-        list1 = list(models.OpenPullrequestRecord.objects.values('Contributor').filter(Project=project).annotate(opencount=Count(id)))
+        list1 = list(models.OpenPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
     elif checkbox=="close":
-        list1 = list(models.ClosedPullrequestRecord.objects.values('Contributor').filter(Project=project).annotate(closecount=Count(id)))
+        list1 = list(models.ClosedPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
     elif checkbox=="close":
-        list1 = list(models.MergedPullrequestRecord.objects.values('Contributor').filter(Project=project).annotate(mergecount=Count(id)))
+        list1 = list(models.MergedPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
     
     #从大到小排序
-    list1=sorted(list1.items(), key=lambda item:item[checkbox+'count'], reverse=True)
-    contributor = []
-    contribution = []
-    for item in list1:
-        contributor.append(item['Contributor'])
-        contribution.append(item[checkbox+'count'])
-    return contribution, contributor
+    list1=sorted(list1, key=lambda item:item['value'], reverse=True)
+    return list1
 
 def get_contributor_data(request):
     data = json.loads(request.body)
-    project = models.Project.objects.filter(RepositoryURL=data['RepositoryURL']).first()
-    if project:
-        type = data['Datatype']
-        checkbox = data['Checkbox']
-        if type=="commit":
-            contribution, contributor=get_contributor_commit(data['RepositoryURL'],checkbox)
-        elif type=="issue":
-            contribution, contributor=get_contributor_issue(data['RepositoryURL'],checkbox)
-        elif type=="pullrequest":
-            contribution, contributor=get_contributor_pullrequest(data['RepositoryURL'],checkbox)
-        dict={'Contributor':contributor,'Contribution':contribution}
-        return HttpResponse(json.dumps(dict))
-    else:
-        return HttpResponse("该项目不存在")
+    Addresslist = data['Address']
+    key = ['first','second']
+    dict = {}
+    for item, index in zip(Addresslist,range(0,len(Addresslist))):
+        project = models.Project.objects.filter(RepositoryURL=item).first()
+
+        if project:
+            type = data['Datatype']
+            checkbox = data['Checkbox']
+            if type=="commit":
+                list=get_contributor_commit(item,checkbox)
+            elif type=="issue":
+                list=get_contributor_issue(item,checkbox)
+            elif type=="pullrequest":
+                list=get_contributor_pullrequest(item,checkbox)
+            dict[key[index]]=list
+            
+        else:
+            return HttpResponse("该项目不存在")
+    return HttpResponse(json.dumps(dict))
 
 def servetwo(url:list):
     return
@@ -675,31 +667,29 @@ def dotest(url:str):
 
 
 def test(request):
-    url = "https://github.com/microsoft/CodeBERT/"
-    checkbox = "commit"
-    project = models.Project.objects.filter(RepositoryURL=url).first()
-    if checkbox=="commit":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(commitcount=Count(id)))
-    elif checkbox=="changed":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(changedcount=Sum('ChangedFileCount')))
-    elif checkbox=="addition":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(additioncount=Sum('AdditionCount')))
-    elif checkbox=="deletion":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(deletioncount=Sum('DeletionCount')))
+    url = ["https://github.com/microsoft/CodeBERT/","https://github.com/Bitergia/prosoul/"]
+    key = ['first', 'second']
+#     list2={}
+#     print(url)
+#     checkbox = "commit"
+#     for item,index in zip(url,range(0,len(url))):
+#         list1=[]
+#         project = models.Project.objects.filter(RepositoryURL=item).first()
+#         if project:
+#             if checkbox=="commit":
+#                 list1 = list(models.CommitRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
+#             elif checkbox=="changed":
+#                 list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(value=Sum('ChangedFileCount')))
+#             elif checkbox=="addition":
+#                 list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(value=Sum('AdditionCount')))
+#             elif checkbox=="deletion":
+#                 list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(value=Sum('DeletionCount')))
+#             #按value从大到小排序
+#             list1 = sorted(list1, key=lambda item:item['value'], reverse=True)
+#             print(list1)
+#             print()
+#             list2[key[index]]=list1
     
-    #从大到小排序
-    print(list1)
-    print()
-    list1 = sorted(list1, key=lambda item:item[checkbox+'count'], reverse=True)
-    contributor = []
-    contribution = []
-    print(list1)
-    print()
-    for item in list1:
-        contributor.append(item['Contributor'])
-        contribution.append(item[checkbox+'count'])
-    print(contributor)
-    print(contribution)
-    dict={'Contributor':contributor,'Contribution':contribution}
-    return HttpResponse(json.dumps(dict))
-    # return HttpResponse("sssss")
+#     print(list2)
+#     return HttpResponse(json.dumps(list2))
+    return HttpResponse("sssss")

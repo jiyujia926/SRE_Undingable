@@ -38,5 +38,6 @@ urlpatterns = [
     path('deletefavor/',user_view.deleteFavor),
     path('customize/',dash_view.customize),
     path('fetch/',dash_view.fetchcustomize),
-    path('delete/',dash_view.deletecustomize)
+    path('delete/',dash_view.deletecustomize),
+    path('get_contributor_data',dash_view.get_contributor_data),
 ]
