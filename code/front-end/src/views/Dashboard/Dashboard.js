@@ -239,29 +239,31 @@ export default function Dashboard() {
             setFunc={handleSetDataTypeSet}
           />
         </GridItem>
-        <GridItem xs={12} sm={12} md={12}>
-          {address.length > 0 &&
-            dashboard.map(
-              (current, index) =>
-                current.Visible && (
-                  <div key={index}>
-                    {current.Position % 2 === 0 && (
-                      <div onClick={changeDashboard}>1</div>
-                      //<Cardtext datatype={current.DataType} address={address} />
-                    )}
-                    <Cardshow
-                      position={current.Position}
-                      datatype={current.DataType}
-                      charttype={current.ChartType}
-                      time={current.TimeScale}
-                      checkbox={current.CheckBox}
-                      func={changeDashboard}
-                      address={address}
-                    />
-                  </div>
-                )
-            )}
-        </GridItem>
+        {address.length > 0 &&
+          [-1, 0, 1, -3, 2, 3, -5, 4, 5, -7, 6, 7].map((current) => {
+            if (dashboard[Math.abs(current)].Visible) {
+              if (current < 0) {
+                return (
+                  <GridItem Item xs={12} sm={12} md={4}>
+                    <Card onClick={changeDashboard}>1</Card>
+                    {/*<Cardtext datatype={current.DataType} address={address} />*/}
+                  </GridItem>
+                );
+              } else {
+                return (
+                  <Cardshow
+                    position={dashboard[current].Position}
+                    datatype={dashboard[current].DataType}
+                    charttype={dashboard[current].ChartType}
+                    time={dashboard[current].TimeScale}
+                    checkbox={dashboard[current].CheckBox}
+                    func={changeDashboard}
+                    address={address}
+                  />
+                );
+              }
+            }
+          })}
         {/* {address[0] && (
           <GridItem xs={12} sm={12} md={12}>
             <Cardshow
