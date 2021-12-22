@@ -51,7 +51,7 @@ export default function Dashboard() {
       ChartType: "table",
       TimeScale: "day",
       CheckBox: "",
-      Visible: true,
+      Visible: false,
     },
     {
       Position: 1,
@@ -59,7 +59,7 @@ export default function Dashboard() {
       ChartType: "piechart",
       TimeScale: "day",
       CheckBox: "",
-      Visible: true,
+      Visible: false,
     },
     {
       Position: 2,
@@ -71,10 +71,10 @@ export default function Dashboard() {
     },
     {
       Position: 3,
-      DataType: "commit",
+      DataType: "subcommit",
       ChartType: "stackedbarchart",
       TimeScale: "day",
-      CheckBox: "add-change-remove",
+      CheckBox: "addition-changedfile-deletion",
       Visible: true,
     },
     {
@@ -91,7 +91,7 @@ export default function Dashboard() {
       ChartType: "piechart",
       TimeScale: "day",
       CheckBox: "",
-      Visible: true,
+      Visible: false,
     },
     {
       Position: 6,
@@ -107,7 +107,7 @@ export default function Dashboard() {
       ChartType: "piechart",
       TimeScale: "day",
       CheckBox: "",
-      Visible: true,
+      Visible: false,
     },
   ];
   const [dashboard, setDashboard] = React.useState(
@@ -125,18 +125,22 @@ export default function Dashboard() {
   };
   const [op, setOp] = React.useState("");
   const [applyList, setApplyList] = React.useState([]);
-  function changeDashboard(position, timeScale, checkBox) {
+  function changeDashboard(chartType, position, dataScale, checkBox) {
+    console.log("ppp" + position);
     let tmpDashboard = dashboard.map((current) => {
       if (current.Position === position) {
         return {
           ...current,
-          TimeScale: timeScale,
+          ChartType: chartType,
+          DataScale: dataScale,
           CheckBox: checkBox,
         };
       } else {
         return current;
       }
     });
+    console.log("pppp" + tmpDashboard[3].CheckBox);
+    console.log("ppppp" + dashboard[3].CheckBox);
     setDashboard(tmpDashboard);
     cookie.save("dashboard", tmpDashboard, {
       maxAge: 3600,
@@ -235,38 +239,38 @@ export default function Dashboard() {
             setFunc={handleSetDataTypeSet}
           />
         </GridItem>
-        {address.length > 0 &&
-          dashboard.map(
-            (current, index) =>
-              current.Visible && (
-                <div key={index}>
-                  {current.Position % 2 === 0 && (
-                    <div onClick={changeDashboard}>1</div>
-                    //<Cardtext datatype={current.DataType} address={address} />
-                  )}
-                  {/*
+        <GridItem xs={12} sm={12} md={12}>
+          {address.length > 0 &&
+            dashboard.map(
+              (current, index) =>
+                current.Visible && (
+                  <div key={index}>
+                    {current.Position % 2 === 0 && (
+                      <div onClick={changeDashboard}>1</div>
+                      //<Cardtext datatype={current.DataType} address={address} />
+                    )}
                     <Cardshow
                       position={current.Position}
                       datatype={current.DataType}
                       charttype={current.ChartType}
-                      timescale={current.TimeScale}
+                      time={current.TimeScale}
                       checkbox={current.CheckBox}
                       func={changeDashboard}
                       address={address}
                     />
-                  */}
-                </div>
-              )
-          )}
-        {address[0] && (
+                  </div>
+                )
+            )}
+        </GridItem>
+        {/* {address[0] && (
           <GridItem xs={12} sm={12} md={12}>
             <Cardshow
-              datatype="commit"
-              charttype="barchart"
+              datatype="pullrequest"
+              charttype="stackedbarchart"
               address={address[0]}
             />
           </GridItem>
-        )}
+        )} */}
       </GridContainer>
       <div className={classes.fabSet}>
         <Fab

@@ -25,14 +25,27 @@ const cardShowStyle = {
     height: "600px",
   },
   select: {
+    //float: "right",
     textAlign: "left",
     width: "40%",
-    marginRight: "30%",
+    marginRight: "15%",
+    marginLeft: "2%",
+    marginTop: "3%",
   },
   itemProgress: {
     color: "primary",
     marginLeft: "45%",
     textAlign: "center",
+  },
+  checkbox: {
+    float: "right",
+    marginTop: "-10%",
+    marginRight: "3%",
+    // float: "left",
+    // position: "relative",
+    // left: "70%",
+    // bottom: "120px",
+    //marginLeft: "3%",
   },
 };
 
