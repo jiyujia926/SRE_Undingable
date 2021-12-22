@@ -1,8 +1,11 @@
 from django.db.models.aggregates import Count,Sum
+from django.db.models import F
 from django.http.response import ResponseHeaders
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
+from operator import itemgetter
+from itertools import groupby
 # Create your views here.
 import json
 import uuid
@@ -503,76 +506,65 @@ def get_one_address(address:str,datatype:str,charttype:str):
     # return HttpResponse(json.dumps(databag))
 
     
-def get_contributor_commit(url:str, checkbox:str):
-    project = models.Project.objects.filter(RepositoryURL=url).first()
-    if checkbox=="commit":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(commitcount=Count(id)))
-    elif checkbox=="changed":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(changedcount=Sum('ChangedFileCount')))
-    elif checkbox=="addition":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(additioncount=Sum('AdditionCount')))
-    elif checkbox=="deletion":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(deletioncount=Sum('DeletionCount')))
-    
+def get_contributor_issue(url:str):
+    project = models.Project.objects.filter(RepositoryURL=url[0]).first()
+    list1 = list(models.OpenIssueRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
+    list2 = list(models.ClosedIssueRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
+    list3 = list1+list2
+    list3.sort(key=itemgetter('name'))
+    list4 = []
+    for name, items in groupby(list3, key=itemgetter('name')):
+        dict={'name':"", 'value':0}
+        # print(name)
+        dict['name']=name
+        for i in items:
+            # print(' ',i)
+            dict['value']+=i['value']
+        list4.append(dict)
     #从大到小排序
-    list1=sorted(list1, key=lambda item:item[checkbox+'count'], reverse=True)
-    contributor = []
-    contribution = []
-    for item in list1:
-        contributor.append(item['Contributor'])
-        contribution.append(item[checkbox+'count'])
-    return contribution, contributor
+    list4.sort(key=lambda item:item['value'], reverse=True)
+    # print(list4)
 
-def get_contributor_issue(url:str, checkbox:str):
-    project = models.Project.objects.filter(RepositoryURL=url).first()
-    if checkbox=="open":
-        list1 = list(models.OpenIssueRecord.objects.values('Contributor').filter(Project=project).annotate(opencount=Count(id)))
-    elif checkbox=="close":
-        list1 = list(models.ClosedIssueRecord.objects.values('Contributor').filter(Project=project).annotate(closecount=Count(id)))
-    
-    #从大到小排序
-    list1=sorted(list1.items(), key=lambda item:item[checkbox+'count'], reverse=True)
-    contributor = []
-    contribution = []
-    for item in list1:
-        contributor.append(item['Contributor'])
-        contribution.append(item[checkbox+'count'])
-    return contribution, contributor
+    return list4
 
-def get_contributor_pullrequest(url:str, checkbox:str):
+def get_contributor_pullrequest(url:str):
     project = models.Project.objects.filter(RepositoryURL=url).first()
-    if checkbox=="open":
-        list1 = list(models.OpenPullrequestRecord.objects.values('Contributor').filter(Project=project).annotate(opencount=Count(id)))
-    elif checkbox=="close":
-        list1 = list(models.ClosedPullrequestRecord.objects.values('Contributor').filter(Project=project).annotate(closecount=Count(id)))
-    elif checkbox=="close":
-        list1 = list(models.MergedPullrequestRecord.objects.values('Contributor').filter(Project=project).annotate(mergecount=Count(id)))
+    list1 = list(models.OpenPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
+    list2 = list(models.ClosedPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
+    list3 = list(models.MergedPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
     
+    list4 = list1+list2+list3
+    list4.sort(key=itemgetter('name'))
+    list5 = []
+    for name, items in groupby(list4, key=itemgetter('name')):
+        dict={'name':"",'value':0}
+        dict['name'] = name
+        for i in items:
+            dict['value']+=i['value']
+        list5.append(dict)
     #从大到小排序
-    list1=sorted(list1.items(), key=lambda item:item[checkbox+'count'], reverse=True)
-    contributor = []
-    contribution = []
-    for item in list1:
-        contributor.append(item['Contributor'])
-        contribution.append(item[checkbox+'count'])
-    return contribution, contributor
+    list1=sorted(list5, key=lambda item:item['value'], reverse=True)
+    return list5
 
 def get_contributor_data(request):
     data = json.loads(request.body)
-    project = models.Project.objects.filter(RepositoryURL=data['RepositoryURL']).first()
-    if project:
-        type = data['Datatype']
-        checkbox = data['Checkbox']
-        if type=="commit":
-            contribution, contributor=get_contributor_commit(data['RepositoryURL'],checkbox)
-        elif type=="issue":
-            contribution, contributor=get_contributor_issue(data['RepositoryURL'],checkbox)
-        elif type=="pullrequest":
-            contribution, contributor=get_contributor_pullrequest(data['RepositoryURL'],checkbox)
-        dict={'Contributor':contributor,'Contribution':contribution}
-        return HttpResponse(json.dumps(dict))
-    else:
-        return HttpResponse("该项目不存在")
+    Addresslist = data['Address']
+    key = ['first','second']
+    dict = {}
+    for item, index in zip(Addresslist,range(0,len(Addresslist))):
+        project = models.Project.objects.filter(RepositoryURL=item).first()
+
+        if project:
+            type = data['Datatype']
+            if type=="issue":
+                list=get_contributor_issue(item)
+            elif type=="pullrequest":
+                list=get_contributor_pullrequest(item)
+            dict[key[index]]=list
+            
+        else:
+            return HttpResponse("该项目不存在")
+    return HttpResponse(json.dumps(dict))
 
 def servetwo(url:list):
     return
@@ -675,31 +667,23 @@ def dotest(url:str):
 
 
 def test(request):
-    url = "https://github.com/microsoft/CodeBERT/"
-    checkbox = "commit"
-    project = models.Project.objects.filter(RepositoryURL=url).first()
-    if checkbox=="commit":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(commitcount=Count(id)))
-    elif checkbox=="changed":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(changedcount=Sum('ChangedFileCount')))
-    elif checkbox=="addition":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(additioncount=Sum('AdditionCount')))
-    elif checkbox=="deletion":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(deletioncount=Sum('DeletionCount')))
-    
-    #从大到小排序
-    print(list1)
-    print()
-    list1 = sorted(list1, key=lambda item:item[checkbox+'count'], reverse=True)
-    contributor = []
-    contribution = []
-    print(list1)
-    print()
-    for item in list1:
-        contributor.append(item['Contributor'])
-        contribution.append(item[checkbox+'count'])
-    print(contributor)
-    print(contribution)
-    dict={'Contributor':contributor,'Contribution':contribution}
-    return HttpResponse(json.dumps(dict))
-    # return HttpResponse("sssss")
+    url = ["https://github.com/microsoft/CodeBERT/","https://github.com/Bitergia/prosoul/"]
+    key = ['first', 'second']
+    project = models.Project.objects.filter(RepositoryURL=url[0]).first()
+    list1 = list(models.OpenIssueRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
+    list2 = list(models.ClosedIssueRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
+    list3 = list1+list2
+    list3.sort(key=itemgetter('name'))
+    list4 = []
+    for name, items in groupby(list3, key=itemgetter('name')):
+        dict={'name':"", 'value':0}
+        print(name)
+        dict['name']=name
+        for i in items:
+            print(' ',i)
+            dict['value']+=i['value']
+        list4.append(dict)
+    list4.sort(key=lambda item:item['value'], reverse=True)
+    print(list4)
+    return HttpResponse(json.dumps(list4))
+    return HttpResponse("sssss")
