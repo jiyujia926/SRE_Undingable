@@ -1,3 +1,4 @@
+from django.db.models.aggregates import Count,Sum
 from django.http.response import ResponseHeaders
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -501,6 +502,78 @@ def get_one_address(address:str,datatype:str,charttype:str):
     # databag = {'categoryData':timelist,'valueData':commitcountlist}
     # return HttpResponse(json.dumps(databag))
 
+    
+def get_contributor_commit(url:str, checkbox:str):
+    project = models.Project.objects.filter(RepositoryURL=url).first()
+    if checkbox=="commit":
+        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(commitcount=Count(id)))
+    elif checkbox=="changed":
+        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(changedcount=Sum('ChangedFileCount')))
+    elif checkbox=="addition":
+        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(additioncount=Sum('AdditionCount')))
+    elif checkbox=="deletion":
+        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(deletioncount=Sum('DeletionCount')))
+    
+    #从大到小排序
+    list1=sorted(list1, key=lambda item:item[checkbox+'count'], reverse=True)
+    contributor = []
+    contribution = []
+    for item in list1:
+        contributor.append(item['Contributor'])
+        contribution.append(item[checkbox+'count'])
+    return contribution, contributor
+
+def get_contributor_issue(url:str, checkbox:str):
+    project = models.Project.objects.filter(RepositoryURL=url).first()
+    if checkbox=="open":
+        list1 = list(models.OpenIssueRecord.objects.values('Contributor').filter(Project=project).annotate(opencount=Count(id)))
+    elif checkbox=="close":
+        list1 = list(models.ClosedIssueRecord.objects.values('Contributor').filter(Project=project).annotate(closecount=Count(id)))
+    
+    #从大到小排序
+    list1=sorted(list1.items(), key=lambda item:item[checkbox+'count'], reverse=True)
+    contributor = []
+    contribution = []
+    for item in list1:
+        contributor.append(item['Contributor'])
+        contribution.append(item[checkbox+'count'])
+    return contribution, contributor
+
+def get_contributor_pullrequest(url:str, checkbox:str):
+    project = models.Project.objects.filter(RepositoryURL=url).first()
+    if checkbox=="open":
+        list1 = list(models.OpenPullrequestRecord.objects.values('Contributor').filter(Project=project).annotate(opencount=Count(id)))
+    elif checkbox=="close":
+        list1 = list(models.ClosedPullrequestRecord.objects.values('Contributor').filter(Project=project).annotate(closecount=Count(id)))
+    elif checkbox=="close":
+        list1 = list(models.MergedPullrequestRecord.objects.values('Contributor').filter(Project=project).annotate(mergecount=Count(id)))
+    
+    #从大到小排序
+    list1=sorted(list1.items(), key=lambda item:item[checkbox+'count'], reverse=True)
+    contributor = []
+    contribution = []
+    for item in list1:
+        contributor.append(item['Contributor'])
+        contribution.append(item[checkbox+'count'])
+    return contribution, contributor
+
+def get_contributor_data(request):
+    data = json.loads(request.body)
+    project = models.Project.objects.filter(RepositoryURL=data['RepositoryURL']).first()
+    if project:
+        type = data['Datatype']
+        checkbox = data['Checkbox']
+        if type=="commit":
+            contribution, contributor=get_contributor_commit(data['RepositoryURL'],checkbox)
+        elif type=="issue":
+            contribution, contributor=get_contributor_issue(data['RepositoryURL'],checkbox)
+        elif type=="pullrequest":
+            contribution, contributor=get_contributor_pullrequest(data['RepositoryURL'],checkbox)
+        dict={'Contributor':contributor,'Contribution':contribution}
+        return HttpResponse(json.dumps(dict))
+    else:
+        return HttpResponse("该项目不存在")
+
 def servetwo(url:list):
     return
     
@@ -599,3 +672,34 @@ def importDB(url:str):
     tasks.spider.delay(url)
 def dotest(url:str):
     tasks.spider.delay(url)
+
+
+def test(request):
+    url = "https://github.com/microsoft/CodeBERT/"
+    checkbox = "commit"
+    project = models.Project.objects.filter(RepositoryURL=url).first()
+    if checkbox=="commit":
+        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(commitcount=Count(id)))
+    elif checkbox=="changed":
+        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(changedcount=Sum('ChangedFileCount')))
+    elif checkbox=="addition":
+        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(additioncount=Sum('AdditionCount')))
+    elif checkbox=="deletion":
+        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(deletioncount=Sum('DeletionCount')))
+    
+    #从大到小排序
+    print(list1)
+    print()
+    list1 = sorted(list1, key=lambda item:item[checkbox+'count'], reverse=True)
+    contributor = []
+    contribution = []
+    print(list1)
+    print()
+    for item in list1:
+        contributor.append(item['Contributor'])
+        contribution.append(item[checkbox+'count'])
+    print(contributor)
+    print(contribution)
+    dict={'Contributor':contributor,'Contribution':contribution}
+    return HttpResponse(json.dumps(dict))
+    # return HttpResponse("sssss")
