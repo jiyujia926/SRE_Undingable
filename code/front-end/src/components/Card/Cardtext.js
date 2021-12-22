@@ -36,6 +36,7 @@ export default function Cardtext(props) {
   const address = props.address;
   const [res, setTextdata] = useState({});
   const [loading, setloading] = useState(false);
+  
   useEffect(() => {
     upload();
   }, []);
