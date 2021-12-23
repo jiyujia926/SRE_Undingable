@@ -82,6 +82,7 @@ export default function AdminNavbarLinks() {
   };
   const handleClickDialog = () => {
     setOp("login");
+    setFormData(initialFormState);
     setOpenDialog(true);
   };
   const handleCloseDialog = () => {
@@ -126,7 +127,7 @@ export default function AdminNavbarLinks() {
       setAccount({ email: formData.email, username: info.data.name });
       handleCloseDialog();
       cookie.save("account", formData.email);
-      cookie.save("username", info.data.account);
+      cookie.save("username", info.data.name);
       cookie.save("time", info.data.time);
       cookie.remove("addressList");
       if (remember) {
