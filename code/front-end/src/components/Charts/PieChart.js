@@ -7,17 +7,16 @@ const PieChart = (props) => {
   const { data } = props;
   let id = nanoid();
   let series_items = [];
-  let cnt = 0;
-  for (let item in data) {
+  for (let i = 0; i < data.length; i++) {
     let tmp_item = {};
-    tmp_item.name = item.repoName;
+    tmp_item.name = data[i].repoName;
     tmp_item.type = "pie";
     tmp_item.label = { show: false, position: "center" };
     tmp_item.itemStyle = { borderRadius: 2 };
-    tmp_item.data = item.data;
-    if (cnt == 0) {
+    tmp_item.data = data[i].data;
+    console.log(tmp_item.data);
+    if (i == 0) {
       tmp_item.radius = ["80%", "100%"];
-      cnt++;
     } else {
       tmp_item.radius = ["50%", "70%"];
     }
