@@ -32,7 +32,6 @@ import PropTypes from "prop-types";
 import { Card, Grid, Input, Select } from "@material-ui/core";
 import { Divider } from "@material-ui/core";
 import CardBody from "./CardBody";
-import GridItem from "components/Grid/GridItem";
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -226,176 +225,163 @@ export default function Cardshow(props) {
   if (charttype === "piechart") {
     if (datatype === "commit" || datatype === "subcommit") {
       return (
-        <GridItem xs={12} sm={12} md={4}>
-          <Card chart>
-            <CardBody>
-              <h3 className={classes.head}>错误的图表类型！</h3>
-            </CardBody>
-          </Card>
-        </GridItem>
+        <Card chart>
+          <CardBody>
+            <h3 className={classes.head}>错误的图表类型！</h3>
+          </CardBody>
+        </Card>
       );
     } else if (res.length === 1) {
       return (
-        <GridItem xs={12} sm={12} md={6}>
-          <Card chart>
-            <CardBody>
-              <h3 className={classes.head}>{datatype}</h3>
-              <Grid className={classes.chart}>
-                {loading ? (
-                  <CircularProgress className={classes.itemProgress} />
-                ) : (
-                  // <PieChart data={res.1} />//双图去注释
-                  <PieChart data={res.first} /> //双图加注释
-                )}
-              </Grid>
-            </CardBody>
-          </Card>
-        </GridItem>
+        <Card chart>
+          <CardBody>
+            <h3 className={classes.head}>{datatype}</h3>
+            <Grid className={classes.chart}>
+              {loading ? (
+                <CircularProgress className={classes.itemProgress} />
+              ) : (
+                // <PieChart data={res.1} />//双图去注释
+                <PieChart data={res.first} /> //双图加注释
+              )}
+            </Grid>
+          </CardBody>
+        </Card>
       );
     } else {
       return (
-        <GridItem xs={12} sm={12} md={6}>
-          <Card chart>
-            <CardBody>
-              <h3 className={classes.head}>{datatype}</h3>
-              <Grid className={classes.piegrid}>
-                <Grid className={classes.piechart}>
-                  {loading ? (
-                    <CircularProgress
-                      color="primary"
-                      className={classes.itemProgress}
-                    />
-                  ) : (
-                    <PieChart data={res.first} /> //双图去注释
-                    // <PieChart data={res} /> //双图加注释
-                  )}
-                </Grid>
-                <Divider orientation="vertical" flexItem />
-                <Grid className={classes.piechart}>
-                  {loading ? (
-                    <CircularProgress
-                      color="primary"
-                      className={classes.itemProgress}
-                    />
-                  ) : (
-                    <PieChart data={res.second} /> //双图去注释
-                    // <PieChart data={res} /> //双图加注释
-                  )}
-                </Grid>
+        <Card chart>
+          <CardBody>
+            <h3 className={classes.head}>{datatype}</h3>
+            <Grid className={classes.piegrid}>
+              <Grid className={classes.piechart}>
+                {loading ? (
+                  <CircularProgress
+                    color="primary"
+                    className={classes.itemProgress}
+                  />
+                ) : (
+                  <PieChart data={res.first} /> //双图去注释
+                  // <PieChart data={res} /> //双图加注释
+                )}
               </Grid>
-            </CardBody>
-          </Card>
-        </GridItem>
+              <Divider orientation="vertical" flexItem />
+              <Grid className={classes.piechart}>
+                {loading ? (
+                  <CircularProgress
+                    color="primary"
+                    className={classes.itemProgress}
+                  />
+                ) : (
+                  <PieChart data={res.second} /> //双图去注释
+                  // <PieChart data={res} /> //双图加注释
+                )}
+              </Grid>
+            </Grid>
+          </CardBody>
+        </Card>
       );
     }
   } else if (charttype === "stackedbarchart") {
     //bar图
     if (datatype === "contributor") {
       return (
-        <GridItem xs={12} sm={12} md={4}>
-          <Card chart>
-            <CardBody>
-              <h3 className={classes.head}>错误的图表类型！</h3>
-            </CardBody>
-          </Card>
-        </GridItem>
+        <Card chart>
+          <CardBody>
+            <h3 className={classes.head}>错误的图表类型！</h3>
+          </CardBody>
+        </Card>
       );
     } else {
       return (
-        <GridItem xs={12} sm={12} md={4}>
-          <Card chart>
-            <CardBody>
-              <h3 className={classes.head}>{datatype}</h3>
+        <Card chart>
+          <CardBody>
+            <h3 className={classes.head}>{datatype}</h3>
+            <FormControl className={classes.select}>
+              <InputLabel>图表类型</InputLabel>
+              <Select
+                onChange={changechart}
+                input={<Input />}
+                label="图表类型"
+                defaultValue={"stackedbarchart"}
+              >
+                <MenuItem value={"stackedbarchart"}>stacked barchart</MenuItem>
+                <MenuItem value={"linechart"}>line chart</MenuItem>
+              </Select>
+            </FormControl>
+            {datatype === "commit" || datatype === "subcommit" ? (
               <FormControl className={classes.select}>
-                <InputLabel>图表类型</InputLabel>
+                <InputLabel>时间刻度</InputLabel>
                 <Select
-                  onChange={changechart}
+                  onChange={(e) => changetime(e)}
                   input={<Input />}
-                  label="图表类型"
-                  defaultValue={"stackedbarchart"}
+                  label="时间刻度"
+                  defaultValue={time}
                 >
-                  <MenuItem value={"stackedbarchart"}>
-                    stacked barchart
-                  </MenuItem>
-                  <MenuItem value={"linechart"}>line chart</MenuItem>
+                  <MenuItem value={"day"}>day</MenuItem>
+                  <MenuItem value={"month"}>month</MenuItem>
+                  <MenuItem value={"year"}>year</MenuItem>
                 </Select>
               </FormControl>
-              {datatype === "commit" || datatype === "subcommit" ? (
-                <FormControl className={classes.select}>
-                  <InputLabel>时间刻度</InputLabel>
-                  <Select
-                    onChange={(e) => changetime(e)}
-                    input={<Input />}
-                    label="时间刻度"
-                    defaultValue={time}
-                  >
-                    <MenuItem value={"day"}>day</MenuItem>
-                    <MenuItem value={"month"}>month</MenuItem>
-                    <MenuItem value={"year"}>year</MenuItem>
-                  </Select>
-                </FormControl>
-              ) : (
-                <></>
-              )}
-              {datatype !== "commit" ? (
-                <FormGroup className={classes.checkbox}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checkbox.search(c1) !== -1}
-                        name={c1}
-                        onChange={(e) => changecheck(e)}
-                      />
-                    }
-                    label={c1}
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checkbox.search(c2) !== -1}
-                        name={c2}
-                        onChange={(e) => changecheck(e)}
-                      />
-                    }
-                    label={c2}
-                  />
-                  {datatype !== "issue" ? (
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={checkbox.search(c3) !== -1}
-                          name={c3}
-                          onChange={(e) => changecheck(e)}
-                        />
-                      }
-                      label={c3}
+            ) : (
+              <></>
+            )}
+            {datatype !== "commit" ? (
+              <FormGroup className={classes.checkbox}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checkbox.search(c1) !== -1}
+                      name={c1}
+                      onChange={(e) => changecheck(e)}
                     />
-                  ) : (
-                    <></>
-                  )}
-                </FormGroup>
-              ) : (
-                <></>
-              )}
-              <Grid className={classes.chart}>
-                {loading ? (
-                  <CircularProgress className={classes.itemProgress} />
-                ) : (
-                  <StackedBarChart
-                    data={{
-                      categoryData: res[time].categoryData,
-                      valueData: res[time].valueData.filter(
-                        (current) =>
-                          checkbox.search(current.name) !== -1 ||
-                          checkbox === ""
-                      ),
-                    }}
+                  }
+                  label={c1}
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checkbox.search(c2) !== -1}
+                      name={c2}
+                      onChange={(e) => changecheck(e)}
+                    />
+                  }
+                  label={c2}
+                />
+                {datatype !== "issue" ? (
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={checkbox.search(c3) !== -1}
+                        name={c3}
+                        onChange={(e) => changecheck(e)}
+                      />
+                    }
+                    label={c3}
                   />
+                ) : (
+                  <></>
                 )}
-              </Grid>
-            </CardBody>
-          </Card>
-        </GridItem>
+              </FormGroup>
+            ) : (
+              <></>
+            )}
+            <Grid className={classes.chart}>
+              {loading ? (
+                <CircularProgress className={classes.itemProgress} />
+              ) : (
+                <StackedBarChart
+                  data={{
+                    categoryData: res[time].categoryData,
+                    valueData: res[time].valueData.filter(
+                      (current) =>
+                        checkbox.search(current.name) !== -1 || checkbox === ""
+                    ),
+                  }}
+                />
+              )}
+            </Grid>
+          </CardBody>
+        </Card>
       );
     }
   } else {
@@ -404,64 +390,59 @@ export default function Cardshow(props) {
       alert("错误的图表类型！");
     } else {
       return (
-        <GridItem xs={12} sm={12} md={4}>
-          <Card chart>
-            <CardBody>
-              <h3 className={classes.head}>{datatype}</h3>
+        <Card chart>
+          <CardBody>
+            <h3 className={classes.head}>{datatype}</h3>
+            <FormControl className={classes.select}>
+              <InputLabel>图表类型</InputLabel>
+              <Select
+                onChange={changechart}
+                input={<Input />}
+                label="图表类型"
+                defaultValue={"linechart"}
+              >
+                <MenuItem value={"stackedbarchart"}>stacked barchart</MenuItem>
+                <MenuItem value={"linechart"}>line chart</MenuItem>
+              </Select>
+            </FormControl>
+            {datatype === "commit" || datatype === "subcommit" ? (
               <FormControl className={classes.select}>
-                <InputLabel>图表类型</InputLabel>
+                <InputLabel>时间刻度</InputLabel>
                 <Select
-                  onChange={changechart}
+                  onChange={(e) => changetime(e)}
                   input={<Input />}
-                  label="图表类型"
-                  defaultValue={"linechart"}
+                  label="时间刻度"
+                  defaultValue={time}
                 >
-                  <MenuItem value={"stackedbarchart"}>
-                    stacked barchart
-                  </MenuItem>
-                  <MenuItem value={"linechart"}>line chart</MenuItem>
+                  <MenuItem value={"day"}>day</MenuItem>
+                  <MenuItem value={"month"}>month</MenuItem>
+                  <MenuItem value={"year"}>year</MenuItem>
                 </Select>
               </FormControl>
-              {datatype === "commit" || datatype === "subcommit" ? (
-                <FormControl className={classes.select}>
-                  <InputLabel>时间刻度</InputLabel>
-                  <Select
-                    onChange={(e) => changetime(e)}
-                    input={<Input />}
-                    label="时间刻度"
-                    defaultValue={time}
-                  >
-                    <MenuItem value={"day"}>day</MenuItem>
-                    <MenuItem value={"month"}>month</MenuItem>
-                    <MenuItem value={"year"}>year</MenuItem>
-                  </Select>
-                </FormControl>
+            ) : (
+              <></>
+            )}
+            <Grid className={classes.chart}>
+              {/* <LineChart data={res[time]} /> */}
+              {loading ? (
+                <CircularProgress
+                  color="primary"
+                  className={classes.itemProgress}
+                />
               ) : (
-                <></>
+                <LineChart
+                  data={{
+                    categoryData: res[time].categoryData,
+                    valueData: res[time].valueData.filter(
+                      (current) =>
+                        checkbox.search(current.name) !== -1 || checkbox === ""
+                    ),
+                  }}
+                />
               )}
-              <Grid className={classes.chart}>
-                {/* <LineChart data={res[time]} /> */}
-                {loading ? (
-                  <CircularProgress
-                    color="primary"
-                    className={classes.itemProgress}
-                  />
-                ) : (
-                  <LineChart
-                    data={{
-                      categoryData: res[time].categoryData,
-                      valueData: res[time].valueData.filter(
-                        (current) =>
-                          checkbox.search(current.name) !== -1 ||
-                          checkbox === ""
-                      ),
-                    }}
-                  />
-                )}
-              </Grid>
-            </CardBody>
-          </Card>
-        </GridItem>
+            </Grid>
+          </CardBody>
+        </Card>
       );
     }
   }

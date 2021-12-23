@@ -88,7 +88,7 @@ const StackedBarChart = (props) => {
     initChart();
   }, []);
 
-  return <div id={id} style={{ width: "100%", height: "100%" }}></div>;
+  return <div id={id} style={{ width: "100%", height: "100%" }} />;
 };
 
 StackedBarChart.propTypes = {

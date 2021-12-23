@@ -48,7 +48,7 @@ export default function Dashboard() {
     {
       Position: 0,
       DataType: "contributor",
-      ChartType: "table",
+      ChartType: "piechart",
       TimeScale: "day",
       CheckBox: "",
       Visible: false,
@@ -56,7 +56,7 @@ export default function Dashboard() {
     {
       Position: 1,
       DataType: "contributor",
-      ChartType: "piechart",
+      ChartType: "table",
       TimeScale: "day",
       CheckBox: "",
       Visible: false,
@@ -80,34 +80,34 @@ export default function Dashboard() {
     {
       Position: 4,
       DataType: "issue",
+      ChartType: "piechart",
+      TimeScale: "day",
+      CheckBox: "",
+      Visible: false,
+    },
+    {
+      Position: 5,
+      DataType: "issue",
       ChartType: "stackedbarchart",
       TimeScale: "day",
       CheckBox: "open-closed",
       Visible: true,
     },
     {
-      Position: 5,
-      DataType: "issue",
+      Position: 6,
+      DataType: "pullrequest",
       ChartType: "piechart",
       TimeScale: "day",
       CheckBox: "",
       Visible: false,
     },
     {
-      Position: 6,
+      Position: 7,
       DataType: "pullrequest",
       ChartType: "stackedbarchart",
       TimeScale: "day",
       CheckBox: "open-closed-merged",
       Visible: true,
-    },
-    {
-      Position: 7,
-      DataType: "pullrequest",
-      ChartType: "piechart",
-      TimeScale: "day",
-      CheckBox: "",
-      Visible: false,
     },
   ];
   const [dashboard, setDashboard] = React.useState(
@@ -246,22 +246,38 @@ export default function Dashboard() {
             if (dashboard[Math.abs(current)].Visible) {
               if (current < 0) {
                 return (
-                  <GridItem Item xs={12} sm={12} md={4}>
+                  <GridItem Item xs={12} sm={12} md={6}>
                     <Card onClick={changeDashboard}>1</Card>
                     {/*<Cardtext datatype={current.DataType} address={address} />*/}
                   </GridItem>
                 );
+              } else if (current % 2 === 0) {
+                return (
+                  <GridItem Item xs={12} sm={12} md={6}>
+                    <Cardshow
+                      position={dashboard[current].Position}
+                      datatype={dashboard[current].DataType}
+                      charttype={dashboard[current].ChartType}
+                      time={dashboard[current].TimeScale}
+                      checkbox={dashboard[current].CheckBox}
+                      func={changeDashboard}
+                      address={address}
+                    />
+                  </GridItem>
+                );
               } else {
                 return (
-                  <Cardshow
-                    position={dashboard[current].Position}
-                    datatype={dashboard[current].DataType}
-                    charttype={dashboard[current].ChartType}
-                    time={dashboard[current].TimeScale}
-                    checkbox={dashboard[current].CheckBox}
-                    func={changeDashboard}
-                    address={address}
-                  />
+                  <GridItem Item xs={12} sm={12} md={12}>
+                    <Cardshow
+                      position={dashboard[current].Position}
+                      datatype={dashboard[current].DataType}
+                      charttype={dashboard[current].ChartType}
+                      time={dashboard[current].TimeScale}
+                      checkbox={dashboard[current].CheckBox}
+                      func={changeDashboard}
+                      address={address}
+                    />
+                  </GridItem>
                 );
               }
             }
