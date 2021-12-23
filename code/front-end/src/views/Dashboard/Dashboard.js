@@ -111,7 +111,8 @@ export default function Dashboard() {
     },
   ];
   const [dashboard, setDashboard] = React.useState(
-    cookie.load("dashboard") ? cookie.load("dashboard") : defaultDashboard
+    //cookie.load("dashboard") ? cookie.load("dashboard") : defaultDashboard
+    defaultDashboard
   );
   const [openDialog, setOpenDialog] = React.useState(false);
   const initialState = {
@@ -155,6 +156,7 @@ export default function Dashboard() {
         };
       });
       setDashboard(tmpDashboard);
+      alert(tmpDashboard[0].Visible);
       cookie.save("dashboard", tmpDashboard, {
         maxAge: 3600,
       });
