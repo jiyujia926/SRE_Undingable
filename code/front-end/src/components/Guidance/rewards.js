@@ -3,7 +3,7 @@ import CardHeader from "components/Card/CardHeader";
 import CardBody from "components/Card/CardBody";
 import GridItem from "components/Grid/GridItem";
 import React from "react";
-import QRCODE_03 from "../../assets/img/QRCODE_03.png";
+import QRCODE_01 from "../../assets/img/QRCODE_01.png";
 import useStyles from "./styles";
 
 const Reward = () => {
@@ -17,7 +17,7 @@ const Reward = () => {
           </h4>
         </CardHeader>
         <CardBody className={classes.body}>
-          <img src={QRCODE_03} alt="打赏二维码" className={classes.image}></img>
+          <img src={QRCODE_01} alt="打赏二维码" className={classes.image} />
           <div className={classes.text}>
             <h4>您的每一次打赏都是对我们开发团队的鼓励与支持。</h4>
             <h4>

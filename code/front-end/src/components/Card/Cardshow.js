@@ -119,24 +119,24 @@ export default function Cardshow(props) {
   const checkbox = props.checkbox;
   const datatype = props.datatype;
   const address = props.address;
-  const changeDashboard: Function = props.func;
+  const changeDashboard = props.func;
   const position = props.position;
 
   //首次渲染的时候，分字符串
   useEffect(() => {
     upload();
-    if (c[datatype] != "") {
+    if (c[datatype] !== "") {
       //分解字符串
-      var s: String = c[datatype];
+      var s = c[datatype];
       let a = s.indexOf("-");
       let b = s.indexOf("-", a + 1);
-      if (b == -1) {
-        let tmp: String = s.slice(0, a);
+      if (b === -1) {
+        let tmp = s.slice(0, a);
         setc1(tmp);
         tmp = s.slice(a + 1);
         setc2(tmp);
       } else {
-        let tmp: String = s.slice(0, a);
+        let tmp = s.slice(0, a);
         setc1(tmp);
         tmp = s.slice(a + 1, b);
         setc2(tmp);
@@ -174,35 +174,35 @@ export default function Cardshow(props) {
 
   //每次更改checkbox，调用此函数，返回值给父组件
   function changecheck(event) {
-    let tmp: String = "";
-    if (event.target.name == c1) {
-      if (checkbox.search(c1) == -1) {
+    let tmp = "";
+    if (event.target.name === c1) {
+      if (checkbox.search(c1) === -1) {
         tmp = tmp + c1 + "-";
       }
-      if (checkbox.search(c2) != -1) {
+      if (checkbox.search(c2) !== -1) {
         tmp = tmp + c2 + "-";
       }
-      if (checkbox.search(c3) != -1 && c3 != "") {
+      if (checkbox.search(c3) !== -1 && c3 !== "") {
         tmp = tmp + c3 + "-";
       }
-    } else if (event.target.name == c2) {
-      if (checkbox.search(c1) != -1) {
+    } else if (event.target.name === c2) {
+      if (checkbox.search(c1) !== -1) {
         tmp = tmp + c1 + "-";
       }
-      if (checkbox.search(c2) == -1) {
+      if (checkbox.search(c2) === -1) {
         tmp = tmp + c2 + "-";
       }
-      if (checkbox.search(c3) != -1) {
+      if (checkbox.search(c3) !== -1) {
         tmp = tmp + c3 + "-";
       }
     } else {
-      if (checkbox.search(c1) != -1) {
+      if (checkbox.search(c1) !== -1) {
         tmp = tmp + c1 + "-";
       }
-      if (checkbox.search(c2) != -1) {
+      if (checkbox.search(c2) !== -1) {
         tmp = tmp + c2 + "-";
       }
-      if (checkbox.search(c3) == -1) {
+      if (checkbox.search(c3) === -1) {
         tmp = tmp + c3 + "-";
       }
     }
@@ -236,7 +236,7 @@ export default function Cardshow(props) {
       );
     } else if (res.length === 1) {
       return (
-        <GridItem xs={12} sm={12} md={4}>
+        <GridItem xs={12} sm={12} md={6}>
           <Card chart>
             <CardBody>
               <h3 className={classes.head}>{datatype}</h3>
@@ -254,7 +254,7 @@ export default function Cardshow(props) {
       );
     } else {
       return (
-        <GridItem xs={12} sm={12} md={4}>
+        <GridItem xs={12} sm={12} md={6}>
           <Card chart>
             <CardBody>
               <h3 className={classes.head}>{datatype}</h3>
@@ -337,12 +337,12 @@ export default function Cardshow(props) {
               ) : (
                 <></>
               )}
-              {datatype != "commit" ? (
+              {datatype !== "commit" ? (
                 <FormGroup className={classes.checkbox}>
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={checkbox.search(c1) != -1}
+                        checked={checkbox.search(c1) !== -1}
                         name={c1}
                         onChange={(e) => changecheck(e)}
                       />
@@ -352,18 +352,18 @@ export default function Cardshow(props) {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={checkbox.search(c2) != -1}
+                        checked={checkbox.search(c2) !== -1}
                         name={c2}
                         onChange={(e) => changecheck(e)}
                       />
                     }
                     label={c2}
                   />
-                  {datatype != "issue" ? (
+                  {datatype !== "issue" ? (
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={checkbox.search(c3) != -1}
+                          checked={checkbox.search(c3) !== -1}
                           name={c3}
                           onChange={(e) => changecheck(e)}
                         />
@@ -386,7 +386,8 @@ export default function Cardshow(props) {
                       categoryData: res[time].categoryData,
                       valueData: res[time].valueData.filter(
                         (current) =>
-                          checkbox.search(current.name) != -1 || checkbox == ""
+                          checkbox.search(current.name) !== -1 ||
+                          checkbox === ""
                       ),
                     }}
                   />
@@ -451,7 +452,8 @@ export default function Cardshow(props) {
                       categoryData: res[time].categoryData,
                       valueData: res[time].valueData.filter(
                         (current) =>
-                          checkbox.search(current.name) != -1 || checkbox == ""
+                          checkbox.search(current.name) !== -1 ||
+                          checkbox === ""
                       ),
                     }}
                   />
@@ -468,9 +470,9 @@ export default function Cardshow(props) {
 Cardshow.propTypes = {
   datatype: PropTypes.oneOf(["pullrequest", "issue", "commit", "contributor"]),
   charttype: PropTypes.oneOf(["stackedbarchart", "piechart", "linechart"]),
-  address: PropTypes.String,
-  time: PropTypes.String,
-  checkbox: PropTypes.String,
+  address: PropTypes.string,
+  time: PropTypes.string,
+  checkbox: PropTypes.string,
   func: PropTypes.any,
   position: PropTypes.any,
 };
