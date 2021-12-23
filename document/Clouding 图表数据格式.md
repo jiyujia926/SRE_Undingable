@@ -103,19 +103,29 @@ import PieChart from "../../componenet/PieChart";
 数据格式：List
 
 ```jsx
-data = [
-  { value: val, name: "item-name" }, 
-]
+data = {
+  {
+    repoName: "remo-name",
+    data: [
+      { value: val, name: "item-name" }, 
+    ]
+  },
+}
 ```
 
 ```jsx
-data = [
-  { value: 300, name: "Fine" },
-  { value: 1300, name: "Goodgood" },
-  { value: 800, name: "Kathleen" },
-  { value: 300, name: "Rainy" },
-  { value: 500, name: "Kathbaby" },
-]
+data = {
+  {
+    repoName: "BAICAOJIAN",
+    data = [
+  	  { value: 300, name: "Fine" },
+  	  { value: 1300, name: "Goodgood" },
+  	  { value: 800, name: "Kathleen" },
+  	  { value: 300, name: "Rainy" },
+  	  { value: 500, name: "Kathbaby" },
+	],
+  },
+}
 ```
 
 
