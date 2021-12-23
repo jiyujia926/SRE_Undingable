@@ -1,8 +1,12 @@
 from django.db.models.aggregates import Count,Sum
+from django.db.models import F
 from django.http.response import ResponseHeaders
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
+from operator import itemgetter
+from itertools import groupby
+from math import sqrt
 # Create your views here.
 import json
 import uuid
@@ -502,77 +506,38 @@ def get_one_address(address:str,datatype:str,charttype:str):
     # databag = {'categoryData':timelist,'valueData':commitcountlist}
     # return HttpResponse(json.dumps(databag))
 
-    
-def get_contributor_commit(url:str, checkbox:str):
-    project = models.Project.objects.filter(RepositoryURL=url).first()
-    if checkbox=="commit":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(commitcount=Count(id)))
-    elif checkbox=="changed":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(changedcount=Sum('ChangedFileCount')))
-    elif checkbox=="addition":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(additioncount=Sum('AdditionCount')))
-    elif checkbox=="deletion":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(deletioncount=Sum('DeletionCount')))
-    
-    #从大到小排序
-    list1=sorted(list1, key=lambda item:item[checkbox+'count'], reverse=True)
-    contributor = []
-    contribution = []
-    for item in list1:
-        contributor.append(item['Contributor'])
-        contribution.append(item[checkbox+'count'])
-    return contribution, contributor
 
-def get_contributor_issue(url:str, checkbox:str):
-    project = models.Project.objects.filter(RepositoryURL=url).first()
-    if checkbox=="open":
-        list1 = list(models.OpenIssueRecord.objects.values('Contributor').filter(Project=project).annotate(opencount=Count(id)))
-    elif checkbox=="close":
-        list1 = list(models.ClosedIssueRecord.objects.values('Contributor').filter(Project=project).annotate(closecount=Count(id)))
-    
-    #从大到小排序
-    list1=sorted(list1.items(), key=lambda item:item[checkbox+'count'], reverse=True)
-    contributor = []
-    contribution = []
-    for item in list1:
-        contributor.append(item['Contributor'])
-        contribution.append(item[checkbox+'count'])
-    return contribution, contributor
-
-def get_contributor_pullrequest(url:str, checkbox:str):
-    project = models.Project.objects.filter(RepositoryURL=url).first()
-    if checkbox=="open":
-        list1 = list(models.OpenPullrequestRecord.objects.values('Contributor').filter(Project=project).annotate(opencount=Count(id)))
-    elif checkbox=="close":
-        list1 = list(models.ClosedPullrequestRecord.objects.values('Contributor').filter(Project=project).annotate(closecount=Count(id)))
-    elif checkbox=="close":
-        list1 = list(models.MergedPullrequestRecord.objects.values('Contributor').filter(Project=project).annotate(mergecount=Count(id)))
-    
-    #从大到小排序
-    list1=sorted(list1.items(), key=lambda item:item[checkbox+'count'], reverse=True)
-    contributor = []
-    contribution = []
-    for item in list1:
-        contributor.append(item['Contributor'])
-        contribution.append(item[checkbox+'count'])
-    return contribution, contributor
-
-def get_contributor_data(request):
-    data = json.loads(request.body)
-    project = models.Project.objects.filter(RepositoryURL=data['RepositoryURL']).first()
+def get_contributor_data(url:str):
+    project = models.Project.objects.filter(RepositoryURL=url[0]).first()
     if project:
-        type = data['Datatype']
-        checkbox = data['Checkbox']
-        if type=="commit":
-            contribution, contributor=get_contributor_commit(data['RepositoryURL'],checkbox)
-        elif type=="issue":
-            contribution, contributor=get_contributor_issue(data['RepositoryURL'],checkbox)
-        elif type=="pullrequest":
-            contribution, contributor=get_contributor_pullrequest(data['RepositoryURL'],checkbox)
-        dict={'Contributor':contributor,'Contribution':contribution}
-        return HttpResponse(json.dumps(dict))
-    else:
-        return HttpResponse("该项目不存在")
+        list_commit = list(models.CommitRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(commit=Count(id)))
+        list_open_issue = list(models.OpenIssueRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(issue=Count(id)))
+        list_closed_issue = list(models.ClosedIssueRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(issue=Count(id)))
+        list_open_pullrequest = list(models.OpenPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(pullrequest=Count(id)))
+        list_closed_pullrequest = list(models.ClosedPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(pullrequest=Count(id)))
+        list_merged_pullrequest = list(models.MergedPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(pullrequest=Count(id)))
+        list_all = list_commit+list_open_issue+list_closed_issue+list_open_pullrequest+list_closed_pullrequest+list_merged_pullrequest
+        
+        Sum = 0
+        for item in list_all:
+            key = list(item.keys())
+            Sum+=item[key[1]]
+        
+        list_ret=[]
+        list_all.sort(key=itemgetter('name'))
+        for name, items in groupby(list_all, key=itemgetter('name')):
+            dict={'name':"",'commit':0,'issue':0,'pullrequest':0,'value':0,'weight':0}
+            dict['name'] = name
+            for i in items:
+                key = list(i.keys())
+                dict[key[1]]+=i[key[1]]
+                dict['value']+=i[key[1]]
+            dict['weight']=format(dict['value']/Sum, '.2%')
+            list_ret.append(dict)
+        #从大到小排序
+        list_ret=sorted(list_ret, key=lambda item:item['value'], reverse=True)
+        return HttpResponse(json.dumps(list_ret))
+    return HttpResponse("该项目不存在")
 
 def servetwo(url:list):
     return
@@ -655,7 +620,7 @@ def deletecustomize(request):
     data = json.loads(request.body)
     user = rUser.objects.filter(Email=data['Email']).first()
     template = models.Template.objects.filter(User=user, id=data['Id']).first()
-    chartlist = models.Template.objects.values('Chart').filter(User=user, id=data['Id']).all()
+    chartlist = list(models.Template.objects.values('Chart').filter(User=user, id=data['Id']).all())
     if template:
         template.delete()
         for item in chartlist:
@@ -675,31 +640,7 @@ def dotest(url:str):
 
 
 def test(request):
-    url = "https://github.com/microsoft/CodeBERT/"
-    checkbox = "commit"
-    project = models.Project.objects.filter(RepositoryURL=url).first()
-    if checkbox=="commit":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(commitcount=Count(id)))
-    elif checkbox=="changed":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(changedcount=Sum('ChangedFileCount')))
-    elif checkbox=="addition":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(additioncount=Sum('AdditionCount')))
-    elif checkbox=="deletion":
-        list1 = list(models.CommitRecord.objects.values('Contributor').filter(Project=project).annotate(deletioncount=Sum('DeletionCount')))
-    
-    #从大到小排序
-    print(list1)
-    print()
-    list1 = sorted(list1, key=lambda item:item[checkbox+'count'], reverse=True)
-    contributor = []
-    contribution = []
-    print(list1)
-    print()
-    for item in list1:
-        contributor.append(item['Contributor'])
-        contribution.append(item[checkbox+'count'])
-    print(contributor)
-    print(contribution)
-    dict={'Contributor':contributor,'Contribution':contribution}
-    return HttpResponse(json.dumps(dict))
-    # return HttpResponse("sssss")
+    url = ["https://github.com/microsoft/CodeBERT/","https://github.com/Bitergia/prosoul/"]
+    key = ['first', 'second']
+    project = models.Project.objects.filter(RepositoryURL=url[0]).first()
+    return HttpResponse("sssss")

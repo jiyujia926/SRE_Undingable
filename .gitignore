@@ -1,2 +1,9 @@
 *.pyc
 *node_modules*/
+*.png
+*.jpg
+*.svg
+process/vedio assets/sre-001.mp3
+*.mp3
+*.wav
+commit_graph.log

@@ -19,6 +19,7 @@ const useStyles = makeStyles(() => ({
   image: {
     maxWidth: "140px",
     maxHeight: "140px",
+    margin: "30px 0 0 15px",
   },
   text: {
     padding: "0 0 0 40px",

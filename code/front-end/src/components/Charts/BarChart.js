@@ -68,7 +68,7 @@ const BarChart = (props) => {
         },
       ],
     };
-    option && myChart.setOption(option);
+    option && myChart.setOption(option, true);
     window.addEventListener("resize", function () {
       myChart.resize();
     });

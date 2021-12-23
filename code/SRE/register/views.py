@@ -101,10 +101,12 @@ def Verifycode(request):
     if user:
         user_code = list(models.IdentifyingCode.objects.filter(User=user))
         if user_code:
-            now_time = datetime.datetime.now(pytz.timezone('Asia/Shanghai'))
+            now_time = datetime.datetime.now()
             code = data['Checksum']                     #获取传递过来的验证码
             msg = ""
             for item in user_code:
+                print(now_time)
+                print(item.Time)
                 diff = (now_time-item.Time).seconds
                 if 0 <= diff and diff < 1800 :
                     if code == item.Code:
@@ -117,6 +119,10 @@ def Verifycode(request):
                     item.delete()
             if msg == "":
                 msg = "验证码错误"
+            elif msg == "设置成功":
+                user_code = list(models.IdentifyingCode.objects.filter(User=user))
+                for item in user_code:
+                    item.delete()
             
             return HttpResponse(msg)   
         else:
