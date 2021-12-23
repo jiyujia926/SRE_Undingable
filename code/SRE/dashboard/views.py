@@ -510,25 +510,28 @@ def get_one_address(address:str,datatype:str,charttype:str):
 def get_contributor_data(url:str):
     project = models.Project.objects.filter(RepositoryURL=url[0]).first()
     if project:
-        list_commit = list(models.CommitRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
-        list_open_issue = list(models.OpenIssueRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
-        list_closed_issue = list(models.ClosedIssueRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
-        list_open_pullrequest = list(models.OpenPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
-        list_closed_pullrequest = list(models.ClosedPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
-        list_merged_pullrequest = list(models.MergedPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
+        list_commit = list(models.CommitRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(commit=Count(id)))
+        list_open_issue = list(models.OpenIssueRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(issue=Count(id)))
+        list_closed_issue = list(models.ClosedIssueRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(issue=Count(id)))
+        list_open_pullrequest = list(models.OpenPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(pullrequest=Count(id)))
+        list_closed_pullrequest = list(models.ClosedPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(pullrequest=Count(id)))
+        list_merged_pullrequest = list(models.MergedPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(pullrequest=Count(id)))
         list_all = list_commit+list_open_issue+list_closed_issue+list_open_pullrequest+list_closed_pullrequest+list_merged_pullrequest
         
         Sum = 0
         for item in list_all:
-            Sum+=item['value']
+            key = list(item.keys())
+            Sum+=item[key[1]]
         
         list_ret=[]
         list_all.sort(key=itemgetter('name'))
         for name, items in groupby(list_all, key=itemgetter('name')):
-            dict={'name':"",'value':0,'weight':0}
+            dict={'name':"",'commit':0,'issue':0,'pullrequest':0,'value':0,'weight':0}
             dict['name'] = name
             for i in items:
-                dict['value']+=i['value']
+                key = list(i.keys())
+                dict[key[1]]+=i[key[1]]
+                dict['value']+=i[key[1]]
             dict['weight']=format(dict['value']/Sum, '.2%')
             list_ret.append(dict)
         #从大到小排序
@@ -617,7 +620,7 @@ def deletecustomize(request):
     data = json.loads(request.body)
     user = rUser.objects.filter(Email=data['Email']).first()
     template = models.Template.objects.filter(User=user, id=data['Id']).first()
-    chartlist = models.Template.objects.values('Chart').filter(User=user, id=data['Id']).all()
+    chartlist = list(models.Template.objects.values('Chart').filter(User=user, id=data['Id']).all())
     if template:
         template.delete()
         for item in chartlist:
@@ -640,30 +643,4 @@ def test(request):
     url = ["https://github.com/microsoft/CodeBERT/","https://github.com/Bitergia/prosoul/"]
     key = ['first', 'second']
     project = models.Project.objects.filter(RepositoryURL=url[0]).first()
-    # if project:
-    #     list_commit = list(models.CommitRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
-    #     list_open_issue = list(models.OpenIssueRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
-    #     list_closed_issue = list(models.ClosedIssueRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
-    #     list_open_pullrequest = list(models.OpenPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
-    #     list_closed_pullrequest = list(models.ClosedPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
-    #     list_merged_pullrequest = list(models.MergedPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(value=Count(id)))
-    #     list_all = list_commit+list_open_issue+list_closed_issue+list_open_pullrequest+list_closed_pullrequest+list_merged_pullrequest
-    #     print(list_commit)
-    #     Sum = 0
-    #     for item in list_all:
-    #         Sum+=item['value']
-        
-    #     list_ret=[]
-    #     list_all.sort(key=itemgetter('name'))
-    #     for name, items in groupby(list_all, key=itemgetter('name')):
-    #         dict={'name':"",'value':0,'weight':0}
-    #         dict['name'] = name
-    #         for i in items:
-    #             dict['value']+=i['value']
-    #         dict['weight']=format(dict['value']/Sum, '.2%')
-    #         list_ret.append(dict)
-    #     #从大到小排序
-    #     list_ret=sorted(list_ret, key=lambda item:item['value'], reverse=True)
-    #     return HttpResponse(json.dumps(list_ret))
-    # return HttpResponse("该项目不存在")
     return HttpResponse("sssss")
