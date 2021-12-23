@@ -65,11 +65,21 @@ def get_data(request):
     data = json.loads(request.body)
     print(data)
     addresslist = data['Address']
+    datatype=data['Datatype']
+    charttype = data['Charttype']
     if len(addresslist)==1:
+        if charttype == "piechart":
+            firstbag = json.loads(get_one_address(addresslist[0],datatype,charttype))
+            project1 = list(models.Project.objects.values().filter(RepositoryURL=addresslist[0]))
+            repo1 = project1[0]['Name'][1:]
+            resbag = {'first':{'repoName':repo1,'data':firstbag},'second':{}}
+            return HttpResponse(json.dumps(resbag))
+        elif charttype == "text":
+            firstbag = json.loads(get_one_address(addresslist[0],datatype,charttype))
+            resbag = {'first':firstbag,'second':{}}
+            return HttpResponse(json.dumps(resbag))
         return HttpResponse(get_one_address(addresslist[0],data['Datatype'],data['Charttype']))
     else:
-        datatype=data['Datatype']
-        charttype = data['Charttype']
         address1 = addresslist[0]
         address2 = addresslist[1]
         project1 = list(models.Project.objects.values().filter(RepositoryURL=address1))
@@ -78,6 +88,12 @@ def get_data(request):
         repo2=project2[0]['Name'][1:]
         firstbag=json.loads(get_one_address(address1,datatype,charttype))
         secondbag=json.loads(get_one_address(address2,datatype,charttype))
+        if charttype == "piechart":
+            resbag = {'first':{'repoName':repo1,'data':firstbag},'second':{'repoName':repo2,'data':secondbag}}
+            return HttpResponse(json.dumps(resbag))
+        elif charttype == "text":
+            resbag = {'first':firstbag,'second':secondbag}
+            return HttpResponse(json.dumps(resbag))
         if datatype=="commit":
             timespan1 = firstbag['day']['categoryData']
             databag1 = firstbag['day']['valueData'][0]['detailData']
@@ -410,7 +426,71 @@ def get_one_address(address:str,datatype:str,charttype:str):
     if proj:
         projname=proj[0]['Name'][1:]
     if charttype == "piechart":
-        return {}
+        if datatype == "contributor":
+            databag = json.loads(get_contributor_data(address))
+            resbag = []
+            for item in databag:
+                resbag.append({'value':item['value'],'name':item['name']})
+            return json.dumps(resbag)
+        elif datatype == "issue":
+            databag = json.loads(get_contributor_data(address))
+            resbag = []
+            for item in databag:
+                resbag.append({'value':item['issue'],'name':item['name']})
+            return json.dumps(resbag)
+        elif datatype == "pullrequest":
+            databag = json.loads(get_contributor_data(address))
+            resbag = []
+            for item in databag:
+                resbag.append({'value':item['pullrequest'],'name':item['name']})
+            return json.dumps(resbag)
+    elif charttype == "text":
+        if datatype == "contributor":
+            databag = json.loads(get_contributor_data(address))
+            resbag = {'total':[],'participate':len(databag)}
+            return json.dumps(resbag)
+        elif datatype == "issue":
+            dayissuelist = list(models.DayIssue.objects.values().filter(Project=project).order_by('Time'))
+            lastissue = dayissuelist[-1]
+            databag = json.loads(get_contributor_data(address))
+            cnt = 0
+            for contri in databag:
+                if contri['issue'] > 0:
+                    cnt += 1
+            resbag = {'total':[{'name':'open', 'value':lastissue['openedCount']},{'name':'closed', 'value':lastissue['closedCount']}],'participate':cnt}
+            return json.dumps(resbag)
+        elif datatype == "commit":
+            commitlist = list(models.YearCommit.objects.values().filter(Project=project))
+            allcommit = 0
+            alladd = 0
+            allchange = 0
+            alldel = 0
+            for commitrec in commitlist:
+                allcommit += commitrec['committedCount']
+                alladd += commitrec['addedCount']
+                allchange += commitrec['changedCount']
+                alldel += commitrec['deletedCount']
+            cnt = 0
+            databag = json.loads(get_contributor_data(address))
+            for contri in databag:
+                if contri['commit'] > 0:
+                    cnt += 1
+            
+            resbag = {'total':[{'name':'commit','value':allcommit},{'name':'addition','value':alladd},{'name':'changedfile','value':allchange},
+                               {'name':'deletion','value':alldel}],
+                      'participate':cnt}
+            return json.dumps(resbag)
+        elif datatype == "pullrequest":
+            daypullrequestlist = list(models.DayPullrequest.objects.values().filter(Project=project).order_by('Time'))
+            lastpullrequest = daypullrequestlist[-1]
+            databag = json.loads(get_one_address(address))
+            cnt = 0
+            for contri in databag:
+                if contri['pullrequest'] > 0:
+                    cnt += 1
+            resbag = {'total':[{'name':'open','value':lastpullrequest['openedCount']},{'name':'closed','value':lastpullrequest['closedCount']},{'name':'merged','value':lastpullrequest['mergedCount']}],
+                      'participate':cnt}
+            return json.dumps(resbag) 
     else:
         if datatype == "commit":
             daycommitlist = list(models.DayCommit.objects.values().filter(Project=project).order_by('Time'))
@@ -500,6 +580,7 @@ def get_one_address(address:str,datatype:str,charttype:str):
             databag={"day":day,'month':[],'year':[]}
             return json.dumps(databag)
         elif datatype == "contributor":
+            # table
             pass
             return 
     
@@ -507,8 +588,41 @@ def get_one_address(address:str,datatype:str,charttype:str):
     # return HttpResponse(json.dumps(databag))
 
 
+# def get_contributor_data(url:str):
+#     project = models.Project.objects.filter(RepositoryURL=url[0]).first()
+#     if project:
+#         list_commit = list(models.CommitRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(commit=Count(id)))
+#         list_open_issue = list(models.OpenIssueRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(issue=Count(id)))
+#         list_closed_issue = list(models.ClosedIssueRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(issue=Count(id)))
+#         list_open_pullrequest = list(models.OpenPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(pullrequest=Count(id)))
+#         list_closed_pullrequest = list(models.ClosedPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(pullrequest=Count(id)))
+#         list_merged_pullrequest = list(models.MergedPullrequestRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(pullrequest=Count(id)))
+#         list_all = list_commit+list_open_issue+list_closed_issue+list_open_pullrequest+list_closed_pullrequest+list_merged_pullrequest
+        
+#         Sum = 0
+#         for item in list_all:
+#             key = list(item.keys())
+#             Sum+=item[key[1]]
+        
+#         list_ret=[]
+#         list_all.sort(key=itemgetter('name'))
+#         for name, items in groupby(list_all, key=itemgetter('name')):
+#             dict={'name':"",'commit':0,'issue':0,'pullrequest':0,'value':0,'weight':0}
+#             dict['name'] = name
+#             for i in items:
+#                 key = list(i.keys())
+#                 dict[key[1]]+=i[key[1]]
+#                 dict['value']+=i[key[1]]
+#             dict['weight']=format(dict['value']/Sum, '.2%')
+#             list_ret.append(dict)
+#         #从大到小排序
+#         list_ret=sorted(list_ret, key=lambda item:item['value'], reverse=True)
+#         return HttpResponse(json.dumps(list_ret))
+#     return HttpResponse("该项目不存在")
+
 def get_contributor_data(url:str):
-    project = models.Project.objects.filter(RepositoryURL=url[0]).first()
+    # url = "https://github.com/microsoft/CodeBERT/"
+    project = models.Project.objects.filter(RepositoryURL=url).first()
     if project:
         list_commit = list(models.CommitRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(commit=Count(id)))
         list_open_issue = list(models.OpenIssueRecord.objects.values(name=F('Contributor')).filter(Project=project).annotate(issue=Count(id)))
@@ -536,9 +650,8 @@ def get_contributor_data(url:str):
             list_ret.append(dict)
         #从大到小排序
         list_ret=sorted(list_ret, key=lambda item:item['value'], reverse=True)
-        return HttpResponse(json.dumps(list_ret))
-    return HttpResponse("该项目不存在")
-
+        return json.dumps(list_ret)
+    return "该项目不存在"
 def servetwo(url:list):
     return
     
