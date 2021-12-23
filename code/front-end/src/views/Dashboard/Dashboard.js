@@ -30,7 +30,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 //import Cardtext from "../../components/Card/Cardtext";
-import PieChart from "../../components/Charts/PieChart";
+//import PieChart from "../../components/Charts/PieChart";
 //import BarChart from "../../components/Charts/BarChart";
 //import StackedBarChart from "../../components/Charts/StackedBarChart";
 import axios from "axios";
@@ -42,28 +42,6 @@ const server = "http://122.51.228.166:8000";
 const useStyles = makeStyles(styles);
 //let newChartsData = [];
 export default function Dashboard() {
-  const data = [
-    {
-      repoName: "BAICAOJIAN",
-      data: [
-        { value: 300, name: "Fine" },
-        { value: 1300, name: "Goodgood" },
-        { value: 800, name: "Kathleen" },
-        { value: 300, name: "Rainy" },
-        { value: 500, name: "Kathbaby" },
-      ],
-    },
-    {
-      repoName: "Undingable",
-      data: [
-        { value: 300, name: "Fine" },
-        { value: 1300, name: "Goodgood" },
-        { value: 800, name: "Kathleen" },
-        { value: 300, name: "Rainy" },
-        { value: 500, name: "Kathbaby" },
-      ],
-    },
-  ];
   const classes = useStyles();
   const [address, setAddress] = React.useState([]);
   const defaultDashboard = [
@@ -133,8 +111,8 @@ export default function Dashboard() {
     },
   ];
   const [dashboard, setDashboard] = React.useState(
-    //cookie.load("dashboard") ? cookie.load("dashboard") : defaultDashboard
-    defaultDashboard
+    cookie.load("dashboard") ? cookie.load("dashboard") : defaultDashboard
+    //defaultDashboard
   );
   const [openDialog, setOpenDialog] = React.useState(false);
   const initialState = {
@@ -178,7 +156,6 @@ export default function Dashboard() {
         };
       });
       setDashboard(tmpDashboard);
-      alert(tmpDashboard[0].Visible);
       cookie.save("dashboard", tmpDashboard, {
         maxAge: 3600,
       });
@@ -263,7 +240,6 @@ export default function Dashboard() {
             setFunc={handleSetDataTypeSet}
           />
         </GridItem>
-        <PieChart data={data}></PieChart>
         {address.length > 0 &&
           [-1, 0, 1, -3, 2, 3, -5, 4, 5, -7, 6, 7].map((current) => {
             if (dashboard[Math.abs(current)].Visible) {

@@ -1,13 +1,19 @@
 const cardShowStyle = {
+  line: {
+    display: "flex",
+  },
   head: {
-    textAlign: "center",
+    textAlign: "left",
+    margin: "8px 10px",
+    flex: "1",
+    textTransform: "capitalize",
+  },
+  input: {
+    padding: "3px 0px",
+    fontSize: "0.9rem",
   },
   chart: {
-    marginTop: "8%",
-    marginBottom: "15%",
-    marginLeft: "7%",
-    marginRight: "7%",
-    width: "86%",
+    margin: "5px 0px",
     height: "300px",
   },
   piegrid: {
@@ -25,12 +31,9 @@ const cardShowStyle = {
     height: "300px",
   },
   select: {
-    //float: "right",
     textAlign: "left",
-    width: "40%",
-    //marginRight: "15%",
-    //marginLeft: "2%",
-    marginTop: "3%",
+    minWidth: "15%",
+    margin: "0 2px",
   },
   itemProgress: {
     color: "primary",
@@ -38,15 +41,14 @@ const cardShowStyle = {
     textAlign: "center",
   },
   checkbox: {
-    float: "right",
-    marginTop: "-10%",
-    marginRight: "3%",
-    diaplay: "flex",
-    // float: "left",
-    // position: "relative",
-    // left: "70%",
-    // bottom: "120px",
-    //marginLeft: "3%",
+    display: "flex",
+    flexDirection: "row",
+  },
+  box: {
+    fontSize: "0.9rem",
+  },
+  svg: {
+    fontSize: "0.9rem",
   },
 };
 

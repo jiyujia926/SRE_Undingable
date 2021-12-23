@@ -6,6 +6,7 @@
 // contributor——table（另写），pie
 
 //pie图要求的数据格式
+
 const d = {
   first: {
     repoName: "11",
@@ -35,6 +36,7 @@ import { useEffect } from "react";
 
 import PropTypes from "prop-types";
 import { Card, Grid, Input, Select } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 import { Divider } from "@material-ui/core";
 import CardBody from "./CardBody";
 import { makeStyles } from "@material-ui/core/styles";
@@ -192,7 +194,9 @@ export default function Cardshow(props) {
       return (
         <Card chart>
           <CardBody>
-            <h3 className={classes.head}>错误的图表类型！</h3>
+            <Typography variant="h6" gutterBottom className={classes.head}>
+              错误的图表类型！
+            </Typography>
           </CardBody>
         </Card>
       );
@@ -200,7 +204,9 @@ export default function Cardshow(props) {
       return (
         <Card chart>
           <CardBody>
-            <h3 className={classes.head}>{datatype}</h3>
+            <Typography variant="h6" gutterBottom className={classes.head}>
+              {datatype}
+            </Typography>
             <Grid className={classes.chart}>
               {/* {loading ? (
                   <CircularProgress className={classes.itemProgress} />
@@ -216,7 +222,9 @@ export default function Cardshow(props) {
       return (
         <Card chart>
           <CardBody>
-            <h3 className={classes.head}>{datatype}</h3>
+            <Typography variant="h6" gutterBottom className={classes.head}>
+              {datatype}
+            </Typography>
             <Grid className={classes.piegrid}>
               <Grid className={classes.piechart}>
                 {/* {loading ? (
@@ -254,7 +262,9 @@ export default function Cardshow(props) {
       return (
         <Card chart>
           <CardBody>
-            <h3 className={classes.head}>错误的图表类型！</h3>
+            <Typography variant="h6" gutterBottom className={classes.head}>
+              错误的图表类型！
+            </Typography>
           </CardBody>
         </Card>
       );
@@ -262,76 +272,95 @@ export default function Cardshow(props) {
       return (
         <Card chart>
           <CardBody>
-            <h3 className={classes.head}>{datatype}</h3>
-            <FormControl className={classes.select}>
-              <InputLabel>图表类型</InputLabel>
-              <Select
-                onChange={changechart}
-                input={<Input />}
-                label="图表类型"
-                defaultValue={"stackedbarchart"}
-              >
-                <MenuItem value={"stackedbarchart"}>stacked barchart</MenuItem>
-                <MenuItem value={"linechart"}>line chart</MenuItem>
-              </Select>
-            </FormControl>
-            {datatype === "commit" || datatype === "subcommit" ? (
+            <div className={classes.line}>
+              <Typography variant="h6" gutterBottom className={classes.head}>
+                {datatype}
+              </Typography>
               <FormControl className={classes.select}>
-                <InputLabel>时间刻度</InputLabel>
+                <InputLabel>Chart Type</InputLabel>
                 <Select
-                  onChange={(e) => changetime(e)}
+                  onChange={changechart}
                   input={<Input />}
-                  label="时间刻度"
-                  defaultValue={time}
+                  label="图表类型"
+                  defaultValue={"stackedbarchart"}
+                  classes={{
+                    select: classes.input,
+                  }}
                 >
-                  <MenuItem value={"day"}>day</MenuItem>
-                  <MenuItem value={"month"}>month</MenuItem>
-                  <MenuItem value={"year"}>year</MenuItem>
+                  <MenuItem value={"stackedbarchart"}>
+                    stacked barchart
+                  </MenuItem>
+                  <MenuItem value={"linechart"}>line chart</MenuItem>
                 </Select>
               </FormControl>
-            ) : (
-              <></>
-            )}
-            {datatype !== "commit" ? (
-              <FormGroup className={classes.checkbox}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={checkbox.search(c1) !== -1}
-                      name={c1}
-                      onChange={(e) => changecheck(e)}
-                    />
-                  }
-                  label={c1}
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={checkbox.search(c2) !== -1}
-                      name={c2}
-                      onChange={(e) => changecheck(e)}
-                    />
-                  }
-                  label={c2}
-                />
-                {datatype !== "issue" ? (
+              {datatype === "commit" || datatype === "subcommit" ? (
+                <FormControl className={classes.select}>
+                  <InputLabel>Time Scale</InputLabel>
+                  <Select
+                    onChange={(e) => changetime(e)}
+                    input={<Input />}
+                    label="时间刻度"
+                    defaultValue={time}
+                    classes={{
+                      select: classes.input,
+                    }}
+                  >
+                    <MenuItem value={"day"}>day</MenuItem>
+                    <MenuItem value={"month"}>month</MenuItem>
+                    <MenuItem value={"year"}>year</MenuItem>
+                  </Select>
+                </FormControl>
+              ) : (
+                <></>
+              )}
+              {datatype !== "commit" && (
+                <FormGroup className={classes.checkbox}>
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={checkbox.search(c3) !== -1}
-                        name={c3}
+                        checked={checkbox.search(c1) !== -1}
+                        name={c1}
                         onChange={(e) => changecheck(e)}
                       />
                     }
-                    label={c3}
+                    label={c1}
+                    classes={{
+                      label: classes.box,
+                    }}
                   />
-                ) : (
-                  <></>
-                )}
-              </FormGroup>
-            ) : (
-              <></>
-            )}
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={checkbox.search(c2) !== -1}
+                        name={c2}
+                        onChange={(e) => changecheck(e)}
+                      />
+                    }
+                    label={c2}
+                    classes={{
+                      label: classes.box,
+                    }}
+                  />
+                  {datatype !== "issue" ? (
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={checkbox.search(c3) !== -1}
+                          name={c3}
+                          onChange={(e) => changecheck(e)}
+                        />
+                      }
+                      label={c3}
+                      classes={{
+                        label: classes.box,
+                      }}
+                    />
+                  ) : (
+                    <></>
+                  )}
+                </FormGroup>
+              )}
+            </div>
             <Grid className={classes.chart}>
               {loading ? (
                 <CircularProgress className={classes.itemProgress} />
@@ -359,7 +388,9 @@ export default function Cardshow(props) {
       return (
         <Card chart>
           <CardBody>
-            <h3 className={classes.head}>{datatype}</h3>
+            <Typography variant="h6" gutterBottom className={classes.head}>
+              {datatype}
+            </Typography>
             <FormControl className={classes.select}>
               <InputLabel>图表类型</InputLabel>
               <Select
