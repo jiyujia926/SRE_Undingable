@@ -15,19 +15,32 @@ const server = "http://122.51.228.166:8000";
 //const server = "http://127.0.0.1:8000";
 
 const useStyles = makeStyles(styles);
-//commit——add, change, deletion
-//issue——open, close
-//pullrequest——open, close, merge
+//commit——add, change, deletion,commit
+//issue——open, closed
+//pullrequest——open, closed, merged
 //contributor只有总数
 
 // const d = {
-//   total: [
-//     { name: "open", value: 10 },
-//     { name: "close", value: 10 },
-//     { name: "merge", value: 10 },
-//   ],
-//   participate: -1,
-//   //参与人数，没有就写-1（contributor）
+//   first:{
+//     total: [
+//       { name: "open", value: 10 },
+//       { name: "closed", value: 10 },
+//       { name: "merged", value: 10 },
+//     ],
+//     participate: -1,
+//     //参与人数，没有就写-1（contributor）
+//   },
+//   second:{注意如果是commit的话这边会给四个
+//     total: [
+//       { name: "commit", value: 10 },
+//       { name: "addition", value: 10 },
+//       { name: "changedfile", value: 10 },
+//       { name: "deletion", value: 10 },
+//     ],
+//     participate: -1,
+//     //参与人数，没有就写-1（contributor）
+//   }
+  
 // };
 
 export default function Cardtext(props) {
