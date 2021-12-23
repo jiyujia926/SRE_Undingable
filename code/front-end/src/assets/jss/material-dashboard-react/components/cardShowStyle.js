@@ -28,8 +28,8 @@ const cardShowStyle = {
     //float: "right",
     textAlign: "left",
     width: "40%",
-    marginRight: "15%",
-    marginLeft: "2%",
+    //marginRight: "15%",
+    //marginLeft: "2%",
     marginTop: "3%",
   },
   itemProgress: {
@@ -41,6 +41,7 @@ const cardShowStyle = {
     float: "right",
     marginTop: "-10%",
     marginRight: "3%",
+    diaplay: "flex",
     // float: "left",
     // position: "relative",
     // left: "70%",
