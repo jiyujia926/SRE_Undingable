@@ -6,23 +6,22 @@
 // contributor——table（另写），pie
 
 //pie图要求的数据格式
-// {
-//   first: [
-//     { value: 300, name: "Fine" },
-//     { value: 1300, name: "Goodgood" },
-//     { value: 800, name: "Kathleen" },
-//     { value: 300, name: "Rainy" },
-//     { value: 500, name: "Kathbaby" },
-//   ],
-////如果有第二个的话
-//   second: [
-//     { value: 300, name: "Fine" },
-//     { value: 1300, name: "Goodgood" },
-//     { value: 800, name: "Kathleen" },
-//     { value: 300, name: "Rainy" },
-//     { value: 500, name: "Kathbaby" },
-//   ],
-// };
+const d = {
+  first: [
+    { value: 300, name: "Fine" },
+    { value: 1300, name: "Goodgood" },
+    { value: 800, name: "Kathleen" },
+    { value: 300, name: "Rainy" },
+    { value: 500, name: "Kathbaby" },
+  ],
+  second: [
+    { value: 300, name: "Fine" },
+    { value: 1300, name: "Goodgood" },
+    { value: 800, name: "Kathleen" },
+    { value: 300, name: "Rainy" },
+    { value: 500, name: "Kathbaby" },
+  ],
+};
 
 import React from "react";
 import { useState } from "react";
@@ -46,6 +45,7 @@ import styles from "assets/jss/material-dashboard-react/components/cardShowStyle
 import PieChart from "../../components/Charts/PieChart";
 import StackedBarChart from "../../components/Charts/StackedBarChart";
 import LineChart from "components/Charts/LineChart";
+import Cardtable from "./Cardtable";
 
 //传输
 import axios from "axios";
@@ -74,43 +74,7 @@ export default function Cardshow(props) {
   const classes = useStyles();
   const [charttype, setChart] = useState(props.charttype);
   const [loading, setloading] = useState(true);
-  // const d = {
-  //   day: {
-  //     categoryData: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-  //     valueData: [
-  //       {
-  //         repo: "BaiCaoJian",
-  //         name: "add",
-  //         detailData: [20, 30, 4, 19, 20, 40, 25],
-  //       },
-  //       {
-  //         repo: "BaiCaoJian",
-  //         name: "remove",
-  //         detailData: [2, 1, 8, 5, 5, 8, 9],
-  //       },
-  //       {
-  //         repo: "BaiCaoJian",
-  //         name: "change",
-  //         detailData: [16, 10, 3, 6, 7, 9, 15],
-  //       },
-  //       {
-  //         repo: "Clouding",
-  //         name: "add",
-  //         detailData: [30, 20, 17, 29, 30, 18, 35],
-  //       },
-  //       {
-  //         repo: "Clouding",
-  //         name: "remove",
-  //         detailData: [20, 10, 7, 9, 3, 8, 5],
-  //       },
-  //       {
-  //         repo: "Clouding",
-  //         name: "change",
-  //         detailData: [10, 20, 7, 9, 13, 18, 25],
-  //       },
-  //     ],
-  //   },
-  // };
+
   const [res, setChartdata] = useState({});
   //console.log(d);
   console.log(res);
@@ -146,11 +110,6 @@ export default function Cardshow(props) {
     console.log(c1);
     console.log(c2);
     console.log(c3);
-    // console.log(
-    //   res[time].valueData.filter(
-    //     (current) => checkbox.search(current.name) != -1
-    //   )
-    // );
   }, []);
 
   //传输
@@ -231,18 +190,18 @@ export default function Cardshow(props) {
           </CardBody>
         </Card>
       );
-    } else if (res.length === 1) {
+    } else if (address.length === 1) {
       return (
         <Card chart>
           <CardBody>
             <h3 className={classes.head}>{datatype}</h3>
             <Grid className={classes.chart}>
-              {loading ? (
-                <CircularProgress className={classes.itemProgress} />
-              ) : (
-                // <PieChart data={res.1} />//双图去注释
-                <PieChart data={res.first} /> //双图加注释
-              )}
+              {/* {loading ? (
+                  <CircularProgress className={classes.itemProgress} />
+                ) : (
+                  <PieChart data={res.first} />
+                )} */}
+              <PieChart data={d.first} />
             </Grid>
           </CardBody>
         </Card>
@@ -254,27 +213,29 @@ export default function Cardshow(props) {
             <h3 className={classes.head}>{datatype}</h3>
             <Grid className={classes.piegrid}>
               <Grid className={classes.piechart}>
-                {loading ? (
-                  <CircularProgress
-                    color="primary"
-                    className={classes.itemProgress}
-                  />
-                ) : (
-                  <PieChart data={res.first} /> //双图去注释
-                  // <PieChart data={res} /> //双图加注释
-                )}
+                {/* {loading ? (
+                    <CircularProgress
+                      color="primary"
+                      className={classes.itemProgress}
+                    />
+                  ) : (
+                    <PieChart data={res.first} /> //双图去注释
+                    // <PieChart data={res} /> //双图加注释
+                  )} */}
+                <PieChart data={d.first} />
               </Grid>
               <Divider orientation="vertical" flexItem />
               <Grid className={classes.piechart}>
-                {loading ? (
-                  <CircularProgress
-                    color="primary"
-                    className={classes.itemProgress}
-                  />
-                ) : (
-                  <PieChart data={res.second} /> //双图去注释
-                  // <PieChart data={res} /> //双图加注释
-                )}
+                {/* {loading ? (
+                    <CircularProgress
+                      color="primary"
+                      className={classes.itemProgress}
+                    />
+                  ) : (
+                    <PieChart data={res.second} /> //双图去注释
+                    // <PieChart data={res} /> //双图加注释
+                  )} */}
+                <PieChart data={d.second} />
               </Grid>
             </Grid>
           </CardBody>
@@ -384,7 +345,7 @@ export default function Cardshow(props) {
         </Card>
       );
     }
-  } else {
+  } else if (charttype === "linechart") {
     //line图
     if (datatype === "contributor") {
       alert("错误的图表类型！");
@@ -445,6 +406,23 @@ export default function Cardshow(props) {
         </Card>
       );
     }
+  } else {
+    //table
+    return (
+      <Card chart>
+        <CardBody>
+          {loading ? (
+            <CircularProgress
+              color="primary"
+              className={classes.itemProgress}
+            />
+          ) : (
+            <Cardtable rows={res} height="300px" />
+          )}
+          {/* <Cardtable rows={res} height="400px" /> */}
+        </CardBody>
+      </Card>
+    );
   }
 }
 
