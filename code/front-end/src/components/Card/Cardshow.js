@@ -7,20 +7,26 @@
 
 //pie图要求的数据格式
 const d = {
-  first: [
-    { value: 300, name: "Fine" },
-    { value: 1300, name: "Goodgood" },
-    { value: 800, name: "Kathleen" },
-    { value: 300, name: "Rainy" },
-    { value: 500, name: "Kathbaby" },
-  ],
-  second: [
-    { value: 300, name: "Fine" },
-    { value: 1300, name: "Goodgood" },
-    { value: 800, name: "Kathleen" },
-    { value: 300, name: "Rainy" },
-    { value: 500, name: "Kathbaby" },
-  ],
+  first: {
+    repoName: "11",
+    data: [
+      { value: 300, name: "Fine" },
+      { value: 1300, name: "Goodgood" },
+      { value: 800, name: "Kathleen" },
+      { value: 300, name: "Rainy" },
+      { value: 500, name: "Kathbaby" },
+    ],
+  },
+  second: {
+    repoName: "22",
+    data: [
+      { value: 30, name: "Fine" },
+      { value: 130, name: "Goodgood" },
+      { value: 80, name: "Kathleen" },
+      { value: 30, name: "Rainy" },
+      { value: 50, name: "Kathbaby" },
+    ],
+  },
 };
 
 import React from "react";
