@@ -467,9 +467,8 @@ export default function Cardshow(props) {
               className={classes.itemProgress}
             />
           ) : (
-            <Cardtable rows={res} height="300px" />
+            <Cardtable rows={[]} height="300px" />
           )}
-          {/* <Cardtable rows={res} height="400px" /> */}
         </CardBody>
       </Card>
     );
