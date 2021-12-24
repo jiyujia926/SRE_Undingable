@@ -101,9 +101,9 @@ const PieChart = (props) => {
       series: series_items,
     };
     option && myChart.setOption(option, true);
-    // window.addEventListener("resize", function () {
-    //   myChart.resize();
-    // });
+    window.addEventListener("resize", function () {
+      myChart.resize();
+    });
   };
 
   useEffect(() => {
