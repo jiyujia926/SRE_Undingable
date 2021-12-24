@@ -207,22 +207,30 @@ def get_data(request):
                     newopendatabag1.append(opendatabag1[timespan1.index(time)])
                     newclosedatabag1.append(closedatabag1[timespan1.index(time)])
                 else:
-                    if time < timespan1[0]:
+                    if timespan1:
+                        if time < timespan1[0]:
+                            newopendatabag1.append(0)
+                            newclosedatabag1.append(0)
+                        elif time > timespan1[-1]:
+                            newopendatabag1.append(opendatabag1[-1])
+                            newclosedatabag1.append(closedatabag1[-1])
+                    else:
                         newopendatabag1.append(0)
                         newclosedatabag1.append(0)
-                    elif time > timespan1[-1]:
-                        newopendatabag1.append(opendatabag1[-1])
-                        newclosedatabag1.append(closedatabag1[-1])
                 if time in timespan2:
                     newopendatabag2.append(opendatabag2[timespan2.index(time)])
                     newclosedatabag2.append(closedatabag2[timespan2.index(time)])
                 else:
-                    if time < timespan2[0]:
+                    if timespan2:
+                        if time < timespan2[0]:
+                            newopendatabag2.append(0)
+                            newclosedatabag2.append(0)
+                        elif time > timespan2[-1]:
+                            newopendatabag2.append(opendatabag2[-1])
+                            newclosedatabag2.append(closedatabag2[-1])
+                    else:
                         newopendatabag2.append(0)
                         newclosedatabag2.append(0)
-                    elif time > timespan2[-1]:
-                        newopendatabag2.append(opendatabag2[-1])
-                        newclosedatabag2.append(closedatabag2[-1])
             day={'categoryData':newtimespan,'valueData':[{'repo':repo1,'name':'open','detailData':newopendatabag1},
                                                         {'repo':repo1,'name':'closed','detailData':newclosedatabag1},
                                                         {'repo':repo2,'name':'open','detailData':newopendatabag2},
