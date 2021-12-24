@@ -11,7 +11,7 @@ const PieChart = (props) => {
   // concat name
   let series_items = [];
   let sum = [];
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < data.length && data[i].data !== undefined; i++) {
     let tmp_item = {};
     let tmp_sum = 0;
     tmp_item.name = data[i].repoName;
@@ -26,15 +26,13 @@ const PieChart = (props) => {
       tmp_sum += data[i].data[j].value;
       tmp_item.data.push(tmp);
     }
-    console.log(tmp_item.data);
-    if (i == 0) {
+    if (i === 0) {
       tmp_item.radius = ["65%", "100%"];
     } else {
       tmp_item.radius = ["25%", "60%"];
     }
     series_items.push(tmp_item);
     sum.push(tmp_sum);
-    console.log(sum);
   }
 
   const exportData = () => {
@@ -49,7 +47,7 @@ const PieChart = (props) => {
         headers = headers + repo_name + "-" + data[i].data[j].name;
         values = values + data[i].data[j].value;
         percents = percents + (data[i].data[j].value / sum[i]) * 100 + "%";
-        if (j == data[i].data.length - 1) {
+        if (j === data[i].data.length - 1) {
           continue;
         }
         headers += ",";
@@ -58,13 +56,12 @@ const PieChart = (props) => {
       }
     }
     csv_data = headers + "\r\n" + values + "\r\n" + percents;
-    console.log(csv_data);
+    //console.log(csv_data);
     const blob = new Blob([csv_data], {
       type: "text/plain; chartset=utf-8",
     });
     FileSaver.saveAs(blob, "raw-data-" + id + ".csv");
   };
-
   const initChart = () => {
     let element = document.getElementById(id);
     let myChart = eCharts.init(element);

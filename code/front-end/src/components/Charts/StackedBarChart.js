@@ -6,7 +6,7 @@ import FileSaver from "file-saver";
 
 const StackedBarChart = (props) => {
   const { data } = props;
-  console.log(data);
+  //console.log(data);
   let id = nanoid();
   let series_data = [];
   for (let i = 0; i < data.valueData.length; i++) {
@@ -18,7 +18,7 @@ const StackedBarChart = (props) => {
     item.data = data.valueData[i].detailData;
     item.large = true;
     series_data.push(item);
-    console.log(item);
+    //console.log(item);
   }
 
   const exportData = () => {

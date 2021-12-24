@@ -74,7 +74,6 @@ const c = {
 };
 
 export default function Cardshow(props) {
-  console.log(props);
   //原有的checkboxlabel
   const [c1, setc1] = useState("");
   const [c2, setc2] = useState("");
@@ -84,8 +83,7 @@ export default function Cardshow(props) {
   const [loading, setloading] = useState(true);
 
   const [res, setChartdata] = useState({});
-  //console.log(d);
-  console.log(res);
+  //console.log(res);
   const [time, setTime] = useState(props.time);
   const checkbox = props.checkbox;
   const datatype = props.datatype;
@@ -115,10 +113,7 @@ export default function Cardshow(props) {
         setc3(tmp);
       }
     }
-    console.log(c1);
-    console.log(c2);
-    console.log(c3);
-  }, []);
+  }, [address]);
 
   //传输
   async function upload() {
@@ -129,7 +124,7 @@ export default function Cardshow(props) {
       Time: time,
     };
     let res1 = await axios.post(`${server}/get_data/`, data);
-    console.log(res1.data);
+    //console.log(res1.data);
     setChartdata(res1.data);
     setloading(false);
     //空数据判断
@@ -173,7 +168,6 @@ export default function Cardshow(props) {
       }
     }
     tmp = tmp.slice(0, tmp.length - 1);
-    console.log("para" + charttype + position + time + tmp);
     changeDashboard(charttype, position, time, tmp);
   }
 
@@ -185,7 +179,6 @@ export default function Cardshow(props) {
   //更改时间需要重新获取数据
   function changetime(event) {
     setTime(event.target.value);
-    console.log(event.target.value);
     changeDashboard(charttype, position, event.target.value, checkbox);
   }
 
@@ -200,7 +193,7 @@ export default function Cardshow(props) {
           </CardBody>
         </Card>
       );
-    } else if (address.length === 1) {
+    } else {
       return (
         <Card chart>
           <CardBody>
@@ -211,31 +204,10 @@ export default function Cardshow(props) {
               <CircularProgress className={classes.itemProgress} />
             ) : (
               <Grid className={classes.chart}>
-                <PieChart data={[res.first]} />
-              </Grid>
-            )}
-            {/* <PieChart data={[res.first]} /> */}
-          </CardBody>
-        </Card>
-      );
-    } else {
-      return (
-        <Card chart>
-          <CardBody>
-            <Typography variant="h6" gutterBottom className={classes.head}>
-              {datatype}
-            </Typography>
-            {loading ? (
-              <CircularProgress
-                color="primary"
-                className={classes.itemProgress}
-              />
-            ) : (
-              <Grid className={classes.chart}>
                 <PieChart data={[res.first, res.second]} />
               </Grid>
             )}
-            {/* <PieChart data={[res.first, res.second]} /> */}
+            {/* <PieChart data={[res.first]} /> */}
           </CardBody>
         </Card>
       );
@@ -441,49 +413,33 @@ export default function Cardshow(props) {
       );
     }
   } else {
-    if (address.length === 1) {
-      return (
-        <Card chart>
-          <CardBody>
-            {loading ? (
-              <CircularProgress
-                color="primary"
-                className={classes.itemProgress}
+    return (
+      <Card chart>
+        <CardBody>
+          {loading ? (
+            <CircularProgress
+              color="primary"
+              className={classes.itemProgress}
+            />
+          ) : (
+            <Grid>
+              <Cardtable
+                className={classes.table}
+                rows={res.first.rows}
+                height="300px"
               />
-            ) : (
-              <Cardtable rows={res.first.rows} height="300px" />
-            )}
-          </CardBody>
-        </Card>
-      );
-    } else {
-      return (
-        <Card chart>
-          <CardBody>
-            {loading ? (
-              <CircularProgress
-                color="primary"
-                className={classes.itemProgress}
-              />
-            ) : (
-              <>
-                <Cardtable
-                  className={classes.table}
-                  rows={res.first.rows}
-                  height="300px"
-                />
+              {res.second.rows !== undefined && (
                 <Cardtable
                   className={classes.table}
                   rows={res.second.rows}
                   height="300px"
                 />
-              </>
-            )}
-          </CardBody>
-        </Card>
-      );
-    }
-    //table
+              )}
+            </Grid>
+          )}
+        </CardBody>
+      </Card>
+    );
   }
 }
 
