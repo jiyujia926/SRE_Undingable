@@ -23,9 +23,9 @@ const PieChart = (props) => {
     }
     console.log(tmp_item.data);
     if (i == 0) {
-      tmp_item.radius = ["80%", "100%"];
+      tmp_item.radius = ["65%", "100%"];
     } else {
-      tmp_item.radius = ["50%", "70%"];
+      tmp_item.radius = ["25%", "60%"];
     }
     series_items.push(tmp_item);
   }
@@ -40,6 +40,10 @@ const PieChart = (props) => {
         bottom: "20px",
         orient: "vertical",
       },
+      itemStyle: {
+        borderRadius: 2,
+      },
+      roseType: "radius",
       toolbox: {
         show: true,
         feature: {
