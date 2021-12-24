@@ -53,6 +53,10 @@ const cardShowStyle = {
   icon: {
     padding: "0px",
   },
+  table: {
+    display:"flex",
+    width: "50%",
+  },
 };
 
 export default cardShowStyle;
