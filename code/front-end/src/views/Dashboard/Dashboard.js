@@ -159,7 +159,7 @@ export default function Dashboard() {
     });
   }
   async function getInfo() {
-    let res = await axios.post(`${server}/get_info/`, {'Address':address});
+    let res = await axios.post(`${server}/get_info/`, { Address: address });
     // let res = {
     //   data: [
     //     { name: "name_a", info: "info_a" },
