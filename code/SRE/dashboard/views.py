@@ -207,22 +207,30 @@ def get_data(request):
                     newopendatabag1.append(opendatabag1[timespan1.index(time)])
                     newclosedatabag1.append(closedatabag1[timespan1.index(time)])
                 else:
-                    if time < timespan1[0]:
+                    if timespan1:
+                        if time < timespan1[0]:
+                            newopendatabag1.append(0)
+                            newclosedatabag1.append(0)
+                        elif time > timespan1[-1]:
+                            newopendatabag1.append(opendatabag1[-1])
+                            newclosedatabag1.append(closedatabag1[-1])
+                    else:
                         newopendatabag1.append(0)
                         newclosedatabag1.append(0)
-                    elif time > timespan1[-1]:
-                        newopendatabag1.append(opendatabag1[-1])
-                        newclosedatabag1.append(closedatabag1[-1])
                 if time in timespan2:
                     newopendatabag2.append(opendatabag2[timespan2.index(time)])
                     newclosedatabag2.append(closedatabag2[timespan2.index(time)])
                 else:
-                    if time < timespan2[0]:
+                    if timespan2:
+                        if time < timespan2[0]:
+                            newopendatabag2.append(0)
+                            newclosedatabag2.append(0)
+                        elif time > timespan2[-1]:
+                            newopendatabag2.append(opendatabag2[-1])
+                            newclosedatabag2.append(closedatabag2[-1])
+                    else:
                         newopendatabag2.append(0)
                         newclosedatabag2.append(0)
-                    elif time > timespan2[-1]:
-                        newopendatabag2.append(opendatabag2[-1])
-                        newclosedatabag2.append(closedatabag2[-1])
             day={'categoryData':newtimespan,'valueData':[{'repo':repo1,'name':'open','detailData':newopendatabag1},
                                                         {'repo':repo1,'name':'closed','detailData':newclosedatabag1},
                                                         {'repo':repo2,'name':'open','detailData':newopendatabag2},
@@ -386,27 +394,37 @@ def get_data(request):
                     newclosedatabag1.append(closedatabag1[timespan1.index(time)])
                     newmergedatabag1.append(mergedatabag1[timespan1.index(time)])
                 else:
-                    if time < timespan1[0]:
+                    if timespan1:
+                        if time < timespan1[0]:
+                            newopendatabag1.append(0)
+                            newclosedatabag1.append(0)
+                            newmergedatabag1.append(0)
+                        elif time > timespan1[-1]:
+                            newopendatabag1.append(opendatabag1[-1])
+                            newclosedatabag1.append(closedatabag1[-1])
+                            newmergedatabag1.append(mergedatabag1[-1])
+                    else:
                         newopendatabag1.append(0)
                         newclosedatabag1.append(0)
                         newmergedatabag1.append(0)
-                    elif time > timespan1[-1]:
-                        newopendatabag1.append(opendatabag1[-1])
-                        newclosedatabag1.append(closedatabag1[-1])
-                        newmergedatabag1.append(mergedatabag1[-1])
                 if time in timespan2:
                     newopendatabag2.append(opendatabag2[timespan2.index(time)])
                     newclosedatabag2.append(closedatabag2[timespan2.index(time)])
                     newmergedatabag2.append(mergedatabag2[timespan2.index(time)])
                 else:
-                    if time < timespan2[0]:
+                    if timespan2:
+                        if time < timespan2[0]:
+                            newopendatabag2.append(0)
+                            newclosedatabag2.append(0)
+                            newmergedatabag2.append(0)
+                        elif time > timespan2[-1]:
+                            newopendatabag2.append(opendatabag2[-1])
+                            newclosedatabag2.append(closedatabag2[-1])
+                            newmergedatabag2.append(mergedatabag2[-1])
+                    else:
                         newopendatabag2.append(0)
                         newclosedatabag2.append(0)
                         newmergedatabag2.append(0)
-                    elif time > timespan2[-1]:
-                        newopendatabag2.append(opendatabag2[-1])
-                        newclosedatabag2.append(closedatabag2[-1])
-                        newmergedatabag2.append(mergedatabag2[-1])
             day={'categoryData':newtimespan,'valueData':[{'repo':repo1,'name':'open','detailData':newopendatabag1},
                                                         {'repo':repo1,'name':'closed','detailData':newclosedatabag1},
                                                         {'repo':repo1,'name':'merged','detailData':newmergedatabag1},
@@ -459,14 +477,18 @@ def get_one_address(address:str,datatype:str,charttype:str):
             return json.dumps(resbag)
         elif datatype == "issue":
             dayissuelist = list(models.DayIssue.objects.values().filter(Project=project).order_by('Time'))
-            lastissue = dayissuelist[-1]
-            databag = json.loads(get_contributor_data(address))
-            cnt = 0
-            for contri in databag:
-                if contri['issue'] > 0:
-                    cnt += 1
-            resbag = {'total':[{'name':'open', 'value':lastissue['openedCount']},{'name':'closed', 'value':lastissue['closedCount']}],'participate':cnt}
-            return json.dumps(resbag)
+            if dayissuelist:
+                lastissue = dayissuelist[-1]
+                databag = json.loads(get_contributor_data(address))
+                cnt = 0
+                for contri in databag:
+                    if contri['issue'] > 0:
+                        cnt += 1
+                resbag = {'total':[{'name':'open', 'value':lastissue['openedCount']},{'name':'closed', 'value':lastissue['closedCount']}],'participate':cnt}
+                return json.dumps(resbag)
+            else:
+                resbag = {'total':[{'name':'open', 'value':0},{'name':'closed', 'value':0}],'participate':0}
+                return json.dumps(resbag)
         elif datatype == "commit":
             commitlist = list(models.YearCommit.objects.values().filter(Project=project))
             allcommit = 0
@@ -490,15 +512,20 @@ def get_one_address(address:str,datatype:str,charttype:str):
             return json.dumps(resbag)
         elif datatype == "pullrequest":
             daypullrequestlist = list(models.DayPullrequest.objects.values().filter(Project=project).order_by('Time'))
-            lastpullrequest = daypullrequestlist[-1]
-            databag = json.loads(get_contributor_data(address))
-            cnt = 0
-            for contri in databag:
-                if contri['pullrequest'] > 0:
-                    cnt += 1
-            resbag = {'total':[{'name':'open','value':lastpullrequest['openedCount']},{'name':'closed','value':lastpullrequest['closedCount']},{'name':'merged','value':lastpullrequest['mergedCount']}],
-                      'participate':cnt}
-            return json.dumps(resbag) 
+            if daypullrequestlist:
+                lastpullrequest = daypullrequestlist[-1]
+                databag = json.loads(get_contributor_data(address))
+                cnt = 0
+                for contri in databag:
+                    if contri['pullrequest'] > 0:
+                        cnt += 1
+                resbag = {'total':[{'name':'open','value':lastpullrequest['openedCount']},{'name':'closed','value':lastpullrequest['closedCount']},{'name':'merged','value':lastpullrequest['mergedCount']}],
+                        'participate':cnt}
+                return json.dumps(resbag) 
+            else:
+                resbag = {'total':[{'name':'open','value':0},{'name':'closed','value':0},{'name':'merged','value':0}],
+                        'participate':0}
+                return json.dumps(resbag)
     else:
         if datatype == "commit":
             daycommitlist = list(models.DayCommit.objects.values().filter(Project=project).order_by('Time'))
