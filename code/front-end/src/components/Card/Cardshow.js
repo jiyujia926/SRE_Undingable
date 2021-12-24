@@ -320,6 +320,7 @@ export default function Cardshow(props) {
                       <Checkbox
                         checked={checkbox.search(c1) !== -1}
                         name={c1}
+                        size="small"
                         onChange={(e) => changecheck(e)}
                       />
                     }
@@ -333,6 +334,7 @@ export default function Cardshow(props) {
                       <Checkbox
                         checked={checkbox.search(c2) !== -1}
                         name={c2}
+                        size="small"
                         onChange={(e) => changecheck(e)}
                       />
                     }
@@ -347,6 +349,7 @@ export default function Cardshow(props) {
                         <Checkbox
                           checked={checkbox.search(c3) !== -1}
                           name={c3}
+                          size="small"
                           onChange={(e) => changecheck(e)}
                         />
                       }
@@ -388,38 +391,48 @@ export default function Cardshow(props) {
       return (
         <Card chart>
           <CardBody>
-            <Typography variant="h6" gutterBottom className={classes.head}>
-              {datatype}
-            </Typography>
-            <FormControl className={classes.select}>
-              <InputLabel>图表类型</InputLabel>
-              <Select
-                onChange={changechart}
-                input={<Input />}
-                label="图表类型"
-                defaultValue={"linechart"}
-              >
-                <MenuItem value={"stackedbarchart"}>stacked barchart</MenuItem>
-                <MenuItem value={"linechart"}>line chart</MenuItem>
-              </Select>
-            </FormControl>
-            {datatype === "commit" || datatype === "subcommit" ? (
+            <div className={classes.line}>
+              <Typography variant="h6" gutterBottom className={classes.head}>
+                {datatype}
+              </Typography>
               <FormControl className={classes.select}>
-                <InputLabel>时间刻度</InputLabel>
+                <InputLabel>Chart Type</InputLabel>
                 <Select
-                  onChange={(e) => changetime(e)}
+                  onChange={changechart}
                   input={<Input />}
-                  label="时间刻度"
-                  defaultValue={time}
+                  label="图表类型"
+                  classes={{
+                    select: classes.input,
+                  }}
+                  defaultValue={"linechart"}
                 >
-                  <MenuItem value={"day"}>day</MenuItem>
-                  <MenuItem value={"month"}>month</MenuItem>
-                  <MenuItem value={"year"}>year</MenuItem>
+                  <MenuItem value={"stackedbarchart"}>
+                    stacked barchart
+                  </MenuItem>
+                  <MenuItem value={"linechart"}>line chart</MenuItem>
                 </Select>
               </FormControl>
-            ) : (
-              <></>
-            )}
+              {datatype === "commit" || datatype === "subcommit" ? (
+                <FormControl className={classes.select}>
+                  <InputLabel>Time Scale</InputLabel>
+                  <Select
+                    onChange={(e) => changetime(e)}
+                    input={<Input />}
+                    label="时间刻度"
+                    classes={{
+                      select: classes.input,
+                    }}
+                    defaultValue={time}
+                  >
+                    <MenuItem value={"day"}>day</MenuItem>
+                    <MenuItem value={"month"}>month</MenuItem>
+                    <MenuItem value={"year"}>year</MenuItem>
+                  </Select>
+                </FormControl>
+              ) : (
+                <></>
+              )}
+            </div>
             <Grid className={classes.chart}>
               {/* <LineChart data={res[time]} /> */}
               {loading ? (

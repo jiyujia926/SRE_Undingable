@@ -4,7 +4,7 @@ const cardShowStyle = {
   },
   head: {
     textAlign: "left",
-    margin: "8px 10px",
+    margin: "10px 16px 0px",
     flex: "1",
     textTransform: "capitalize",
   },
@@ -32,7 +32,7 @@ const cardShowStyle = {
   },
   select: {
     textAlign: "left",
-    minWidth: "15%",
+    minWidth: "83px",
     margin: "0 2px",
   },
   itemProgress: {
@@ -43,12 +43,15 @@ const cardShowStyle = {
   checkbox: {
     display: "flex",
     flexDirection: "row",
+    margin: "0 0px -15px 25px",
   },
   box: {
     fontSize: "0.9rem",
+    color: "#3a3535",
+    margin: "0px -5px 0px -5px",
   },
-  svg: {
-    fontSize: "0.9rem",
+  icon: {
+    padding: "0px",
   },
 };
 
