@@ -103,21 +103,21 @@ import PieChart from "../../componenet/PieChart";
 数据格式：List
 
 ```jsx
-data = {
+data = [
   {
-    repoName: "remo-name",
+    repoName: "repo-name",
     data: [
       { value: val, name: "item-name" }, 
     ]
   },
-}
+]
 ```
 
 ```jsx
-data = {
+data = [
   {
     repoName: "BAICAOJIAN",
-    data = [
+    data: [
   	  { value: 300, name: "Fine" },
   	  { value: 1300, name: "Goodgood" },
   	  { value: 800, name: "Kathleen" },
@@ -125,7 +125,7 @@ data = {
   	  { value: 500, name: "Kathbaby" },
 	],
   },
-}
+]
 ```
 
 
