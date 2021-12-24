@@ -4,10 +4,9 @@ import styles from "assets/jss/material-dashboard-react/components/cardTextStyle
 import axios from "axios";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
-import GridContainer from "components/Grid/GridContainer";
-import GridItem from "components/Grid/GridItem";
 import { Card } from "@material-ui/core";
 import CardBody from "./CardBody";
+import Typography from "@material-ui/core/Typography";
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
@@ -40,7 +39,7 @@ const useStyles = makeStyles(styles);
 //     participate: -1,
 //     //参与人数，没有就写-1（contributor）
 //   }
-  
+
 // };
 
 export default function Cardtext(props) {
@@ -48,8 +47,8 @@ export default function Cardtext(props) {
   const datatype = props.datatype;
   const address = props.address;
   const [res, setTextdata] = useState({});
-  const [loading, setloading] = useState(false);
-  
+  const [loading, setloading] = useState(true);
+
   useEffect(() => {
     upload();
   }, []);
@@ -71,42 +70,56 @@ export default function Cardtext(props) {
   }
 
   return (
-    <GridContainer>
-      <GridItem xs={12} sm={12} md={12}>
-        <Card chart>
-          <CardBody>
-            {loading ? (
-              <CircularProgress className={classes.itemProgress} />
-            ) : (
-              <>
-                {res.total.map((current) => {
-                  return (
-                    <>
-                      <h3 className={classes.head}>
-                        {datatype} - {current.name} {current.value}
-                      </h3>
-                    </>
-                  );
-                })}
-                {res["participate"] != -1 ? (
-                  <>
-                    <h3 className={classes.head}>
-                      {datatype} 参与人数 {res.participate}
-                    </h3>
-                  </>
-                ) : (
-                  <></>
-                )}
-              </>
+    <Card className={classes.root}>
+      <CardBody className={classes.body}>
+        <Typography variant="h6" gutterBottom className={classes.head}>
+          {datatype}
+        </Typography>
+        {loading ? (
+          <CircularProgress className={classes.itemProgress} />
+        ) : (
+          <div className={classes.content}>
+            {res.first.total.map((current, index) => {
+              return (
+                <div className={classes.text} key={index}>
+                  <Typography
+                    variant="h4"
+                    className={classes["number" + index]}
+                  >
+                    {current.value}
+                  </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    gutterBottom
+                    className={classes.item}
+                  >
+                    {current.name}
+                  </Typography>
+                </div>
+              );
+            })}
+            {res.first["participate"] !== -1 && (
+              <div className={classes.text}>
+                <Typography variant="h4" className={classes["number"]}>
+                  {res.first.participate}
+                </Typography>
+                <Typography
+                  variant="subtitle1"
+                  gutterBottom
+                  className={classes.item}
+                >
+                  Participant
+                </Typography>
+              </div>
             )}
-          </CardBody>
-        </Card>
-      </GridItem>
-    </GridContainer>
+          </div>
+        )}
+      </CardBody>
+    </Card>
   );
 }
 
 Cardtext.propTypes = {
   datatype: PropTypes.oneOf(["pullrequest", "issue", "commit", "contributor"]),
-  address: PropTypes.String,
+  address: PropTypes.string,
 };

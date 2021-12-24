@@ -34,6 +34,7 @@ import PieChart from "../../components/Charts/PieChart";
 //import BarChart from "../../components/Charts/BarChart";
 //import StackedBarChart from "../../components/Charts/StackedBarChart";
 import axios from "axios";
+import Cardtext from "../../components/Card/Cardtext";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 const server = "http://122.51.228.166:8000";
@@ -259,8 +260,11 @@ export default function Dashboard() {
               if (current < 0) {
                 return (
                   <GridItem Item xs={12} sm={12} md={6}>
-                    <Card onClick={changeDashboard}>1</Card>
-                    {/*<Cardtext datatype={current.DataType} address={address} />*/}
+                    {/*<Card onClick={changeDashboard}>1</Card>*/}
+                    <Cardtext
+                      datatype={dashboard[-1 * current - 1].DataType}
+                      address={address}
+                    />
                   </GridItem>
                 );
               } else if (current % 2 === 0) {
@@ -294,15 +298,6 @@ export default function Dashboard() {
               }
             }
           })}
-        {/* {address[0] && (
-          <GridItem xs={12} sm={12} md={12}>
-            <Cardshow
-              datatype="pullrequest"
-              charttype="stackedbarchart"
-              address={address[0]}
-            />
-          </GridItem>
-        )} */}
       </GridContainer>
       <div className={classes.fabSet}>
         <Fab
