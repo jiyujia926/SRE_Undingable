@@ -54,7 +54,7 @@ const cardShowStyle = {
     padding: "0px",
   },
   table: {
-    display:"flex",
+    display: "flex",
     width: "50%",
   },
 };

@@ -210,7 +210,9 @@ export default function Cardshow(props) {
             {loading ? (
               <CircularProgress className={classes.itemProgress} />
             ) : (
-              <PieChart data={res.first} />
+              <Grid className={classes.chart}>
+                <PieChart data={res.first} />
+              </Grid>
             )}
             {/* <PieChart data={[res.first]} /> */}
           </CardBody>
@@ -229,7 +231,9 @@ export default function Cardshow(props) {
                 className={classes.itemProgress}
               />
             ) : (
-              <PieChart data={[res.first, res.second]} /> //双图去注释
+              <Grid className={classes.chart}>
+                <PieChart data={[res.first, res.second]} />
+              </Grid>
             )}
             {/* <PieChart data={[res.first, res.second]} /> */}
           </CardBody>
