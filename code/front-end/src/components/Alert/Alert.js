@@ -1,7 +1,7 @@
-import React from 'react';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
-import useStyles from "./styles";
+import React from "react";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+//import useStyles from "./styles";
 import PropTypes from "prop-types";
 
 function Alert(props) {
@@ -9,31 +9,34 @@ function Alert(props) {
 }
 
 export default function CustomizedSnackbars(props) {
-  const classes = useStyles();
-  const { message, open, type } = props;
-  const [open, setOpen] = React.useState(false);
+  //const classes = useStyles();
+  const { name, message, type, open, close } = props;
 
   const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
-
-    setOpen(false);
+    close(name);
   };
 
   return (
-    <div className={classes.root}>
-      <Snackbar open={open} autoHideDuration={2400} onClose={handleClose}>
-        <Alert onClose={handleClose} severity={type}>
-          {message}
-        </Alert>
-      </Snackbar>
-    </div>
+    <Snackbar
+      open={open}
+      anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      autoHideDuration={2400}
+      onClose={handleClose}
+    >
+      <Alert onClose={handleClose} severity={type}>
+        {message}
+      </Alert>
+    </Snackbar>
   );
 }
 
-Alert.propTypes = {
+CustomizedSnackbars.propTypes = {
+  name: PropTypes.string,
   message: PropTypes.string,
   type: PropTypes.string,
   open: PropTypes.bool,
+  close: PropTypes.func,
 };
