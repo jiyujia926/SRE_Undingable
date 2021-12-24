@@ -19,6 +19,7 @@ from .get_commit import getcommit
 from .get_issue import get_open_issue,get_closed_issue
 from .get_pullrequest import get_open_pullrequest,get_closed_pullrequest
 from dashboard import tasks
+from .get_basic_info import main as info
 
 # def Read_url(request):
 def checkurl(request):
@@ -45,7 +46,7 @@ def checkurl(request):
             return HttpResponse("仓库不存在或未开源")
         else:
             name = address[18:-1]
-            project = models.Project(PID=uuid.uuid4(),Name=name,RepositoryURL=address,State=False)
+            project = models.Project(PID=uuid.uuid4(),Name=name,RepositoryURL=address,State=False,Description=info(address))
             project.save()
             importDB(address)
             # spider(address)

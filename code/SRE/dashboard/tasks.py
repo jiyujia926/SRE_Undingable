@@ -448,4 +448,3 @@ def test(request):
         return HttpResponse("sss")
     else:
         return HttpResponse("aaa")
-    
