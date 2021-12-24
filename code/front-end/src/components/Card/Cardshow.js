@@ -453,7 +453,7 @@ export default function Cardshow(props) {
                 className={classes.itemProgress}
               />
             ) : (
-              <Cardtable rows={res.first} height="300px" />
+              <Cardtable rows={res.first.rows} height="300px" />
             )}
           </CardBody>
         </Card>
@@ -471,12 +471,12 @@ export default function Cardshow(props) {
               <>
                 <Cardtable
                   className={classes.table}
-                  rows={res.first}
+                  rows={res.first.rows}
                   height="300px"
                 />
                 <Cardtable
                   className={classes.table}
-                  rows={res.first}
+                  rows={res.second.rows}
                   height="300px"
                 />
               </>
