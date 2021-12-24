@@ -470,8 +470,10 @@ export default function Cardshow(props) {
                 className={classes.itemProgress}
               />
             ) : (
-              <Cardtable className={classes.table} rows={res.first} height="300px" />
-              <Cardtable className={classes.table} rows={res.first} height="300px" />
+              <>
+                <Cardtable className={classes.table} rows={res.first} height="300px" />
+                <Cardtable className={classes.table} rows={res.first} height="300px" />
+              </>
             )}
           </CardBody>
         </Card>
