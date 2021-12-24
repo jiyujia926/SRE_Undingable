@@ -459,14 +459,18 @@ def get_one_address(address:str,datatype:str,charttype:str):
             return json.dumps(resbag)
         elif datatype == "issue":
             dayissuelist = list(models.DayIssue.objects.values().filter(Project=project).order_by('Time'))
-            lastissue = dayissuelist[-1]
-            databag = json.loads(get_contributor_data(address))
-            cnt = 0
-            for contri in databag:
-                if contri['issue'] > 0:
-                    cnt += 1
-            resbag = {'total':[{'name':'open', 'value':lastissue['openedCount']},{'name':'closed', 'value':lastissue['closedCount']}],'participate':cnt}
-            return json.dumps(resbag)
+            if dayissuelist:
+                lastissue = dayissuelist[-1]
+                databag = json.loads(get_contributor_data(address))
+                cnt = 0
+                for contri in databag:
+                    if contri['issue'] > 0:
+                        cnt += 1
+                resbag = {'total':[{'name':'open', 'value':lastissue['openedCount']},{'name':'closed', 'value':lastissue['closedCount']}],'participate':cnt}
+                return json.dumps(resbag)
+            else:
+                resbag = {'total':[{'name':'open', 'value':0},{'name':'closed', 'value':0}],'participate':0}
+                return json.dumps(resbag)
         elif datatype == "commit":
             commitlist = list(models.YearCommit.objects.values().filter(Project=project))
             allcommit = 0
@@ -490,15 +494,20 @@ def get_one_address(address:str,datatype:str,charttype:str):
             return json.dumps(resbag)
         elif datatype == "pullrequest":
             daypullrequestlist = list(models.DayPullrequest.objects.values().filter(Project=project).order_by('Time'))
-            lastpullrequest = daypullrequestlist[-1]
-            databag = json.loads(get_contributor_data(address))
-            cnt = 0
-            for contri in databag:
-                if contri['pullrequest'] > 0:
-                    cnt += 1
-            resbag = {'total':[{'name':'open','value':lastpullrequest['openedCount']},{'name':'closed','value':lastpullrequest['closedCount']},{'name':'merged','value':lastpullrequest['mergedCount']}],
-                      'participate':cnt}
-            return json.dumps(resbag) 
+            if daypullrequestlist:
+                lastpullrequest = daypullrequestlist[-1]
+                databag = json.loads(get_contributor_data(address))
+                cnt = 0
+                for contri in databag:
+                    if contri['pullrequest'] > 0:
+                        cnt += 1
+                resbag = {'total':[{'name':'open','value':lastpullrequest['openedCount']},{'name':'closed','value':lastpullrequest['closedCount']},{'name':'merged','value':lastpullrequest['mergedCount']}],
+                        'participate':cnt}
+                return json.dumps(resbag) 
+            else:
+                resbag = {'total':[{'name':'open','value':0},{'name':'closed','value':0},{'name':'merged','value':0}],
+                        'participate':0}
+                return json.dumps(resbag)
     else:
         if datatype == "commit":
             daycommitlist = list(models.DayCommit.objects.values().filter(Project=project).order_by('Time'))
