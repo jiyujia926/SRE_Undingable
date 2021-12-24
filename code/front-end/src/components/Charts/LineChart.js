@@ -52,9 +52,9 @@ const LineChart = (props) => {
       legend: {
         data: data.name,
         type: "scroll",
-        x: "right",
-        bottom: "20px",
-        orient: "vertical",
+        x: "center",
+        y: "top",
+        orient: "horizontal",
       },
       toolbox: {
         feature: {

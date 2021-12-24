@@ -23,7 +23,7 @@ const StackedBarChart = (props) => {
 
   const exportData = () => {
     let csv_data = "";
-    let headers = " ";
+    let headers = "repo-name";
     let values = "";
     for (let i = 0; i < data.categoryData.length; i++) {
       headers = headers + "," + data.categoryData[i];
@@ -75,9 +75,9 @@ const StackedBarChart = (props) => {
       },
       legend: {
         type: "scroll",
-        x: "right",
-        bottom: "20px",
-        orient: "vertical",
+        x: "center",
+        y: "top",
+        orient: "horizontal",
       },
       grid: {
         left: "3%",
