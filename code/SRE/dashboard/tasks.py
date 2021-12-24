@@ -350,14 +350,14 @@ def initial_pullrequest_data(url:str):
             closed_count += 1
         Daylist['Closed'].append(closed_sum)
 
+        if opened_closed_count<len(opened_closed_Daylist) and time == opened_closed_Daylist[opened_closed_count]['Opentime']:
+            opened_closed_sum += opened_closed_Daylist[opened_closed_count]['opened_pullrequest']
+            opened_closed_count += 1
+
         if merged_count<len(merged_Daylist) and time == merged_Daylist[merged_count]['Mergetime']:
             merged_sum += merged_Daylist[merged_count]['merged_pullrequest']
             merged_count += 1
         Daylist['Merged'].append(merged_sum)
-        
-        if opened_closed_count<len(opened_closed_Daylist) and time == opened_closed_Daylist[opened_closed_count]['Opentime']:
-            opened_closed_sum += opened_closed_Daylist[opened_closed_count]['opened_pullrequest']
-            opened_closed_count += 1
         
         if opened_merged_count<len(opened_merged_Daylist) and time == opened_merged_Daylist[opened_merged_count]['Opentime']:
             opened_merged_sum += opened_merged_Daylist[opened_merged_count]['opened_pullrequest']
@@ -366,11 +366,12 @@ def initial_pullrequest_data(url:str):
         if open_count<len(open_Daylist) and time == open_Daylist[open_count]['Opentime']:
             open_sum += open_Daylist[open_count]['open_pullrequest']
             open_count += 1
-        Daylist['Open'].append(open_sum + opened_closed_sum + opened_merged_sum - closed_sum - opened_closed_sum)
+            
+        Daylist['Open'].append(open_sum + opened_closed_sum + opened_merged_sum - closed_sum - merged_sum)
 
     for index in range(0,len(time_list)):
         day_pullrequest = models.DayPullrequest.objects.create(Time=time_list[index],openedCount=Daylist['Open'][index],closedCount=Daylist['Closed'][index],mergedCount=Daylist['Merged'][index])
-        day_pullrequest .Project.add(project)
+        day_pullrequest.Project.add(project)
     
     
 
