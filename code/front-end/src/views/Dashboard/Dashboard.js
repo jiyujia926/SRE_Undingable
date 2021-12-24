@@ -254,7 +254,7 @@ export default function Dashboard() {
         </GridItem>
         <GridItem xs={12} sm={12} md={6}>
           <Card className={classes.infoCard}>
-            {address.length === 0 ? (
+            {info.length === 0 ? (
               <Typography variant="h5" gutterBottom>
                 Please choose a project first.
               </Typography>
