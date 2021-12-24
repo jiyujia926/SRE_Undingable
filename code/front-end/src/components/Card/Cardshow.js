@@ -209,10 +209,10 @@ export default function Cardshow(props) {
             </Typography>
             <Grid className={classes.chart}>
               {loading ? (
-                  <CircularProgress className={classes.itemProgress} />
-                ) : (
-                  <PieChart data={res} />
-                )}
+                <CircularProgress className={classes.itemProgress} />
+              ) : (
+                <PieChart data={res} />
+              )}
               {/* <PieChart data={res} /> */}
             </Grid>
           </CardBody>
