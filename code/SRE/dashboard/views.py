@@ -82,6 +82,7 @@ def get_data(request):
         elif charttype == "table":
             firstbag = json.loads(get_one_address(addresslist[0],datatype,charttype))
             resbag = {'first':firstbag,'second':{}}
+            return HttpResponse(json.dumps(resbag))
         return HttpResponse(get_one_address(addresslist[0],data['Datatype'],data['Charttype']))
     else:
         address1 = addresslist[0]
