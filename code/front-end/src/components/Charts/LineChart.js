@@ -93,7 +93,7 @@ const LineChart = (props) => {
 
   useEffect(() => {
     initChart();
-  }, []);
+  });
 
   return <div id={id} style={{ width: "100%", height: "100%" }} />;
 };
