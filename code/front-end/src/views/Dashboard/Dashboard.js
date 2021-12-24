@@ -166,6 +166,7 @@ export default function Dashboard() {
     //     { name: "name_b", info: "info_b" },
     //   ],
     // };
+    console.log(res.data);
     setInfo(res.data);
   }
   const handleSetDataTypeSet = (data) => {
