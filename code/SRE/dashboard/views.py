@@ -790,6 +790,7 @@ def get_info(request):
         projectlist = list(models.Project.objects.values().filter(RepositoryURL=address))
         if projectlist:
             resbag = [{'name':projectlist[0]['Name'][1:],'info':projectlist[0]['Description']}]
+            print(json.dumps(resbag))
             return HttpResponse(json.dumps(resbag))
         return HttpResponse("")
     elif len(addresslist) == 2:
@@ -802,6 +803,7 @@ def get_info(request):
             resbag.append({'name':projectlist1[0]['Name'][1:],'info':projectlist1[0]['Description']})
         if projectlist2:
             resbag.append({'name':projectlist2[0]['Name'][1:],'info':projectlist2[0]['Description']})
+        print(json.dumps(resbag))
         return HttpResponse(json.dumps(resbag))
         
         
