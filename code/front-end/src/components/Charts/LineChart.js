@@ -26,11 +26,11 @@ const LineChart = (props) => {
     let myChart = eCharts.init(element);
     const option = {
       legend: {
-        orient: "horizontal",
-        x: "center", // right center left
-        y: "top", // top center down
-        padding: [10, 0, 0, 0],
         data: data.name,
+        type: "scroll",
+        x: "right",
+        bottom: "20px",
+        orient: "vertical",
       },
       toolbox: {
         feature: {

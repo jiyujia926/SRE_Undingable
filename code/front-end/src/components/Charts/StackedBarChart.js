@@ -40,7 +40,12 @@ const StackedBarChart = (props) => {
           type: "shadow",
         },
       },
-      legend: {},
+      legend: {
+        type: "scroll",
+        x: "right",
+        bottom: "20px",
+        orient: "vertical",
+      },
       grid: {
         left: "3%",
         right: "4%",

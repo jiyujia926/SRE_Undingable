@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 const PieChart = (props) => {
   const { data } = props;
   let id = nanoid();
+  // concat name
   let series_items = [];
   for (let i = 0; i < data.length; i++) {
     let tmp_item = {};
@@ -13,7 +14,13 @@ const PieChart = (props) => {
     tmp_item.type = "pie";
     tmp_item.label = { show: false, position: "center" };
     tmp_item.itemStyle = { borderRadius: 2 };
-    tmp_item.data = data[i].data;
+    tmp_item.data = [];
+    for (let j = 0; j < data[i].data.length; j++) {
+      let tmp = {};
+      tmp.value = data[i].data[j].value;
+      tmp.name = data[i].repoName + "-" + data[i].data[j].name;
+      tmp_item.data.push(tmp);
+    }
     console.log(tmp_item.data);
     if (i == 0) {
       tmp_item.radius = ["80%", "100%"];
@@ -28,7 +35,10 @@ const PieChart = (props) => {
     let myChart = eCharts.init(element);
     const option = {
       legend: {
-        top: "bottom",
+        type: "scroll",
+        x: "right",
+        bottom: "20px",
+        orient: "vertical",
       },
       toolbox: {
         show: true,
