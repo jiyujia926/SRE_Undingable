@@ -1,6 +1,5 @@
 *.pyc
 *node_modules*/
-*.png
 *.jpg
 *.svg
 process/vedio assets/sre-001.mp3
