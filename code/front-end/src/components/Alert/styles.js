@@ -1,11 +1,13 @@
 import { makeStyles } from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
-    width: '100%',
-    '& > * + *': {
-      marginTop: theme.spacing(2),
-    },
+    maxWidth: 600,
+    width: "400px",
+    top: "12px",
+  },
+  alert: {
+    width: "100%",
   },
 }));
 
