@@ -200,7 +200,7 @@ export default function Cardshow(props) {
           </CardBody>
         </Card>
       );
-    } else {
+    } else if (res.second === {}) {
       return (
         <Card chart>
           <CardBody>
@@ -209,42 +209,42 @@ export default function Cardshow(props) {
             </Typography>
             <Grid className={classes.chart}>
               {loading ? (
-                <CircularProgress className={classes.itemProgress} />
-              ) : (
-                <PieChart data={res} />
-              )}
+                  <CircularProgress className={classes.itemProgress} />
+                ) : (
+                  <PieChart data={res.first} />
+                )}
               {/* <PieChart data={res} /> */}
             </Grid>
           </CardBody>
         </Card>
       );
     }
-    // } else {
-    //   return (
-    //     <Card chart>
-    //       <CardBody>
-    //         <Typography variant="h6" gutterBottom className={classes.head}>
-    //           {datatype}
-    //         </Typography>
-    //         <Grid className={classes.piegrid}>
-    //           <Grid className={classes.piechart}>
-    //             {/* {loading ? (
-    //                 <CircularProgress
-    //                   color="primary"
-    //                   className={classes.itemProgress}
-    //                 />
-    //               ) : (
-    //                 <PieChart data={res.first} /> //双图去注释
-    //                 // <PieChart data={res} /> //双图加注释
-    //               )} */}
-    //             <PieChart data={d} />
-    //           </Grid>
+    } else {
+      return (
+        <Card chart>
+          <CardBody>
+            <Typography variant="h6" gutterBottom className={classes.head}>
+              {datatype}
+            </Typography>
+            <Grid className={classes.piegrid}>
+              <Grid className={classes.piechart}>
+                {loading ? (
+                    <CircularProgress
+                      color="primary"
+                      className={classes.itemProgress}
+                    />
+                  ) : (
+                    <PieChart data={res.first,res.second} /> //双图去注释
+                    
+                  )}
+                {/* <PieChart data={d} /> */}
+              </Grid>
 
-    //         </Grid>
-    //       </CardBody>
-    //     </Card>
-    //   );
-    // }
+            </Grid>
+          </CardBody>
+        </Card>
+      );
+    }
   } else if (charttype === "stackedbarchart") {
     //bar图
     if (datatype === "contributor") {
@@ -446,21 +446,40 @@ export default function Cardshow(props) {
       );
     }
   } else {
+    if (res.second === {}) {
+      return (
+        <Card chart>
+          <CardBody>
+            {loading ? (
+              <CircularProgress
+                color="primary"
+                className={classes.itemProgress}
+              />
+            ) : (
+              <Cardtable rows={res.first} height="300px" />
+            )}
+          </CardBody>
+        </Card>
+      );
+    } else {
+      return (
+        <Card chart>
+          <CardBody>
+            {loading ? (
+              <CircularProgress
+                color="primary"
+                className={classes.itemProgress}
+              />
+            ) : (
+              <Cardtable className={classes.table} rows={res.first} height="300px" />
+              <Cardtable className={classes.table} rows={res.first} height="300px" />
+            )}
+          </CardBody>
+        </Card>
+      );
+    }
     //table
-    return (
-      <Card chart>
-        <CardBody>
-          {loading ? (
-            <CircularProgress
-              color="primary"
-              className={classes.itemProgress}
-            />
-          ) : (
-            <Cardtable rows={[]} height="300px" />
-          )}
-        </CardBody>
-      </Card>
-    );
+    
   }
 }
 
