@@ -200,21 +200,19 @@ export default function Cardshow(props) {
           </CardBody>
         </Card>
       );
-    } else if (res.second === {}) {
+    } else if (address.length === 1) {
       return (
         <Card chart>
           <CardBody>
             <Typography variant="h6" gutterBottom className={classes.head}>
               {datatype}
             </Typography>
-            <Grid className={classes.chart}>
-              {loading ? (
-                <CircularProgress className={classes.itemProgress} />
-              ) : (
-                <PieChart data={res.first} />
-              )}
-              {/* <PieChart data={res} /> */}
-            </Grid>
+            {loading ? (
+              <CircularProgress className={classes.itemProgress} />
+            ) : (
+              <PieChart data={res.first} />
+            )}
+            {/* <PieChart data={[res.first]} /> */}
           </CardBody>
         </Card>
       );
@@ -225,19 +223,15 @@ export default function Cardshow(props) {
             <Typography variant="h6" gutterBottom className={classes.head}>
               {datatype}
             </Typography>
-            <Grid className={classes.piegrid}>
-              <Grid className={classes.piechart}>
-                {loading ? (
-                  <CircularProgress
-                    color="primary"
-                    className={classes.itemProgress}
-                  />
-                ) : (
-                  <PieChart data={(res.first, res.second)} /> //双图去注释
-                )}
-                {/* <PieChart data={d} /> */}
-              </Grid>
-            </Grid>
+            {loading ? (
+              <CircularProgress
+                color="primary"
+                className={classes.itemProgress}
+              />
+            ) : (
+              <PieChart data={[res.first, res.second]} /> //双图去注释
+            )}
+            {/* <PieChart data={[res.first, res.second]} /> */}
           </CardBody>
         </Card>
       );
@@ -443,7 +437,7 @@ export default function Cardshow(props) {
       );
     }
   } else {
-    if (res.second === {}) {
+    if (address.length === 1) {
       return (
         <Card chart>
           <CardBody>
