@@ -19,6 +19,7 @@ from .get_commit import getcommit
 from .get_issue import get_open_issue,get_closed_issue
 from .get_pullrequest import get_open_pullrequest,get_closed_pullrequest
 from dashboard import tasks
+from .get_basic_info import main as info
 
 # def Read_url(request):
 def checkurl(request):
@@ -45,7 +46,7 @@ def checkurl(request):
             return HttpResponse("仓库不存在或未开源")
         else:
             name = address[18:-1]
-            project = models.Project(PID=uuid.uuid4(),Name=name,RepositoryURL=address,State=False)
+            project = models.Project(PID=uuid.uuid4(),Name=name,RepositoryURL=address,State=False,Description=info(address))
             project.save()
             importDB(address)
             # spider(address)
@@ -78,6 +79,9 @@ def get_data(request):
             firstbag = json.loads(get_one_address(addresslist[0],datatype,charttype))
             resbag = {'first':firstbag,'second':{}}
             return HttpResponse(json.dumps(resbag))
+        elif charttype == "table":
+            firstbag = json.loads(get_one_address(addresslist[0],datatype,charttype))
+            resbag = {'first':firstbag,'second':{}}
         return HttpResponse(get_one_address(addresslist[0],data['Datatype'],data['Charttype']))
     else:
         address1 = addresslist[0]
@@ -92,6 +96,9 @@ def get_data(request):
             resbag = {'first':{'repoName':repo1,'data':firstbag},'second':{'repoName':repo2,'data':secondbag}}
             return HttpResponse(json.dumps(resbag))
         elif charttype == "text":
+            resbag = {'first':firstbag,'second':secondbag}
+            return HttpResponse(json.dumps(resbag))
+        elif charttype == "table":
             resbag = {'first':firstbag,'second':secondbag}
             return HttpResponse(json.dumps(resbag))
         if datatype=="commit":
@@ -579,10 +586,11 @@ def get_one_address(address:str,datatype:str,charttype:str):
             day={'categoryData':daytimelist,'valueData':[{'repo':projname,'name':'open','detailData':dayopenlist},{'repo':projname,'name':'closed','detailData':daycloselist},{'repo':projname,'name':'merged','detailData':daymergelist}]}
             databag={"day":day,'month':[],'year':[]}
             return json.dumps(databag)
-        elif datatype == "contributor":
+        elif datatype == "contributor" and charttype == "table":
             # table
-            pass
-            return 
+            databag = json.loads(get_contributor_data(address))
+            resbag = {'rows':databag}
+            return json.dumps(resbag)
     
     # databag = {'categoryData':timelist,'valueData':commitcountlist}
     # return HttpResponse(json.dumps(databag))
