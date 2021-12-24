@@ -26,6 +26,7 @@ import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 
 import axios from "axios";
+import CustomizedSnackbars from "../Alert/Alert";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 const server = "http://122.51.228.166:8000";
@@ -59,6 +60,18 @@ export default function AdminNavbarLinks() {
     checksum_check: "",
   };
   const [formData, setFormData] = React.useState(initialFormState);
+  const [snackbar, setSnackbar] = React.useState({
+    logDone: false,
+    regDone: false,
+    modDone: false,
+    emailDone: false,
+    noCode: false,
+    findDone: false,
+    logOut: false,
+  });
+  function closeSnackbar(name) {
+    setSnackbar({ ...snackbar, [name]: false });
+  }
   const handleClickProfile = (event) => {
     if (openProfile && openProfile.contains(event.target)) {
       setOpenProfile(false);
@@ -79,6 +92,7 @@ export default function AdminNavbarLinks() {
     cookie.remove("username");
     cookie.remove("time");
     cookie.remove("addressList");
+    setSnackbar({ ...snackbar, logOut: true });
   };
   const handleClickDialog = () => {
     setOp("login");
@@ -126,6 +140,7 @@ export default function AdminNavbarLinks() {
       let info = await axios.post(`${server}/getinfo/`, data);
       setAccount({ email: formData.email, username: info.data.name });
       handleCloseDialog();
+      setSnackbar({ ...snackbar, logDone: true });
       cookie.save("account", formData.email);
       cookie.save("username", info.data.name);
       cookie.save("time", info.data.time);
@@ -179,7 +194,6 @@ export default function AdminNavbarLinks() {
     });
     //初步验证完成，连接后端，尝试注册
     if (ec === "Correct." && pc === "Correct." && uc === "Correct.") {
-      // alert("try register");
       register();
     }
   };
@@ -193,7 +207,7 @@ export default function AdminNavbarLinks() {
     console.log(data);
     let res = await axios.post(`${server}/register/`, data);
     if (res.data === "注册成功！") {
-      alert("Account registered successfully! Please sign in.");
+      setSnackbar({ ...snackbar, regDone: true });
       handleToLogin();
     } else {
       ec = "This email address has been registered.";
@@ -258,7 +272,7 @@ export default function AdminNavbarLinks() {
       if (cookie.load("password")) {
         cookie.remove("password");
       }
-      alert("Password modified successfully! Please sign in.");
+      setSnackbar({ ...snackbar, modDone: true });
     } else {
       if (res.data === "密码错误") {
         pc = "Password is incorrect.";
@@ -274,7 +288,6 @@ export default function AdminNavbarLinks() {
     }
   }
   const handleSubmitSendEmail = () => {
-    //alert("email");
     if (formData.email === "") {
       setFormData({
         ...formData,
@@ -306,7 +319,7 @@ export default function AdminNavbarLinks() {
     } else {
       setReady(true);
       setFormData({ ...formData, email_check: "" });
-      alert("Email has been sent.");
+      setSnackbar({ ...snackbar, emailDone: true });
     }
   }
   const handleSubmitSetPassword = () => {
@@ -346,7 +359,7 @@ export default function AdminNavbarLinks() {
         setpassword();
       }
     } else {
-      alert("Please send the verification code to email first.");
+      setSnackbar({ ...snackbar, noCode: true });
     }
   };
   async function setpassword() {
@@ -363,7 +376,7 @@ export default function AdminNavbarLinks() {
     if (res.data === "设置成功") {
       handleToLogin();
       setFormData({ ...formData, email: "", password: "" });
-      alert("New password set successfully! Please sign in.");
+      setSnackbar({ ...snackbar, findDone: true });
     } else {
       if (res.data === "邮箱未注册") {
         ec = "This email address has not been registered.";
@@ -785,6 +798,55 @@ export default function AdminNavbarLinks() {
           </form>
         )}
       </Dialog>
+      <CustomizedSnackbars
+        name="logDone"
+        message="Sign in successfully!"
+        type="success"
+        open={snackbar.logDone}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="logOut"
+        message="Log out successfully!"
+        type="success"
+        open={snackbar.logOut}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="regDone"
+        message="Account registered successfully! Please sign in."
+        type="success"
+        open={snackbar.regDone}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="modDone"
+        message="Password modified successfully! Please sign in."
+        type="success"
+        open={snackbar.modDone}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="emailDone"
+        message="Email has been sent."
+        type="success"
+        open={snackbar.emailDone}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="noCode"
+        message="Please send the verification code to email first."
+        type="warning"
+        open={snackbar.noCode}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="findDone"
+        message="New password set successfully! Please sign in."
+        type="success"
+        open={snackbar.findDone}
+        close={closeSnackbar}
+      />
     </div>
   );
 }

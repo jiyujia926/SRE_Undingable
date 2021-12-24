@@ -35,6 +35,7 @@ import PieChart from "../../components/Charts/PieChart";
 //import StackedBarChart from "../../components/Charts/StackedBarChart";
 import axios from "axios";
 import Cardtext from "../../components/Card/Cardtext";
+import CustomizedSnackbars from "../../components/Alert/Alert";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 const server = "http://122.51.228.166:8000";
@@ -139,6 +140,16 @@ export default function Dashboard() {
   };
   const [op, setOp] = React.useState("");
   const [applyList, setApplyList] = React.useState([]);
+  const [snackbar, setSnackbar] = React.useState({
+    noAccount: false,
+    noProj: false,
+    backError: false,
+    cusDone: false,
+    applyDone: false,
+  });
+  function closeSnackbar(name) {
+    setSnackbar({ ...snackbar, [name]: false });
+  }
   function changeDashboard(chartType, position, dataScale, checkBox) {
     console.log("ppp" + position);
     let tmpDashboard = dashboard.map((current) => {
@@ -173,7 +184,7 @@ export default function Dashboard() {
         maxAge: 3600,
       });
     } else {
-      alert("请选择项目！");
+      setSnackbar({ ...snackbar, noProj: true });
     }
   };
   const handleCustomize = () => {
@@ -181,7 +192,7 @@ export default function Dashboard() {
       setOp("customize");
       setOpenDialog(true);
     } else {
-      alert("Please sign in first.");
+      setSnackbar({ ...snackbar, noAccount: true });
     }
   };
   async function customize() {
@@ -194,10 +205,10 @@ export default function Dashboard() {
     console.log(data);
     let res = await axios.post(`${server}/customize/`, data);
     if (res.data === "定制成功") {
-      alert("定制成功");
+      setSnackbar({ ...snackbar, cusDone: true });
       handleCloseDialog();
     } else {
-      alert("Error");
+      setSnackbar({ ...snackbar, backError: true });
     }
   }
   const handleApply = () => {
@@ -206,7 +217,7 @@ export default function Dashboard() {
       setOpenDialog(true);
       fetch();
     } else {
-      alert("Please sign in first.");
+      setSnackbar({ ...snackbar, noAccount: true });
     }
   };
   async function fetch() {
@@ -220,11 +231,11 @@ export default function Dashboard() {
     }
   }
   const apply = (i) => () => {
-    //alert(applyList[i].Name);
     setDashboard(applyList[i].Dashboard);
     cookie.save("dashboard", applyList[i].Dashboard, {
       maxAge: 3600,
     });
+    setSnackbar({ ...snackbar, applyDone: true });
     handleCloseDialog();
   };
   const handleCloseDialog = () => {
@@ -395,6 +406,41 @@ export default function Dashboard() {
           </div>
         )}
       </Dialog>
+      <CustomizedSnackbars
+        name="noAccount"
+        message="Please sign in first."
+        type="warning"
+        open={snackbar.noAccount}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="noProj"
+        message="Please choose a project first."
+        type="warning"
+        open={snackbar.noProj}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="backError"
+        message="Something error."
+        type="error"
+        open={snackbar.backError}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="cusDone"
+        message="Template customized successfully!"
+        type="success"
+        open={snackbar.cusDone}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="applyDone"
+        message="Template applied successfully!"
+        type="success"
+        open={snackbar.applyDone}
+        close={closeSnackbar}
+      />
     </div>
   );
 }

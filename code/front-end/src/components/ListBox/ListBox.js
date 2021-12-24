@@ -26,6 +26,7 @@ import Typography from "@material-ui/core/Typography";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import CustomizedSnackbars from "../Alert/Alert";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 const server = "http://122.51.228.166:8000";
@@ -47,6 +48,21 @@ export default function ListBox(props) {
   const [addressList, setAddressList] = React.useState(
     cookie.load("addressList") ? cookie.load("addressList") : []
   );
+  const [snackbar, setSnackbar] = React.useState({
+    addDone: false,
+    addError: false, // ("请输入正确的开源github仓库地址");
+    addNoNeed: false, //("项目已在列表中。");
+    noAccount: false, //("Please sign in first.");
+    showLimit: false, //("You can only show 2 projects at the same time.");
+    showWait: false, // ("Please wait.");
+    favorDone: false, //("Success")
+    favorNoNeed: false, // ("You have already favored.");
+    rmvFavorDone: false, //("Success");
+    rmvFavorNoNeed: false, //("You have already canceled.");
+  });
+  function closeSnackbar(name) {
+    setSnackbar({ ...snackbar, [name]: false });
+  }
   const handleInputChange = (event) => {
     setInput(event.target.value);
   };
@@ -97,11 +113,11 @@ export default function ListBox(props) {
       cookie.save("addressList", tmpList, {
         maxAge: 3600,
       });
-      alert("数据库里有");
+      setSnackbar({ ...snackbar, addDone: true });
     } else if (res.data === "仓库不存在或未开源") {
-      alert("请输入正确的开源github仓库地址");
+      setSnackbar({ ...snackbar, addError: true });
     } else {
-      alert("添加进数据库");
+      setSnackbar({ ...snackbar, addDone: true });
       let tmpList = [
         ...addressList,
         { address: tmpInput, ready: false, checked: false, favor: false },
@@ -123,20 +139,20 @@ export default function ListBox(props) {
             : input + "/" === current.address;
         })
       ) {
-        alert("项目已在列表中。");
+        setSnackbar({ ...snackbar, addNoNeed: true });
       } else {
         checkurl();
       }
     } else {
-      alert("请输入github仓库地址。");
+      setSnackbar({ ...snackbar, addError: true });
     }
     setInput("");
   };
   const handleToggle = (i) => () => {
     if (para.length >= 2 && !addressList[i].checked) {
-      alert("You can only show 2 projects at the same time.");
+      setSnackbar({ ...snackbar, showLimit: true });
     } else if (!addressList[i].ready) {
-      alert("Please wait.");
+      setSnackbar({ ...snackbar, showWait: true });
     } else {
       let tmpList = addressList.map((current, index) => {
         if (index === i) {
@@ -167,7 +183,7 @@ export default function ListBox(props) {
   };
   const handleFavor = (i) => () => {
     if (cookie.load("username") === undefined) {
-      alert("Please sign in first.");
+      setSnackbar({ ...snackbar, noAccount: true });
     } else if (!addressList[i].favor) {
       setIndex(i);
       setOp("favor");
@@ -202,9 +218,9 @@ export default function ListBox(props) {
       maxAge: 3600,
     });
     if (res.data === "收藏成功") {
-      alert("Success");
+      setSnackbar({ ...snackbar, favorDone: true });
     } else {
-      alert("You have already favored.");
+      setSnackbar({ ...snackbar, favorNoNeed: true });
     }
   }
   async function handleRemoveFavor(index) {
@@ -230,9 +246,9 @@ export default function ListBox(props) {
       maxAge: 3600,
     });
     if (res.data === "删除成功") {
-      alert("Success");
+      setSnackbar({ ...snackbar, rmvFavorDone: true });
     } else {
-      alert("You have already canceled.");
+      setSnackbar({ ...snackbar, rmvFavorNoNeed: true });
     }
   }
   const handleRemove = (i) => () => {
@@ -298,8 +314,6 @@ export default function ListBox(props) {
       interval = setInterval(() => {
         checkState();
       }, 30000);
-    } else {
-      //alert("stop");
     }
     return () => clearInterval(interval);
   });
@@ -434,6 +448,76 @@ export default function ListBox(props) {
           </div>
         )}
       </Dialog>
+      <CustomizedSnackbars
+        name="addDone"
+        message="Project added successfully!"
+        type="success"
+        open={snackbar.addDone}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="addError"
+        message="Please enter a correct address of github repository."
+        type="warning"
+        open={snackbar.addError}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="addNoNeed"
+        message="This project is already in the list."
+        type="info"
+        open={snackbar.addNoNeed}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="noAccount"
+        message="Please sign in first."
+        type="warning"
+        open={snackbar.noAccount}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="showLimit"
+        message="You can only show 2 projects at the same time."
+        type="warning"
+        open={snackbar.showLimit}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="showWait"
+        message="Please wait."
+        type="info"
+        open={snackbar.showWait}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="favorDone"
+        message="Favor successfully!"
+        type="success"
+        open={snackbar.favorDone}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="favorNoNeed"
+        message="You have already favored."
+        type="warning"
+        open={snackbar.favorNoNeed}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="rmvFavorDone"
+        message="Remove favor successfully!"
+        type="success"
+        open={snackbar.rmvFavorDone}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="rmvFavorNoNeed"
+        message="You have already canceled."
+        type="warning"
+        open={snackbar.rmvFavorNoNeed}
+        close={closeSnackbar}
+      />
     </Card>
   );
 }
