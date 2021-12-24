@@ -132,10 +132,6 @@ export default function Cardshow(props) {
     console.log(res1.data);
     setChartdata(res1.data);
     setloading(false);
-    if (charttype === "piechart") {
-      console.log("ppppp");
-      console.log(res1.data);
-    }
     //空数据判断
     if (res.length === 0) {
       alert("无数据，请换数据类型！");
@@ -217,6 +213,7 @@ export default function Cardshow(props) {
               ) : (
                 <PieChart data={res} />
               )}
+              {/* <PieChart data={res} /> */}
             </Grid>
           </CardBody>
         </Card>

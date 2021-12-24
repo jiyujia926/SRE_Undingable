@@ -7,6 +7,7 @@ class Project(models.Model):
     Name = models.CharField(max_length=255, blank=False)
     State = models.BooleanField()
     RepositoryURL = models.URLField()
+    Description = models.TextField(blank=True,null=True,default="亲亲，该仓库暂时没有项目简介噢~")
 
 class Favor(models.Model):
     User = models.ManyToManyField(User)
