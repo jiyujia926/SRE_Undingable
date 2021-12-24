@@ -218,7 +218,6 @@ export default function Cardshow(props) {
           </CardBody>
         </Card>
       );
-    }
     } else {
       return (
         <Card chart>
@@ -244,7 +243,7 @@ export default function Cardshow(props) {
           </CardBody>
         </Card>
       );
-    }
+    } 
   } else if (charttype === "stackedbarchart") {
     //bar图
     if (datatype === "contributor") {
