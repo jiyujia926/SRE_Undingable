@@ -159,13 +159,13 @@ export default function Dashboard() {
     });
   }
   async function getInfo() {
-    //let res = await axios.post(`${server}/get_info/`, address);
-    let res = {
-      data: [
-        { name: "name_a", info: "info_a" },
-        { name: "name_b", info: "info_b" },
-      ],
-    };
+    let res = await axios.post(`${server}/get_info/`, {'Address':address});
+    // let res = {
+    //   data: [
+    //     { name: "name_a", info: "info_a" },
+    //     { name: "name_b", info: "info_b" },
+    //   ],
+    // };
     setInfo(res.data);
   }
   const handleSetDataTypeSet = (data) => {
