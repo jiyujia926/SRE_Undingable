@@ -18,6 +18,7 @@
     "classnames": "2.3.1",
     "echarts": "^5.2.2",
     "echarts-for-react": "^3.0.2",
+    "file-saver": "^2.0.5",
     "history": "5.0.0",
     "perfect-scrollbar": "1.5.1",
     "prop-types": "15.7.2",
