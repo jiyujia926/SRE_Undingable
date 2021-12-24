@@ -128,7 +128,7 @@ export default function Cardtable(props) {
   const height = props.height;
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
-  const rows = props.rows;
+  const rows = props.row;
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
