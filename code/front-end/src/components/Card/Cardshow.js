@@ -209,10 +209,10 @@ export default function Cardshow(props) {
             </Typography>
             <Grid className={classes.chart}>
               {loading ? (
-                  <CircularProgress className={classes.itemProgress} />
-                ) : (
-                  <PieChart data={res.first} />
-                )}
+                <CircularProgress className={classes.itemProgress} />
+              ) : (
+                <PieChart data={res.first} />
+              )}
               {/* <PieChart data={res} /> */}
             </Grid>
           </CardBody>
@@ -228,22 +228,20 @@ export default function Cardshow(props) {
             <Grid className={classes.piegrid}>
               <Grid className={classes.piechart}>
                 {loading ? (
-                    <CircularProgress
-                      color="primary"
-                      className={classes.itemProgress}
-                    />
-                  ) : (
-                    <PieChart data={res.first,res.second} /> //双图去注释
-                    
-                  )}
+                  <CircularProgress
+                    color="primary"
+                    className={classes.itemProgress}
+                  />
+                ) : (
+                  <PieChart data={(res.first, res.second)} /> //双图去注释
+                )}
                 {/* <PieChart data={d} /> */}
               </Grid>
-
             </Grid>
           </CardBody>
         </Card>
       );
-    } 
+    }
   } else if (charttype === "stackedbarchart") {
     //bar图
     if (datatype === "contributor") {
@@ -471,8 +469,16 @@ export default function Cardshow(props) {
               />
             ) : (
               <>
-                <Cardtable className={classes.table} rows={res.first} height="300px" />
-                <Cardtable className={classes.table} rows={res.first} height="300px" />
+                <Cardtable
+                  className={classes.table}
+                  rows={res.first}
+                  height="300px"
+                />
+                <Cardtable
+                  className={classes.table}
+                  rows={res.first}
+                  height="300px"
+                />
               </>
             )}
           </CardBody>
@@ -480,7 +486,6 @@ export default function Cardshow(props) {
       );
     }
     //table
-    
   }
 }
 
