@@ -263,7 +263,7 @@ export default function Dashboard() {
                 <Typography variant="h5" gutterBottom>
                   Information of Project{address.length === 2 && <span>s</span>}
                 </Typography>
-                {address.map((current, index) => (
+                {info.map((current, index) => (
                   <div key={index}>
                     <Typography variant="body2" gutterBottom>
                       Name: {info[index].name}
