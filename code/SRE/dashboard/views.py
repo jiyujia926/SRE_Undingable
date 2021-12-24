@@ -483,7 +483,7 @@ def get_one_address(address:str,datatype:str,charttype:str):
         elif datatype == "pullrequest":
             daypullrequestlist = list(models.DayPullrequest.objects.values().filter(Project=project).order_by('Time'))
             lastpullrequest = daypullrequestlist[-1]
-            databag = json.loads(get_one_address(address))
+            databag = json.loads(get_contributor_data(address))
             cnt = 0
             for contri in databag:
                 if contri['pullrequest'] > 0:
