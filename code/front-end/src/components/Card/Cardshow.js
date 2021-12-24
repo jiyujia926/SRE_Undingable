@@ -7,28 +7,28 @@
 
 //pie图要求的数据格式
 
-const d = {
-  first: {
-    repoName: "11",
-    data: [
-      { value: 300, name: "Fine" },
-      { value: 1300, name: "Goodgood" },
-      { value: 800, name: "Kathleen" },
-      { value: 300, name: "Rainy" },
-      { value: 500, name: "Kathbaby" },
-    ],
-  },
-  second: {
-    repoName: "22",
-    data: [
-      { value: 30, name: "Fine" },
-      { value: 130, name: "Goodgood" },
-      { value: 80, name: "Kathleen" },
-      { value: 30, name: "Rainy" },
-      { value: 50, name: "Kathbaby" },
-    ],
-  },
-};
+// const d = {
+//   first: {
+//     repoName: "11",
+//     data: [
+//       { value: 300, name: "Fine" },
+//       { value: 1300, name: "Goodgood" },
+//       { value: 800, name: "Kathleen" },
+//       { value: 300, name: "Rainy" },
+//       { value: 500, name: "Kathbaby" },
+//     ],
+//   },
+//   second: {
+//     repoName: "22",
+//     data: [
+//       { value: 30, name: "Fine" },
+//       { value: 130, name: "Goodgood" },
+//       { value: 80, name: "Kathleen" },
+//       { value: 30, name: "Rainy" },
+//       { value: 50, name: "Kathbaby" },
+//     ],
+//   },
+// };
 
 import React from "react";
 import { useState } from "react";
@@ -200,7 +200,7 @@ export default function Cardshow(props) {
           </CardBody>
         </Card>
       );
-    } else if (address.length === 1) {
+    } else {
       return (
         <Card chart>
           <CardBody>
@@ -213,49 +213,38 @@ export default function Cardshow(props) {
                 ) : (
                   <PieChart data={res.first} />
                 )} */}
-              <PieChart data={d.first} />
-            </Grid>
-          </CardBody>
-        </Card>
-      );
-    } else {
-      return (
-        <Card chart>
-          <CardBody>
-            <Typography variant="h6" gutterBottom className={classes.head}>
-              {datatype}
-            </Typography>
-            <Grid className={classes.piegrid}>
-              <Grid className={classes.piechart}>
-                {/* {loading ? (
-                    <CircularProgress
-                      color="primary"
-                      className={classes.itemProgress}
-                    />
-                  ) : (
-                    <PieChart data={res.first} /> //双图去注释
-                    // <PieChart data={res} /> //双图加注释
-                  )} */}
-                <PieChart data={d.first} />
-              </Grid>
-              <Divider orientation="vertical" flexItem />
-              <Grid className={classes.piechart}>
-                {/* {loading ? (
-                    <CircularProgress
-                      color="primary"
-                      className={classes.itemProgress}
-                    />
-                  ) : (
-                    <PieChart data={res.second} /> //双图去注释
-                    // <PieChart data={res} /> //双图加注释
-                  )} */}
-                <PieChart data={d.second} />
-              </Grid>
+              <PieChart data={res} />
             </Grid>
           </CardBody>
         </Card>
       );
     }
+    // } else {
+    //   return (
+    //     <Card chart>
+    //       <CardBody>
+    //         <Typography variant="h6" gutterBottom className={classes.head}>
+    //           {datatype}
+    //         </Typography>
+    //         <Grid className={classes.piegrid}>
+    //           <Grid className={classes.piechart}>
+    //             {/* {loading ? (
+    //                 <CircularProgress
+    //                   color="primary"
+    //                   className={classes.itemProgress}
+    //                 />
+    //               ) : (
+    //                 <PieChart data={res.first} /> //双图去注释
+    //                 // <PieChart data={res} /> //双图加注释
+    //               )} */}
+    //             <PieChart data={d} />
+    //           </Grid>
+
+    //         </Grid>
+    //       </CardBody>
+    //     </Card>
+    //   );
+    // }
   } else if (charttype === "stackedbarchart") {
     //bar图
     if (datatype === "contributor") {
