@@ -78,6 +78,9 @@ def get_data(request):
             firstbag = json.loads(get_one_address(addresslist[0],datatype,charttype))
             resbag = {'first':firstbag,'second':{}}
             return HttpResponse(json.dumps(resbag))
+        elif charttype == "table":
+            firstbag = json.loads(get_one_address(addresslist[0],datatype,charttype))
+            resbag = {'first':firstbag,'second':{}}
         return HttpResponse(get_one_address(addresslist[0],data['Datatype'],data['Charttype']))
     else:
         address1 = addresslist[0]
@@ -92,6 +95,9 @@ def get_data(request):
             resbag = {'first':{'repoName':repo1,'data':firstbag},'second':{'repoName':repo2,'data':secondbag}}
             return HttpResponse(json.dumps(resbag))
         elif charttype == "text":
+            resbag = {'first':firstbag,'second':secondbag}
+            return HttpResponse(json.dumps(resbag))
+        elif charttype == "table":
             resbag = {'first':firstbag,'second':secondbag}
             return HttpResponse(json.dumps(resbag))
         if datatype=="commit":
@@ -579,10 +585,11 @@ def get_one_address(address:str,datatype:str,charttype:str):
             day={'categoryData':daytimelist,'valueData':[{'repo':projname,'name':'open','detailData':dayopenlist},{'repo':projname,'name':'closed','detailData':daycloselist},{'repo':projname,'name':'merged','detailData':daymergelist}]}
             databag={"day":day,'month':[],'year':[]}
             return json.dumps(databag)
-        elif datatype == "contributor":
+        elif datatype == "contributor" and charttype == "table":
             # table
-            pass
-            return 
+            databag = json.loads(get_contributor_data(address))
+            resbag = {'rows':databag}
+            return json.dumps(resbag)
     
     # databag = {'categoryData':timelist,'valueData':commitcountlist}
     # return HttpResponse(json.dumps(databag))
