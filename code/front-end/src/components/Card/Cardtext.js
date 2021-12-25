@@ -53,8 +53,9 @@ export default function Cardtext(props) {
   const [loading, setloading] = useState(true);
 
   useEffect(() => {
+    setloading(true);
     upload();
-  }, []);
+  }, [address]);
 
   async function upload() {
     let data = {
@@ -66,13 +67,12 @@ export default function Cardtext(props) {
     console.log(res1.data);
     setTextdata(res1.data);
     setloading(false);
-
     //空数据判断
     if (res.length === 0) {
       alert("无数据，请换数据类型！");
     }
   }
-  if (address.length === 1) {
+  if (res.second !== undefined && res.second.repoName === undefined) {
     return (
       <Card className={classes.root}>
         <CardBody className={classes.body}>
@@ -119,7 +119,7 @@ export default function Cardtext(props) {
         </CardBody>
       </Card>
     );
-  } else {
+  } else if (res.second !== undefined) {
     return (
       <Card className={classes.root}>
         <CardBody className={classes.body}>
@@ -130,8 +130,6 @@ export default function Cardtext(props) {
             <CircularProgress className={classes.itemProgress} />
           ) : (
             <>
-              <Divider textAlign="right" className={classes.divider} />
-
               <div className={classes.repos}>
                 <div className={classes.reponame}>
                   <Typography variant="string" align="center">
@@ -243,6 +241,8 @@ export default function Cardtext(props) {
         </CardBody>
       </Card>
     );
+  } else {
+    return <div>nothing</div>;
   }
 }
 

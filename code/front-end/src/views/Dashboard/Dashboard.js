@@ -139,14 +139,14 @@ export default function Dashboard() {
   function closeSnackbar(name) {
     setSnackbar({ ...snackbar, [name]: false });
   }
-  function changeDashboard(chartType, position, dataScale, checkBox) {
+  function changeDashboard(chartType, position, timeScale, checkBox) {
     console.log("ppp" + position);
     let tmpDashboard = dashboard.map((current) => {
       if (current.Position === position) {
         return {
           ...current,
           ChartType: chartType,
-          DataScale: dataScale,
+          TimeScale: timeScale,
           CheckBox: checkBox,
         };
       } else {
@@ -244,6 +244,8 @@ export default function Dashboard() {
   React.useEffect(() => {
     if (address.length > 0) {
       getInfo();
+    } else {
+      setInfo([]);
     }
   }, [address]);
   return (

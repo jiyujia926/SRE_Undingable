@@ -89,10 +89,12 @@ export default function AdminNavbarLinks() {
   const handleLogout = () => {
     handleCloseProfile();
     setAccount({ email: "", username: "" });
+    setSnackbar({ ...snackbar, logOut: true });
     cookie.remove("username");
     cookie.remove("time");
     cookie.remove("addressList");
-    setSnackbar({ ...snackbar, logOut: true });
+    cookie.remove("dashboard");
+    window.location.reload();
   };
   const handleClickDialog = () => {
     setOp("login");
@@ -138,18 +140,20 @@ export default function AdminNavbarLinks() {
     let res = await axios.post(`${server}/login/`, data);
     if (res.data === "密码正确") {
       let info = await axios.post(`${server}/getinfo/`, data);
-      setAccount({ email: formData.email, username: info.data.name });
+      setAccount({ email: formData.email, username: info.data.account });
       handleCloseDialog();
       setSnackbar({ ...snackbar, logDone: true });
       cookie.save("account", formData.email);
-      cookie.save("username", info.data.name);
+      cookie.save("username", info.data.account);
       cookie.save("time", info.data.time);
       cookie.remove("addressList");
+      cookie.remove("dashboard");
       if (remember) {
         cookie.save("password", formData.password);
       } else {
         cookie.remove("password");
       }
+      window.location.reload();
     } else {
       if (res.data === "密码错误") {
         pc = "Password is incorrect.";
@@ -269,6 +273,8 @@ export default function AdminNavbarLinks() {
       setAccount({ ...account, email: "", username: "" });
       cookie.remove("username");
       cookie.remove("time");
+      cookie.remove("addressList");
+      cookie.remove("dashboard");
       if (cookie.load("password")) {
         cookie.remove("password");
       }
@@ -468,6 +474,7 @@ export default function AdminNavbarLinks() {
                       </MenuItem>
                       <MenuItem
                         onClick={handleLogout}
+                        submit
                         className={classes.dropdownItem}
                       >
                         Logout

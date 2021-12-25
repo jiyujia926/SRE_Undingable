@@ -40,7 +40,6 @@ export default function CustomizationList() {
     });
     if (isExisted) {
       history.push("/admin/dashboard");
-      //alert(templateList[index].hash);
       cookie.save("dashboard", templateList[index].dashboard);
     } else {
       alert("You have no project to apply now.");
@@ -74,7 +73,6 @@ export default function CustomizationList() {
       let res = await axios.post(`${server}/fetch/`, data);
       let list = res.data;
       if (list.length > 0) {
-        //alert("show");
         setTemplateList(
           list.map((current, index) => {
             return {

@@ -79,12 +79,11 @@ export default function Cardshow(props) {
   const [c2, setc2] = useState("");
   const [c3, setc3] = useState("");
   const classes = useStyles();
-  const [charttype, setChart] = useState(props.charttype);
   const [loading, setloading] = useState(true);
-
   const [res, setChartdata] = useState({});
   //console.log(res);
-  const [time, setTime] = useState(props.time);
+  const time = props.time;
+  const charttype = props.charttype;
   const checkbox = props.checkbox;
   const datatype = props.datatype;
   const address = props.address;
@@ -173,12 +172,10 @@ export default function Cardshow(props) {
 
   //更改图表类型，重新渲染
   function changechart(event) {
-    setChart(event.target.value);
     changeDashboard(event.target.value, position, time, checkbox);
   }
   //更改时间需要重新获取数据
   function changetime(event) {
-    setTime(event.target.value);
     changeDashboard(charttype, position, event.target.value, checkbox);
   }
 
@@ -237,7 +234,7 @@ export default function Cardshow(props) {
                   onChange={changechart}
                   input={<Input />}
                   label="图表类型"
-                  defaultValue={"stackedbarchart"}
+                  value={"stackedbarchart"}
                   classes={{
                     select: classes.input,
                   }}
@@ -255,7 +252,7 @@ export default function Cardshow(props) {
                     onChange={(e) => changetime(e)}
                     input={<Input />}
                     label="时间刻度"
-                    defaultValue={time}
+                    value={time}
                     classes={{
                       select: classes.input,
                     }}
@@ -359,7 +356,7 @@ export default function Cardshow(props) {
                   classes={{
                     select: classes.input,
                   }}
-                  defaultValue={"linechart"}
+                  value={"linechart"}
                 >
                   <MenuItem value={"stackedbarchart"}>
                     stacked barchart
@@ -377,7 +374,7 @@ export default function Cardshow(props) {
                     classes={{
                       select: classes.input,
                     }}
-                    defaultValue={time}
+                    value={time}
                   >
                     <MenuItem value={"day"}>day</MenuItem>
                     <MenuItem value={"month"}>month</MenuItem>

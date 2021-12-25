@@ -24,7 +24,6 @@ export default function Favorites() {
   const col = ["ID", "Repo Name", "Repo Address", "Description"];
   const [addressList, setAddressList] = React.useState([]);
   async function view(index) {
-    history.push("/admin/dashboard");
     let tmpList = cookie.load("addressList") ? cookie.load("addressList") : [];
     let isExisted = tmpList.some((current) => {
       return current.address === addressList[index]["Repo Address"];
@@ -41,12 +40,13 @@ export default function Favorites() {
         Address: addressList[index]["Repo Address"],
       });
       let isDone = res.data === "爬好了";
+      tmpList = tmpList.map((current) => ({ ...current, checked: false }));
       tmpList = [
         ...tmpList,
         {
           address: addressList[index]["Repo Address"],
           ready: isDone,
-          checked: false,
+          checked: true,
           favor: true,
         },
       ];
@@ -54,6 +54,7 @@ export default function Favorites() {
     cookie.save("addressList", tmpList, {
       maxAge: 3600,
     });
+    history.push("/admin/dashboard");
   }
   async function remove(index) {
     let data = {
