@@ -473,7 +473,7 @@ def get_one_address(address:str,datatype:str,charttype:str):
     elif charttype == "text":
         if datatype == "contributor":
             databag = json.loads(get_contributor_data(address))
-            resbag = {'total':[],'participate':len(databag)}
+            resbag = {'total':[],'participate':len(databag),'repoName':projname}
             return json.dumps(resbag)
         elif datatype == "issue":
             dayissuelist = list(models.DayIssue.objects.values().filter(Project=project).order_by('Time'))
@@ -484,10 +484,10 @@ def get_one_address(address:str,datatype:str,charttype:str):
                 for contri in databag:
                     if contri['issue'] > 0:
                         cnt += 1
-                resbag = {'total':[{'name':'open', 'value':lastissue['openedCount']},{'name':'closed', 'value':lastissue['closedCount']}],'participate':cnt}
+                resbag = {'total':[{'name':'open', 'value':lastissue['openedCount']},{'name':'closed', 'value':lastissue['closedCount']}],'participate':cnt,'repoName':projname}
                 return json.dumps(resbag)
             else:
-                resbag = {'total':[{'name':'open', 'value':0},{'name':'closed', 'value':0}],'participate':0}
+                resbag = {'total':[{'name':'open', 'value':0},{'name':'closed', 'value':0}],'participate':0,'repoName':projname}
                 return json.dumps(resbag)
         elif datatype == "commit":
             commitlist = list(models.YearCommit.objects.values().filter(Project=project))
@@ -508,7 +508,7 @@ def get_one_address(address:str,datatype:str,charttype:str):
             
             resbag = {'total':[{'name':'commit','value':allcommit},{'name':'addition','value':alladd},{'name':'changedfile','value':allchange},
                                {'name':'deletion','value':alldel}],
-                      'participate':cnt}
+                      'participate':cnt,'repoName':projname}
             return json.dumps(resbag)
         elif datatype == "pullrequest":
             daypullrequestlist = list(models.DayPullrequest.objects.values().filter(Project=project).order_by('Time'))
@@ -520,11 +520,11 @@ def get_one_address(address:str,datatype:str,charttype:str):
                     if contri['pullrequest'] > 0:
                         cnt += 1
                 resbag = {'total':[{'name':'open','value':lastpullrequest['openedCount']},{'name':'closed','value':lastpullrequest['closedCount']},{'name':'merged','value':lastpullrequest['mergedCount']}],
-                        'participate':cnt}
+                        'participate':cnt,'repoName':projname}
                 return json.dumps(resbag) 
             else:
                 resbag = {'total':[{'name':'open','value':0},{'name':'closed','value':0},{'name':'merged','value':0}],
-                        'participate':0}
+                        'participate':0,'repoName':projname}
                 return json.dumps(resbag)
     else:
         if datatype == "commit":
