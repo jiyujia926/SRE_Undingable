@@ -36,6 +36,7 @@ import List from "@material-ui/core/List";
 import axios from "axios";
 import Cardtext from "../../components/Card/Cardtext";
 import CustomizedSnackbars from "../../components/Alert/Alert";
+import CardBody from "../../components/Card/CardBody";
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 const server = "http://122.51.228.166:8000";
@@ -257,25 +258,30 @@ export default function Dashboard() {
         <GridItem xs={12} sm={12} md={6}>
           <Card className={classes.infoCard}>
             {info.length === 0 ? (
-              <Typography variant="h5" gutterBottom>
-                Please choose a project first.
-              </Typography>
+              <CardBody>
+                <Typography variant="h6" className={classes.head}>
+                  Please choose a project first.
+                </Typography>
+              </CardBody>
             ) : (
-              <div>
-                <Typography variant="h5" gutterBottom>
+              <CardBody>
+                <Typography variant="h6" className={classes.head}>
                   Information of Project{info.length === 2 && <span>s</span>}
                 </Typography>
                 {info.map((current, index) => (
                   <div key={index}>
-                    <Typography variant="body2" gutterBottom>
+                    <Typography
+                      variant="subtitle1"
+                      className={classes.subtitle}
+                    >
                       Name: {info[index].name}
                     </Typography>
-                    <Typography variant="body2" gutterBottom>
+                    <Typography variant="body2" className={classes.head}>
                       Info: {info[index].info}
                     </Typography>
                   </div>
                 ))}
-              </div>
+              </CardBody>
             )}
           </Card>
         </GridItem>

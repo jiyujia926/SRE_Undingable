@@ -115,9 +115,23 @@ const dashboardStyle = (theme) => ({
     },
   },
   infoCard: {
-    height: "130.5px",
-    alignItems: "center",
-    padding: "15px 0",
+    height: "100%",
+    padding: "0px 0",
+  },
+  body: {
+    //height: "350px",
+    display: "flex",
+    //flexDirection: "column",
+  },
+  head: {
+    textAlign: "left",
+    margin: "10px 16px 0px",
+    textTransform: "capitalize",
+  },
+  subtitle: {
+    margin: "10px 16px 0px",
+    textTransform: "capitalize",
+    fontWeight: "500",
   },
   fabSet: {
     position: "fixed",

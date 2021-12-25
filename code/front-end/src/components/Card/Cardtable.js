@@ -12,6 +12,9 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import Paper from "@mui/material/Paper";
 import { visuallyHidden } from "@mui/utils";
 
+import styles from "assets/jss/material-dashboard-react/components/cardTableStyle";
+import { makeStyles } from "@material-ui/core/styles";
+const useStyles = makeStyles(styles);
 //排序
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -81,6 +84,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
+  const classes = useStyles();
   const { order, orderBy, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -89,12 +93,13 @@ function EnhancedTableHead(props) {
   return (
     <TableHead padding="none">
       <TableRow>
-        {headCells.map((headCell) => (
+        {headCells.map((headCell, index) => (
           <TableCell
             key={headCell.id}
-            align="center"
-            padding={headCell.disablePadding ? "none" : "normal"}
+            align={index === 0 ? "left" : "right"}
+            padding="normal"
             sortDirection={orderBy === headCell.id ? order : false}
+            className={classes.headCell}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
@@ -125,6 +130,7 @@ EnhancedTableHead.propTypes = {
 };
 
 export default function Cardtable(props) {
+  const classes = useStyles();
   const height = props.height;
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
@@ -137,9 +143,17 @@ export default function Cardtable(props) {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Paper sx={{ width: "100%", mb: 2 }}>
-        <TableContainer sx={{ maxHeight: { height } }}>
-          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+      <Paper sx={{ width: "100%", mb: 2 }} className={classes.paper}>
+        <TableContainer
+          sx={{ maxHeight: { height } }}
+          className={classes.container}
+        >
+          <Table
+            stickyHeader
+            sx={{ minWidth: 750 }}
+            aria-labelledby="tableTitle"
+            className={classes.table}
+          >
             <EnhancedTableHead
               order={order}
               orderBy={orderBy}
@@ -157,16 +171,15 @@ export default function Cardtable(props) {
                         component="th"
                         id={labelId}
                         scope="row"
-                        padding="none"
-                        align="center"
+                        align="left"
                       >
                         {row.name}
                       </TableCell>
-                      <TableCell align="center">{row.commit}</TableCell>
-                      <TableCell align="center">{row.issue}</TableCell>
-                      <TableCell align="center">{row.pullrequest}</TableCell>
-                      <TableCell align="center">{row.value}</TableCell>
-                      <TableCell align="center">{row.weight}%</TableCell>
+                      <TableCell align="right">{row.commit}</TableCell>
+                      <TableCell align="right">{row.issue}</TableCell>
+                      <TableCell align="right">{row.pullrequest}</TableCell>
+                      <TableCell align="right">{row.value}</TableCell>
+                      <TableCell align="right">{row.weight}%</TableCell>
                     </TableRow>
                   );
                 })}

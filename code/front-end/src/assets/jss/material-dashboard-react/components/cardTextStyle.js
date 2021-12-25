@@ -42,13 +42,12 @@ const cardTextStyle = {
     flexDirection: "column",
     display: "flex",
     width: "20%",
-    marginTop: "7%",
-    //writingmode: "vertical-lr",
   },
   repos: {
     height: "100%",
     flexDirection: "row",
     display: "flex",
+    alignItems: "center",
   },
   text: {
     textAlign: "center",

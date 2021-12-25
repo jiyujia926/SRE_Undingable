@@ -2,6 +2,9 @@ const checkBoxSetStyle = {
   root: {
     display: "flex",
     margin: "0 0 15px",
+    height: "100%",
+    flexDirection: "column",
+    justifyContent: "center",
   },
   labelbox: {
     color: "black",
