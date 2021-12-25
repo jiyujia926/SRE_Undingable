@@ -56,6 +56,12 @@ const LineChart = (props) => {
         y: "top",
         orient: "horizontal",
       },
+      tooltip: {
+        trigger: "axis",
+        axisPointer: {
+          type: "cross",
+        },
+      },
       toolbox: {
         feature: {
           dataZoom: {
