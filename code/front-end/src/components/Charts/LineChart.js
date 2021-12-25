@@ -53,6 +53,7 @@ const LineChart = (props) => {
         data: data.name,
         type: "scroll",
         x: "center",
+        top: "7%",
         y: "top",
         orient: "horizontal",
       },

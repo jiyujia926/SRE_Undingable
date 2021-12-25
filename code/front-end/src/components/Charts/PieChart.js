@@ -26,6 +26,7 @@ const PieChart = (props) => {
       tmp_sum += data[i].data[j].value;
       tmp_item.data.push(tmp);
     }
+    tmp_item.center = ["35%", "50%"];
     if (i === 0) {
       tmp_item.radius = ["65%", "100%"];
     } else {

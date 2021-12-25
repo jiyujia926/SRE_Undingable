@@ -77,6 +77,7 @@ const StackedBarChart = (props) => {
         type: "scroll",
         x: "center",
         y: "top",
+        top: "7%",
         orient: "horizontal",
       },
       grid: {
