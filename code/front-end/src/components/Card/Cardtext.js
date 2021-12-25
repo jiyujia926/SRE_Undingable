@@ -7,6 +7,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Card } from "@material-ui/core";
 import CardBody from "./CardBody";
 import Typography from "@material-ui/core/Typography";
+import Divider from "@mui/material/Divider";
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
@@ -19,27 +20,29 @@ const useStyles = makeStyles(styles);
 //pullrequest——open, closed, merged
 //contributor只有总数
 
+//数据格式
 // const d = {
-//   first:{
+//   first: {
 //     total: [
 //       { name: "open", value: 10 },
 //       { name: "closed", value: 10 },
 //       { name: "merged", value: 10 },
+//       { name: "add", value: 10 },
 //     ],
-//     participate: -1,
-//     //参与人数，没有就写-1（contributor）
+//     participate: 10,
+//     repoName: "adamwiggins/merb-on-heroku",
 //   },
-//   second:{注意如果是commit的话这边会给四个
+//   second: {
+//     //注意如果是commit的话这边会给四个
 //     total: [
-//       { name: "commit", value: 10 },
-//       { name: "addition", value: 10 },
-//       { name: "changedfile", value: 10 },
-//       { name: "deletion", value: 10 },
+//       { name: "open", value: 10 },
+//       { name: "closed", value: 10 },
+//       { name: "merged", value: 10 },
+//       { name: "add", value: 10 },
 //     ],
-//     participate: -1,
-//     //参与人数，没有就写-1（contributor）
-//   }
-
+//     participate: 10,
+//     repoName: "huzhifeng/py12306",
+//   },
 // };
 
 export default function Cardtext(props) {
@@ -63,42 +66,42 @@ export default function Cardtext(props) {
     console.log(res1.data);
     setTextdata(res1.data);
     setloading(false);
+
     //空数据判断
     if (res.length === 0) {
       alert("无数据，请换数据类型！");
     }
   }
-
-  return (
-    <Card className={classes.root}>
-      <CardBody className={classes.body}>
-        <Typography variant="h6" gutterBottom className={classes.head}>
-          {datatype}
-        </Typography>
-        {loading ? (
-          <CircularProgress className={classes.itemProgress} />
-        ) : (
-          <div className={classes.content}>
-            {res.first.total.map((current, index) => {
-              return (
-                <div className={classes.text} key={index}>
-                  <Typography
-                    variant="h4"
-                    className={classes["number" + index]}
-                  >
-                    {current.value}
-                  </Typography>
-                  <Typography
-                    variant="subtitle1"
-                    gutterBottom
-                    className={classes.item}
-                  >
-                    {current.name}
-                  </Typography>
-                </div>
-              );
-            })}
-            {res.first["participate"] !== -1 && (
+  if (address.length === 1) {
+    return (
+      <Card className={classes.root}>
+        <CardBody className={classes.body}>
+          <Typography variant="h6" gutterBottom className={classes.head}>
+            {datatype}
+          </Typography>
+          {loading ? (
+            <CircularProgress className={classes.itemProgress} />
+          ) : (
+            <div className={classes.content}>
+              {res.first.total.map((current, index) => {
+                return (
+                  <div className={classes.text} key={index}>
+                    <Typography
+                      variant="h4"
+                      className={classes["number" + index]}
+                    >
+                      {current.value}
+                    </Typography>
+                    <Typography
+                      variant="subtitle1"
+                      gutterBottom
+                      className={classes.item}
+                    >
+                      {current.name}
+                    </Typography>
+                  </div>
+                );
+              })}
               <div className={classes.text}>
                 <Typography variant="h4" className={classes["number"]}>
                   {res.first.participate}
@@ -111,12 +114,136 @@ export default function Cardtext(props) {
                   Participant
                 </Typography>
               </div>
-            )}
-          </div>
-        )}
-      </CardBody>
-    </Card>
-  );
+            </div>
+          )}
+        </CardBody>
+      </Card>
+    );
+  } else {
+    return (
+      <Card className={classes.root}>
+        <CardBody className={classes.body}>
+          <Typography variant="h6" gutterBottom className={classes.head}>
+            {datatype}
+          </Typography>
+          {loading ? (
+            <CircularProgress className={classes.itemProgress} />
+          ) : (
+            <>
+              <Divider textAlign="right" className={classes.divider} />
+
+              <div className={classes.repos}>
+                <div className={classes.reponame}>
+                  <Typography variant="string" align="center">
+                    {res.first.repoName.slice(
+                      0,
+                      res.first.repoName.indexOf("/")
+                    )}
+                  </Typography>
+                  <Typography variant="string" align="center">
+                    {res.first.repoName.slice(
+                      res.first.repoName.indexOf("/") + 1
+                    )}
+                  </Typography>
+                </div>
+                <div className={classes.doublecontent}>
+                  {res.first.total.map((current, index) => {
+                    return (
+                      <div
+                        className={classes["text" + res.first.total.length]}
+                        key={index}
+                      >
+                        <Typography
+                          variant="h5"
+                          className={classes["number" + index]}
+                        >
+                          {current.value}
+                        </Typography>
+                        <Typography
+                          variant="subtitle2"
+                          gutterBottom
+                          className={classes.item}
+                        >
+                          {current.name}
+                        </Typography>
+                      </div>
+                    );
+                  })}
+                  <div className={classes["text" + res.first.total.length]}>
+                    <Typography variant="h5" className={classes["number"]}>
+                      {res.first.participate}
+                    </Typography>
+                    <Typography
+                      variant="subtitle2"
+                      gutterBottom
+                      className={classes.item}
+                    >
+                      Participant
+                    </Typography>
+                  </div>
+                </div>
+              </div>
+              <Divider textAlign="right" className={classes.divider} />
+              {/* {res.second.repoName}
+              </Divider> */}
+              <div className={classes.repos}>
+                <div className={classes.reponame}>
+                  <Typography variant="string" align="center">
+                    {res.second.repoName.slice(
+                      0,
+                      res.second.repoName.indexOf("/")
+                    )}
+                  </Typography>
+                  <Typography variant="string" align="center">
+                    {res.second.repoName.slice(
+                      res.second.repoName.indexOf("/") + 1
+                    )}
+                  </Typography>
+                </div>
+                <div className={classes.doublecontent}>
+                  {res.second.total.map((current, index) => {
+                    return (
+                      <div
+                        className={classes["text" + res.first.total.length]}
+                        key={index}
+                      >
+                        <Typography
+                          variant="h5"
+                          className={classes["number" + index]}
+                        >
+                          {current.value}
+                        </Typography>
+                        <Typography
+                          variant="subtitle2"
+                          gutterBottom
+                          className={classes.item}
+                        >
+                          {current.name}
+                        </Typography>
+                      </div>
+                    );
+                  })}
+
+                  <div className={classes["text" + res.first.total.length]}>
+                    <Typography variant="h5" className={classes["number"]}>
+                      {res.second.participate}
+                    </Typography>
+                    <Typography
+                      variant="subtitle2"
+                      gutterBottom
+                      className={classes.item}
+                    >
+                      Participant
+                    </Typography>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </CardBody>
+      </Card>
+    );
+  }
 }
 
 Cardtext.propTypes = {
