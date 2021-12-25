@@ -682,7 +682,7 @@ def get_contributor_data(url:str):
                 key = list(i.keys())
                 dict[key[1]]+=i[key[1]]
                 dict['value']+=i[key[1]]
-            dict['weight']=float(format(dict['value']/Sum, '.2%'))
+            dict['weight']=float(dict['value']/Sum)
             list_ret.append(dict)
         #从大到小排序
         list_ret=sorted(list_ret, key=lambda item:item['value'], reverse=True)
