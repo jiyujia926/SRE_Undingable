@@ -76,6 +76,9 @@ const PieChart = (props) => {
         borderRadius: 2,
       },
       roseType: "radius",
+      tooltip: {
+        trigger: "item",
+      },
       toolbox: {
         show: true,
         feature: {
