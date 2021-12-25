@@ -12,6 +12,7 @@ import json
 import uuid
 
 from requests.api import get
+from requests.sessions import HTTPAdapter
 from . import models
 from register.models import User as rUser
 from .tryvisit import tryvisit
@@ -670,8 +671,10 @@ def get_contributor_data(url:str):
         
         Sum = 0
         for item in list_all:
+            if item['name'] == None:
+                item['name'] = "removed_user"
             key = list(item.keys())
-            Sum+=item[key[1]]
+            Sum+=item[key[1]]    
         
         list_ret=[]
         list_all.sort(key=itemgetter('name'))
@@ -816,7 +819,9 @@ def dotest(url:str):
 
 
 def test(request):
-    url = ["https://github.com/microsoft/CodeBERT/","https://github.com/Bitergia/prosoul/"]
+    url = ["https://github.com/donnemartin/system-design-primer/","https://github.com/Bitergia/prosoul/"]
     key = ['first', 'second']
     project = models.Project.objects.filter(RepositoryURL=url[0]).first()
-    return HttpResponse("sssss")
+    # data = get_contributor_data(url[0])
+    # return HttpResponse(data)
+    return HttpResponse("sss")
