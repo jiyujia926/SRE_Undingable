@@ -204,10 +204,9 @@ export default function Cardshow(props) {
               <CircularProgress className={classes.itemProgress} />
             ) : (
               <Grid className={classes.chart}>
-                <PieChart data={[res.first, res.second]} />
+                <PieChart data={[res.first, res.second]} notMerge={true} />
               </Grid>
             )}
-            {/* <PieChart data={[res.first]} /> */}
           </CardBody>
         </Card>
       );

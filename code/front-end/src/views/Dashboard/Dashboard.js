@@ -46,6 +46,7 @@ const useStyles = makeStyles(styles);
 export default function Dashboard() {
   const classes = useStyles();
   const [address, setAddress] = React.useState([]);
+  const [info, setInfo] = React.useState([]);
   const defaultDashboard = [
     {
       Position: 0,
@@ -152,12 +153,21 @@ export default function Dashboard() {
         return current;
       }
     });
-    console.log("pppp" + tmpDashboard[3].CheckBox);
-    console.log("ppppp" + dashboard[3].CheckBox);
     setDashboard(tmpDashboard);
     cookie.save("dashboard", tmpDashboard, {
       maxAge: 3600,
     });
+  }
+  async function getInfo() {
+    let res = await axios.post(`${server}/get_info/`, { Address: address });
+    // let res = {
+    //   data: [
+    //     { name: "name_a", info: "info_a" },
+    //     { name: "name_b", info: "info_b" },
+    //   ],
+    // };
+    console.log(res.data);
+    setInfo(res.data);
   }
   const handleSetDataTypeSet = (data) => {
     if (address.length > 0) {
@@ -231,6 +241,11 @@ export default function Dashboard() {
     setFormData(initialState);
     setOp("");
   };
+  React.useEffect(() => {
+    if (address.length > 0) {
+      getInfo();
+    }
+  }, [address]);
   return (
     <div>
       <GridContainer>
@@ -239,9 +254,27 @@ export default function Dashboard() {
         </GridItem>
         <GridItem xs={12} sm={12} md={6}>
           <Card className={classes.infoCard}>
-            <Typography variant="h5" gutterBottom>
-              项目基本信息
-            </Typography>
+            {info.length === 0 ? (
+              <Typography variant="h5" gutterBottom>
+                Please choose a project first.
+              </Typography>
+            ) : (
+              <div>
+                <Typography variant="h5" gutterBottom>
+                  Information of Project{info.length === 2 && <span>s</span>}
+                </Typography>
+                {info.map((current, index) => (
+                  <div key={index}>
+                    <Typography variant="body2" gutterBottom>
+                      Name: {info[index].name}
+                    </Typography>
+                    <Typography variant="body2" gutterBottom>
+                      Info: {info[index].info}
+                    </Typography>
+                  </div>
+                ))}
+              </div>
+            )}
           </Card>
         </GridItem>
         <GridItem xs={12} sm={12} md={6}>

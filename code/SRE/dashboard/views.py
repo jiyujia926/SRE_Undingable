@@ -780,6 +780,33 @@ def deletecustomize(request):
         return HttpResponse("删除失败")
 
 # def initialcontributor(url:str):
+
+
+def get_info(request):
+    data = json.loads(request.body)
+    addresslist = data['Address']
+    if len(addresslist) == 1:
+        address = addresslist[0]
+        projectlist = list(models.Project.objects.values().filter(RepositoryURL=address))
+        if projectlist:
+            resbag = [{'name':projectlist[0]['Name'][1:],'info':projectlist[0]['Description']}]
+            print(json.dumps(resbag))
+            return HttpResponse(json.dumps(resbag))
+        return HttpResponse("")
+    elif len(addresslist) == 2:
+        address1 = addresslist[0]
+        address2 = addresslist[1]
+        projectlist1 = list(models.Project.objects.values().filter(RepositoryURL=address1))
+        projectlist2 = list(models.Project.objects.values().filter(RepositoryURL=address2))
+        resbag = []
+        if projectlist1:
+            resbag.append({'name':projectlist1[0]['Name'][1:],'info':projectlist1[0]['Description']})
+        if projectlist2:
+            resbag.append({'name':projectlist2[0]['Name'][1:],'info':projectlist2[0]['Description']})
+        print(json.dumps(resbag))
+        return HttpResponse(json.dumps(resbag))
+        
+        
     
 #celery tasks
 def importDB(url:str):
