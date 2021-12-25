@@ -166,7 +166,7 @@ export default function Cardtable(props) {
                       <TableCell align="center">{row.issue}</TableCell>
                       <TableCell align="center">{row.pullrequest}</TableCell>
                       <TableCell align="center">{row.value}</TableCell>
-                      <TableCell align="center">{row.weight}</TableCell>
+                      <TableCell align="center">{row.weight}%</TableCell>
                     </TableRow>
                   );
                 })}
