@@ -82,8 +82,8 @@ export default function Cardshow(props) {
   const [loading, setloading] = useState(true);
   const [res, setChartdata] = useState({});
   //console.log(res);
-  const time = props.time;
-  const charttype = props.charttype;
+  const [time, setTime] = useState(props.time);
+  const [charttype, setCharttype] = useState(props.charttype);
   const checkbox = props.checkbox;
   const datatype = props.datatype;
   const address = props.address;
@@ -113,6 +113,14 @@ export default function Cardshow(props) {
       }
     }
   }, [address]);
+
+  useEffect(() => {
+    setTime(props.time);
+  }, [props.time]);
+
+  useEffect(() => {
+    setCharttype(props.charttype);
+  }, [props.charttype]);
 
   //传输
   async function upload() {
@@ -172,10 +180,12 @@ export default function Cardshow(props) {
 
   //更改图表类型，重新渲染
   function changechart(event) {
+    setCharttype(event.target.value);
     changeDashboard(event.target.value, position, time, checkbox);
   }
   //更改时间需要重新获取数据
   function changetime(event) {
+    setTime(event.target.value);
     changeDashboard(charttype, position, event.target.value, checkbox);
   }
 
