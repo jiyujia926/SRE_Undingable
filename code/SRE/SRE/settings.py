@@ -167,6 +167,8 @@ CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0' # Broker配置，使用Redis作�
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0' # BACKEND配置，这里使用redis
 
 CELERY_RESULT_SERIALIZER = 'json' # 结果序列化方案
+CELERY_TIMEZONE = 'Asia/Shanghai'
+CELERY_ENABLE_UTC = False
 
 #邮件发送设置
 EMAIL_USE_TLS = True   #是否使用TLS安全传输协议

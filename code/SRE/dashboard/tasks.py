@@ -439,6 +439,7 @@ def delete_pullrequest(url:str):
     else:
         return False
 
+
 def test(request):
     url = "https://github.com/donnemartin/system-design-primer/"
     Email= "3190102372@zju.edu.cn"
@@ -449,3 +450,39 @@ def test(request):
         return HttpResponse("sss")
     else:
         return HttpResponse("aaa")
+@shared_task 
+def refresh():
+    print("sss")
+    url="https://github.com/jiyujia926/NFTauction/"
+    project = models.Project.objects.filter(RepositoryURL=url).first()
+    if project:
+        project.State=0
+        project.save()
+        print("开始删除")
+
+        delete_commit(url)
+        print("已删除commit")
+        analyze_commit(url)
+        initialcommitdata(url)
+        print("已初始化commit")
+
+        delete_issue(url)
+        print("已删除issue")
+        analyze_open_issue(url)
+        analyze_close_issue(url)
+        initialissuedata(url)
+        print("已初始化issue")
+
+        delete_pullrequest(url)
+        print("已删除pullrequest")
+        analyze_open_pullrequest(url)
+        analyze_close_merge_pullrequest(url)
+        initial_pullrequest_data(url)
+        print("已初始化pullrequest")
+        
+        project.State=1
+        project.save()
+        
+        print("Success")
+    else:
+        print("该仓库不存在")
