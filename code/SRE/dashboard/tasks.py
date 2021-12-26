@@ -14,6 +14,7 @@ from django.http import HttpResponse
 django.setup()  					# 前4句引入django测试环境
 import pandas as pd
 import datetime
+import time
 import pytz
 
 
@@ -450,39 +451,70 @@ def test(request):
         return HttpResponse("sss")
     else:
         return HttpResponse("aaa")
-@shared_task 
+
+# 去掉下面的注释即可启动定时任务
+# @shared_task 
 def refresh():
     print("sss")
-    url="https://github.com/jiyujia926/NFTauction/"
-    project = models.Project.objects.filter(RepositoryURL=url).first()
-    if project:
-        project.State=0
-        project.save()
-        print("开始删除")
+    favor_PID=list(models.Favor.objects.values('Project').all())
+    all_url=list(models.Project.objects.values('RepositoryURL').all())
+    nofavor_url=[]
+    favor_url=[]
 
-        delete_commit(url)
-        print("已删除commit")
-        analyze_commit(url)
-        initialcommitdata(url)
-        print("已初始化commit")
+    for pid in favor_PID:
+        url = models.Project.objects.values('RepositoryURL').filter(PID=pid['Project']).first()
+        favor_url.append(url['RepositoryURL'])
 
-        delete_issue(url)
-        print("已删除issue")
-        analyze_open_issue(url)
-        analyze_close_issue(url)
-        initialissuedata(url)
-        print("已初始化issue")
+    for itemi in all_url:
+        flag = True
+        for itemj in favor_url:
+            if itemi['RepositoryURL'] == itemj:
+                flag = False
+                break
+        if flag:
+            nofavor_url.append(itemi['RepositoryURL'])
 
-        delete_pullrequest(url)
-        print("已删除pullrequest")
-        analyze_open_pullrequest(url)
-        analyze_close_merge_pullrequest(url)
-        initial_pullrequest_data(url)
-        print("已初始化pullrequest")
-        
-        project.State=1
-        project.save()
-        
-        print("Success")
-    else:
-        print("该仓库不存在")
+    # print(all_url)
+    # print(favor_url)
+    # print(nofavor_url)
+
+    for url in nofavor_url:
+        delete_project(url)
+
+    for url in favor_url:
+        project = models.Project.objects.filter(RepositoryURL=url).first()
+        if project:
+            project.State=0
+            project.save()
+            print("开始删除")
+
+            delete_contributor(url)
+            print("已删除贡献者")
+
+            delete_commit(url)
+            print("已删除commit")
+            analyze_commit(url)
+            initialcommitdata(url)
+            print("已初始化commit")
+
+            delete_issue(url)
+            print("已删除issue")
+            analyze_open_issue(url)
+            analyze_close_issue(url)
+            initialissuedata(url)
+            print("已初始化issue")
+
+            delete_pullrequest(url)
+            print("已删除pullrequest")
+            analyze_open_pullrequest(url)
+            analyze_close_merge_pullrequest(url)
+            initial_pullrequest_data(url)
+            print("已初始化pullrequest")
+            
+            project.State=1
+            project.save()
+            
+            print("Success")
+            time.sleep(300)     #每刷新一个休息5分钟
+        else:
+            print("该仓库不存在")

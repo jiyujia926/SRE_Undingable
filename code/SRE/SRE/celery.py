@@ -19,12 +19,11 @@ app = Celery('SRE')
 app.config_from_object('django.conf:settings', namespace='CELERY') #  使用CELERY_ 作为前缀，在settings中写配置
 
 app.autodiscover_tasks()  # 发现任务文件每个app下的task.py
-
 app.conf.update(
     CELERYBEAT_SCHEDULE={
         'refresh': {
             'task': 'dashboard.tasks.refresh',
-            'schedule': crontab(minute='*/2'),    # 每2min执行一次
+            'schedule': crontab(minute=0, hour=0),    # 每天00:00执行
             # 'schedule': timedelta(seconds=3),
             'args': (),
         },
