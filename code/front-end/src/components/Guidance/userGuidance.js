@@ -11,7 +11,7 @@ import useStyles from "./styles";
 
 const UserGuidance = () => {
   const classes = useStyles();
-  const [language, setLanguage] = useState(true);
+  const [language, setLanguage] = useState(false);
 
   const handleClick = () => {
     let curLanguage = language;

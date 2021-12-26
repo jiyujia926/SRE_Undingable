@@ -12,6 +12,9 @@ const PieChart = (props) => {
   let series_items = [];
   let sum = [];
   for (let i = 0; i < data.length && data[i].data !== undefined; i++) {
+    if (data[i] === null) {
+      break;
+    }
     let tmp_item = {};
     let tmp_sum = 0;
     tmp_item.name = data[i].repoName;
@@ -42,7 +45,7 @@ const PieChart = (props) => {
     let headers = "";
     let values = "";
     let percents = "";
-    for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length && data[i].data !== undefined; i++) {
       let repo_name = data[i].repoName;
       for (let j = 0; j < data[i].data.length; j++) {
         headers = headers + repo_name + "-" + data[i].data[j].name;

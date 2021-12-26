@@ -9,7 +9,7 @@ import useStyles from "./styles";
 const Reward = () => {
   const classes = useStyles();
   return (
-    <GridItem xs={12} sm={12} md={8}>
+    <GridItem xs={12} sm={12} md={8} className={classes.cardroot}>
       <Card>
         <CardHeader color="info">
           <h4 className={classes.cardCategoryWhite}>

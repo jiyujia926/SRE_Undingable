@@ -1,6 +1,9 @@
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles(() => ({
+  cardroot: {
+    height: "400px",
+  },
   root: {
     margin: "50px 0 0 0",
   },
