@@ -46,7 +46,7 @@ export default function Favorites() {
         {
           address: addressList[index]["Repo Address"],
           ready: isDone,
-          checked: true,
+          checked: isDone,
           favor: true,
         },
       ];
