@@ -14,6 +14,7 @@ import Reward from "components/Guidance/rewards";
 const styles = {
   root: {
     margin: "30px 0 0 0",
+    height: "400px",
   },
   cardCategoryWhite: {
     color: "rgba(255,255,255,.62)",
@@ -32,7 +33,7 @@ const styles = {
     textDecoration: "none",
   },
   card: {
-    maxHeight: "300px",
+    maxHeight: "400px",
   },
   cardBody: {
     padding: "0 0 30px 30px",
