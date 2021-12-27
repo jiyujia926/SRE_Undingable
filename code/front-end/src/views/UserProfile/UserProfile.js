@@ -12,6 +12,9 @@ import UserGuidance from "components/Guidance/userGuidance";
 import Reward from "components/Guidance/rewards";
 
 const styles = {
+  user: {
+    paddingTop: "15px",
+  },
   root: {
     margin: "30px 0 0 0",
     height: "400px",
@@ -38,6 +41,9 @@ const styles = {
   cardBody: {
     padding: "0 0 30px 30px",
   },
+  realCard: {
+    height: "100%",
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -48,10 +54,10 @@ export default function UserProfile() {
   const email = cookie.load("account");
   const createDate = cookie.load("time");
   return (
-    <div>
+    <div className={classes.user}>
       <GridContainer className={classes.root}>
         <GridItem xs={12} sm={12} md={4} className={classes.card}>
-          <Card>
+          <Card className={classes.realCard}>
             <CardHeader color="info">
               <h4 className={classes.cardTitleWhite}>Welcome</h4>
             </CardHeader>

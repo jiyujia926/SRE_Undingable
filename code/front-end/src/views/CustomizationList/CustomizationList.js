@@ -10,6 +10,7 @@ import GridContainer from "components/Grid/GridContainer.js";
 
 import styles from "assets/jss/material-dashboard-react/views/customizationStyle.js";
 import TablePro from "../../components/TablePro/TablePro";
+import CustomizedSnackbars from "../../components/Alert/Alert";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Typography from "@material-ui/core/Typography";
 import {
@@ -33,6 +34,14 @@ export default function CustomizationList() {
   const col = ["ID", "Template Name", "Create Time", "Description"];
   const [templateList, setTemplateList] = React.useState([]);
   const [openIndex, setOpenIndex] = React.useState(-1);
+  const [snackbar, setSnackbar] = React.useState({
+    rmvDone: false,
+    rmvError: false,
+    applyError: false,
+  });
+  function closeSnackbar(name) {
+    setSnackbar({ ...snackbar, [name]: false });
+  }
   async function apply(index) {
     let tmpList = cookie.load("addressList") ? cookie.load("addressList") : [];
     let isExisted = tmpList.some((current) => {
@@ -42,7 +51,7 @@ export default function CustomizationList() {
       history.push("/admin/dashboard");
       cookie.save("dashboard", templateList[index].dashboard);
     } else {
-      alert("You have no project to apply now.");
+      setSnackbar({ ...snackbar, applyError: true });
     }
   }
   async function remove(index) {
@@ -53,9 +62,10 @@ export default function CustomizationList() {
     console.log(data);
     let res = await axios.post(`${server}/delete/`, data);
     if (res.data === "删除成功") {
-      alert("Success");
+      setSnackbar({ ...snackbar, rmvDone: true });
+      fetch();
     } else {
-      alert("Error");
+      setSnackbar({ ...snackbar, rmvError: true });
     }
   }
   function view(index) {
@@ -64,7 +74,7 @@ export default function CustomizationList() {
   const handleCloseDialog = () => {
     setOpenIndex(-1);
   };
-  React.useEffect(async () => {
+  async function fetch() {
     if (cookie.load("username") !== undefined) {
       let data = {
         Email: cookie.load("account"),
@@ -87,7 +97,10 @@ export default function CustomizationList() {
         );
       }
     }
-  }, [remove]);
+  }
+  React.useEffect(() => {
+    fetch();
+  }, []);
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
@@ -164,6 +177,27 @@ export default function CustomizationList() {
           </div>
         )}
       </Dialog>
+      <CustomizedSnackbars
+        name="rmvDone"
+        message="Remove the project successfully!"
+        type="success"
+        open={snackbar.rmvDone}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="rmvError"
+        message="You have already remove this project."
+        type="error"
+        open={snackbar.rmvError}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="applyError"
+        message="You have no project to apply now."
+        type="warning"
+        open={snackbar.applyError}
+        close={closeSnackbar}
+      />
     </GridContainer>
   );
 }

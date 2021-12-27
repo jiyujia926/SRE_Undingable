@@ -9,6 +9,7 @@ import GridContainer from "components/Grid/GridContainer.js";
 
 //import styles from "assets/jss/material-dashboard-react/views/iconsStyle.js";
 import TablePro from "../../components/TablePro/TablePro";
+import CustomizedSnackbars from "../../components/Alert/Alert";
 import axios from "axios";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 axios.defaults.withCredentials = true;
@@ -23,6 +24,13 @@ export default function Favorites() {
   let history = useHistory();
   const col = ["ID", "Repo Name", "Repo Address", "Description"];
   const [addressList, setAddressList] = React.useState([]);
+  const [snackbar, setSnackbar] = React.useState({
+    rmvDone: false,
+    rmvError: false,
+  });
+  function closeSnackbar(name) {
+    setSnackbar({ ...snackbar, [name]: false });
+  }
   async function view(index) {
     let tmpList = cookie.load("addressList") ? cookie.load("addressList") : [];
     let isExisted = tmpList.some((current) => {
@@ -84,13 +92,14 @@ export default function Favorites() {
       );
     }
     if (res.data === "删除成功") {
-      alert("Success");
+      setSnackbar({ ...snackbar, rmvDone: true });
+      fetch();
     } else {
-      alert("Error");
+      setSnackbar({ ...snackbar, rmvError: true });
     }
   }
 
-  React.useEffect(async () => {
+  async function fetch() {
     if (cookie.load("username") !== undefined) {
       let data = {
         Email: cookie.load("account"),
@@ -110,7 +119,11 @@ export default function Favorites() {
         );
       }
     }
-  }, [remove]);
+  }
+
+  React.useEffect(() => {
+    fetch();
+  }, []);
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
@@ -126,6 +139,20 @@ export default function Favorites() {
           />
         )}
       </GridItem>
+      <CustomizedSnackbars
+        name="rmvDone"
+        message="Remove the project successfully!"
+        type="success"
+        open={snackbar.rmvDone}
+        close={closeSnackbar}
+      />
+      <CustomizedSnackbars
+        name="rmvError"
+        message="You have already remove this project."
+        type="error"
+        open={snackbar.rmvError}
+        close={closeSnackbar}
+      />
     </GridContainer>
   );
 }
