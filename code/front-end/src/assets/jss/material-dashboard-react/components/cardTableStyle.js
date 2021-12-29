@@ -10,6 +10,7 @@ const cardTableStyle = {
     padding: "12px 16px !important",
     backgroundColor: "#fcf8f9 !important",
     width: "16% !important",
+    zIndex: "0 !important",
   },
 };
 export default cardTableStyle;
