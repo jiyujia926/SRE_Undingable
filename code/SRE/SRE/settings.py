@@ -87,7 +87,7 @@ DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.mysql',
         'NAME':'sre',
-        'HOST':'122.51.228.166',
+        'HOST':'localhost',
         'PORT':'3306',
         'USER':'root',
         'PASSWORD':'926jiyujia',
